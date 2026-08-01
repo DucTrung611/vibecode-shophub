@@ -25,4 +25,11 @@ export class UserRepository {
   create(data: CreateUserData): Promise<UserEntity> {
     return this.prisma.user.create({ data });
   }
+
+  updateRole(
+    id: number,
+    role: 'buyer' | 'seller' | 'admin',
+  ): Promise<UserEntity> {
+    return this.prisma.user.update({ where: { id }, data: { role } });
+  }
 }

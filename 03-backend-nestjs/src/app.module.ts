@@ -11,6 +11,8 @@ import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
 import { RolesGuard } from './shared/guards/roles.guard';
 import { AuthModule } from './features/auth/auth.module';
 import { UserModule } from './features/user/user.module';
+import { ShopModule } from './features/shop/shop.module';
+import { CatalogModule } from './features/catalog/catalog.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { UserModule } from './features/user/user.module';
     RedisModule,
     UserModule,
     AuthModule,
+    ShopModule,
+    CatalogModule,
   ],
   controllers: [AppController],
   providers: [
