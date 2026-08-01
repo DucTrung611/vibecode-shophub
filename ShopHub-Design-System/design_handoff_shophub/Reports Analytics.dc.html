@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#EEF0F7;font-family:'Manrope',sans-serif;}
+  a{color:#2A3FD1;}
+  a:hover{color:#1F30A8;}
+</style>
+</helmet>
+
+<div style="display:flex;width:1440px;min-height:900px;background:#F7F8FC;">
+
+  <div style="width:236px;flex-shrink:0;background:#0B0F24;padding:20px 16px;display:flex;flex-direction:column;gap:4px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;padding:0 6px;">
+      <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#5C79F5,#3A56E8);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;color:#fff;font-size:15px;">S</div>
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:16px;color:#fff;">ShopHub <span style="font-weight:600;color:#8FA3FF;font-size:11px;">Admin</span></div>
+    </div>
+    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;background:{{ n.bg }};color:{{ n.color }};font-size:13px;font-weight:700;cursor:pointer;">
+        <span style="font-size:15px;">{{ n.icon }}</span>{{ n.label }}
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
+    <div style="height:64px;background:#fff;border-bottom:1px solid #DDE1EC;display:flex;align-items:center;justify-content:space-between;padding:0 28px;">
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:#14162A;">Báo cáo &amp; phân tích</div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="display:flex;align-items:center;gap:8px;border:1px solid #DDE1EC;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;color:#3B4059;">📅 30 ngày qua <span style="color:#9AA1B9;">▾</span></div>
+        <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:12px;color:#3B4059;background:#EEF0F7;border:none;border-radius:8px;padding:9px 16px;cursor:pointer;">⬇ Xuất báo cáo</button>
+      </div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding:24px 28px 40px;">
+
+      <div style="display:flex;gap:4px;margin-bottom:20px;background:#fff;border:1px solid #DDE1EC;border-radius:10px;padding:4px;width:fit-content;">
+        <sc-for list="{{ reportTabs }}" as="t" hint-placeholder-count="3">
+          <div onClick="{{ onTabClick }}" data-val="{{ t.value }}" style="padding:9px 18px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;background:{{ t.bg }};color:{{ t.color }};">{{ t.label }}</div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ isRevenue }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;">
+          <sc-for list="{{ revenueKpis }}" as="k" hint-placeholder-count="4">
+            <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:18px 20px;">
+              <div style="font-size:12px;color:#6E7591;font-weight:600;">{{ k.label }}</div>
+              <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#14162A;margin-top:8px;">{{ k.value }}</div>
+              <div style="font-size:12px;font-weight:700;color:{{ k.deltaColor }};margin-top:6px;">{{ k.delta }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:16px;">
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:20px;">Doanh thu theo tuần</div>
+            <div style="display:flex;align-items:flex-end;gap:16px;height:180px;">
+              <sc-for list="{{ revenueBars }}" as="b" hint-placeholder-count="6">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;">
+                  <div style="width:100%;background:linear-gradient(180deg,#5C79F5,#101A5C);border-radius:6px 6px 0 0;height:{{ b.height }}px;"></div>
+                  <div style="font-size:10px;color:#9AA1B9;">{{ b.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:16px;">Doanh thu theo danh mục</div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <sc-for list="{{ topCategories }}" as="c" hint-placeholder-count="5">
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="font-weight:600;color:#3B4059;">{{ c.label }}</span><span style="font-weight:700;color:#14162A;">{{ c.value }}</span></div>
+                  <div style="height:6px;background:#EEF0F7;border-radius:99px;overflow:hidden;"><div style="height:100%;background:#3A56E8;width:{{ c.pct }}%;"></div></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;overflow:hidden;margin-top:16px;">
+          <div style="padding:18px 24px;border-bottom:1px solid #EEF0F7;font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;">Top gian hàng theo doanh thu</div>
+          <div style="display:grid;grid-template-columns:0.5fr 2fr 1fr 1fr 1fr;padding:12px 24px;background:#F7F8FC;">
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">#</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">GIAN HÀNG</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">ĐƠN HÀNG</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">DOANH THU</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">TĂNG TRƯỞNG</div>
+          </div>
+          <sc-for list="{{ topSellers }}" as="s" hint-placeholder-count="5">
+            <div style="display:grid;grid-template-columns:0.5fr 2fr 1fr 1fr 1fr;padding:13px 24px;border-top:1px solid #EEF0F7;align-items:center;">
+              <div style="font-family:'Sora',sans-serif;font-weight:800;color:#9AA1B9;">{{ s.rank }}</div>
+              <div style="font-size:12px;font-weight:700;color:#14162A;">{{ s.name }}</div>
+              <div style="font-size:12px;color:#3B4059;">{{ s.orders }}</div>
+              <div style="font-size:12px;font-weight:700;color:#14162A;">{{ s.revenue }}</div>
+              <div style="font-size:12px;font-weight:700;color:#1A9E5C;">{{ s.growth }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isUsers }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;">
+          <sc-for list="{{ userKpis }}" as="k" hint-placeholder-count="4">
+            <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:18px 20px;">
+              <div style="font-size:12px;color:#6E7591;font-weight:600;">{{ k.label }}</div>
+              <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#14162A;margin-top:8px;">{{ k.value }}</div>
+              <div style="font-size:12px;font-weight:700;color:{{ k.deltaColor }};margin-top:6px;">{{ k.delta }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+          <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:20px;">Tăng trưởng người dùng mới theo tuần</div>
+          <div style="display:flex;align-items:flex-end;gap:16px;height:180px;">
+            <sc-for list="{{ userBars }}" as="b" hint-placeholder-count="6">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;">
+                <div style="width:100%;background:linear-gradient(180deg,#5C79F5,#101A5C);border-radius:6px 6px 0 0;height:{{ b.height }}px;"></div>
+                <div style="font-size:10px;color:#9AA1B9;">{{ b.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isOrders }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;">
+          <sc-for list="{{ orderKpis }}" as="k" hint-placeholder-count="4">
+            <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:18px 20px;">
+              <div style="font-size:12px;color:#6E7591;font-weight:600;">{{ k.label }}</div>
+              <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#14162A;margin-top:8px;">{{ k.value }}</div>
+              <div style="font-size:12px;font-weight:700;color:{{ k.deltaColor }};margin-top:6px;">{{ k.delta }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+          <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:16px;">Hiệu suất đơn vị vận chuyển</div>
+          <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;padding:9px 0;border-bottom:1px solid #EEF0F7;">
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">ĐƠN VỊ</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">ĐƠN GIAO</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">ĐÚNG HẸN</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">THỜI GIAN TB</div>
+          </div>
+          <sc-for list="{{ carriers }}" as="c" hint-placeholder-count="3">
+            <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;padding:12px 0;border-bottom:1px solid #EEF0F7;align-items:center;">
+              <div style="font-size:12px;font-weight:600;color:#14162A;">{{ c.name }}</div>
+              <div style="font-size:12px;color:#3B4059;">{{ c.orders }}</div>
+              <div style="font-size:12px;font-weight:700;color:#1A9E5C;">{{ c.onTime }}%</div>
+              <div style="font-size:12px;color:#3B4059;">{{ c.avgTime }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'revenue' };
+  onTabClick = (e) => this.setState({ tab: e.currentTarget.dataset.val });
+
+  renderVals() {
+    const navItems = [
+      { icon: '📊', label: 'Tổng quan', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '👥', label: 'Người dùng', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '🏪', label: 'Duyệt gian hàng', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '📦', label: 'Kiểm duyệt sản phẩm', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '🗂', label: 'Danh mục', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '📈', label: 'Báo cáo & phân tích', bg: '#3A56E8', color: '#fff' },
+    ];
+    const tabDefs = [
+      { value: 'revenue', label: 'Doanh thu' },
+      { value: 'users', label: 'Người dùng' },
+      { value: 'orders', label: 'Vận hành đơn hàng' },
+    ];
+    const reportTabs = tabDefs.map(t => ({ ...t, bg: this.state.tab === t.value ? '#3A56E8' : 'transparent', color: this.state.tab === t.value ? '#fff' : '#6E7591' }));
+
+    const revenueKpis = [
+      { label: 'Tổng GMV', value: '48.2 tỷ₫', delta: '▲ 8.6% so với kỳ trước', deltaColor: '#1A9E5C' },
+      { label: 'Giá trị đơn TB (AOV)', value: '385.000₫', delta: '▲ 2.1%', deltaColor: '#1A9E5C' },
+      { label: 'Doanh thu nền tảng', value: '2.41 tỷ₫', delta: '▲ 9.4%', deltaColor: '#1A9E5C' },
+      { label: 'Tỷ lệ hoàn tiền', value: '1.8%', delta: '▼ 0.3% so với kỳ trước', deltaColor: '#1A9E5C' },
+    ];
+    const weeks = [10.2, 11.8, 9.6, 13.4, 14.1, 12.8];
+    const maxW = Math.max(...weeks);
+    const revenueBars = weeks.map((v, i) => ({ label: 'Tuần ' + (i + 1), height: Math.round((v / maxW) * 150) }));
+    const topCategories = [
+      { label: 'Điện tử', value: '14.2 tỷ₫', pct: 100 },
+      { label: 'Thời trang', value: '11.8 tỷ₫', pct: 83 },
+      { label: 'Làm đẹp', value: '8.4 tỷ₫', pct: 59 },
+      { label: 'Nhà cửa', value: '6.1 tỷ₫', pct: 43 },
+      { label: 'Mẹ & bé', value: '4.3 tỷ₫', pct: 30 },
+    ];
+    const topSellers = [
+      { rank: 1, name: 'Audio House Official', orders: '2.284', revenue: '918tr₫', growth: '▲ 12%' },
+      { rank: 2, name: 'TechZone Store', orders: '1.842', revenue: '780tr₫', growth: '▲ 8%' },
+      { rank: 3, name: 'Fashion Corner VN', orders: '3.104', revenue: '654tr₫', growth: '▲ 22%' },
+      { rank: 4, name: 'BeautySecret', orders: '2.940', revenue: '512tr₫', growth: '▲ 6%' },
+      { rank: 5, name: 'GreenHome Living', orders: '980', revenue: '410tr₫', growth: '▲ 15%' },
+    ];
+
+    const userKpis = [
+      { label: 'Người dùng mới', value: '3.120', delta: '▲ 14.2% so với kỳ trước', deltaColor: '#1A9E5C' },
+      { label: 'Người dùng hoạt động', value: '182.4k', delta: '▲ 4.8%', deltaColor: '#1A9E5C' },
+      { label: 'Tỷ lệ giữ chân (30 ngày)', value: '61.4%', delta: '▲ 1.2%', deltaColor: '#1A9E5C' },
+      { label: 'Tỷ lệ rời bỏ', value: '3.6%', delta: '▲ 0.4% so với kỳ trước', deltaColor: '#D6293E' },
+    ];
+    const userWeeks = [2.1, 2.6, 2.4, 3.0, 3.4, 3.1];
+    const maxU = Math.max(...userWeeks);
+    const userBars = userWeeks.map((v, i) => ({ label: 'Tuần ' + (i + 1), height: Math.round((v / maxU) * 150) }));
+
+    const orderKpis = [
+      { label: 'Tổng đơn hàng', value: '512.9k', delta: '▲ 5.2% so với kỳ trước', deltaColor: '#1A9E5C' },
+      { label: 'Tỷ lệ hoàn tất', value: '94.2%', delta: '▲ 0.6%', deltaColor: '#1A9E5C' },
+      { label: 'Thời gian giao TB', value: '2.4 ngày', delta: '▼ 0.2 ngày', deltaColor: '#1A9E5C' },
+      { label: 'Tỷ lệ hủy đơn', value: '2.6%', delta: '▼ 0.3% so với kỳ trước', deltaColor: '#1A9E5C' },
+    ];
+    const carriers = [
+      { name: 'ShopHub Express', orders: '284.1k', onTime: 97, avgTime: '1.8 ngày' },
+      { name: 'Giao Hàng Nhanh (GHN)', orders: '156.4k', onTime: 94, avgTime: '2.6 ngày' },
+      { name: 'Viettel Post', orders: '72.4k', onTime: 91, avgTime: '3.1 ngày' },
+    ];
+
+    return {
+      navItems, reportTabs,
+      isRevenue: this.state.tab === 'revenue', isUsers: this.state.tab === 'users', isOrders: this.state.tab === 'orders',
+      revenueKpis, revenueBars, topCategories, topSellers,
+      userKpis, userBars,
+      orderKpis, carriers,
+      onTabClick: this.onTabClick,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

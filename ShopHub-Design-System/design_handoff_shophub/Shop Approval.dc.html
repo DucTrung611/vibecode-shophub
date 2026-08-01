@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#EEF0F7;font-family:'Manrope',sans-serif;}
+  a{color:#2A3FD1;}
+  a:hover{color:#1F30A8;}
+</style>
+</helmet>
+
+<div style="display:flex;width:1440px;min-height:900px;background:#F7F8FC;">
+
+  <div style="width:236px;flex-shrink:0;background:#0B0F24;padding:20px 16px;display:flex;flex-direction:column;gap:4px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;padding:0 6px;">
+      <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#5C79F5,#3A56E8);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;color:#fff;font-size:15px;">S</div>
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:16px;color:#fff;">ShopHub <span style="font-weight:600;color:#8FA3FF;font-size:11px;">Admin</span></div>
+    </div>
+    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;background:{{ n.bg }};color:{{ n.color }};font-size:13px;font-weight:700;cursor:pointer;">
+        <span style="font-size:15px;">{{ n.icon }}</span>{{ n.label }}
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
+    <div style="height:64px;background:#fff;border-bottom:1px solid #DDE1EC;display:flex;align-items:center;justify-content:space-between;padding:0 28px;">
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:#14162A;">{{ headerTitle }}</div>
+      <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ goList }}" style="font-size:13px;font-weight:700;color:#2A3FD1;cursor:pointer;">← Quay lại danh sách</div>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:1;overflow-y:auto;padding:24px 28px 40px;">
+        <div style="display:flex;gap:4px;margin-bottom:16px;background:#fff;border:1px solid #DDE1EC;border-radius:10px;padding:4px;width:fit-content;">
+          <sc-for list="{{ statusTabs }}" as="t" hint-placeholder-count="3">
+            <div style="padding:8px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;background:{{ t.bg }};color:{{ t.color }};">{{ t.label }} <span style="opacity:0.7;">({{ t.count }})</span></div>
+          </sc-for>
+        </div>
+
+        <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:2fr 1.4fr 1fr 1fr 1fr 1fr;padding:12px 20px;background:#F7F8FC;">
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">TÊN GIAN HÀNG</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">CHỦ SỞ HỮU</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">NGÀNH HÀNG</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">NGÀY NỘP</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">TRẠNG THÁI</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;text-align:right;">THAO TÁC</div>
+          </div>
+          <sc-for list="{{ shops }}" as="s" hint-placeholder-count="6">
+            <div style="display:grid;grid-template-columns:2fr 1.4fr 1fr 1fr 1fr 1fr;padding:14px 20px;border-top:1px solid #EEF0F7;align-items:center;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:36px;height:36px;border-radius:9px;background:{{ s.bg }};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:{{ s.color }};">{{ s.initial }}</div>
+                <div style="font-size:12px;font-weight:700;color:#14162A;">{{ s.name }}</div>
+              </div>
+              <div style="font-size:12px;color:#3B4059;">{{ s.owner }}</div>
+              <div style="font-size:12px;color:#3B4059;">{{ s.category }}</div>
+              <div style="font-size:12px;color:#6E7591;">{{ s.date }}</div>
+              <div><span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;background:{{ s.statusBg }};color:{{ s.statusColor }};">{{ s.status }}</span></div>
+              <div onClick="{{ goDetail }}" style="text-align:right;font-size:12px;font-weight:700;color:#2A3FD1;cursor:pointer;">Xem chi tiết</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;overflow-y:auto;padding:24px 28px 40px;display:grid;grid-template-columns:1fr 340px;gap:20px;">
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+              <div style="width:52px;height:52px;border-radius:12px;background:#3A56E8;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:20px;color:#fff;">F</div>
+              <div>
+                <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:16px;color:#14162A;">Fashion Corner VN</div>
+                <div style="font-size:12px;color:#9AA1B9;">Nộp đơn 01/08/2026 · Ngành hàng: Thời trang</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <div><div style="font-size:11px;color:#9AA1B9;">Chủ sở hữu</div><div style="font-size:13px;font-weight:600;color:#14162A;">Trần Thị Mai</div></div>
+              <div><div style="font-size:11px;color:#9AA1B9;">Email</div><div style="font-size:13px;font-weight:600;color:#14162A;">mai.tran@fashioncorner.vn</div></div>
+              <div><div style="font-size:11px;color:#9AA1B9;">Số điện thoại</div><div style="font-size:13px;font-weight:600;color:#14162A;">0912 345 678</div></div>
+              <div><div style="font-size:11px;color:#9AA1B9;">Mã số thuế</div><div style="font-size:13px;font-weight:600;color:#14162A;">0312 456 789</div></div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:14px;">Giấy tờ đã nộp</div>
+            <sc-for list="{{ documents }}" as="d" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #EEF0F7;border-radius:10px;margin-bottom:10px;">
+                <div style="width:40px;height:40px;border-radius:8px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font-size:18px;">📄</div>
+                <div style="flex:1;">
+                  <div style="font-size:12px;font-weight:700;color:#14162A;">{{ d.name }}</div>
+                  <div style="font-size:11px;color:#9AA1B9;">{{ d.file }}</div>
+                </div>
+                <div style="font-size:12px;font-weight:700;color:#2A3FD1;cursor:pointer;">Xem</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:14px;">Quyết định duyệt</div>
+            <div style="margin-bottom:14px;">
+              <label style="font-size:12px;font-weight:700;color:#3B4059;display:block;margin-bottom:6px;">Ghi chú (nếu từ chối)</label>
+              <div style="padding:10px 14px;border-radius:8px;border:1.5px solid #DDE1EC;font-size:12px;color:#9AA1B9;min-height:60px;">Nhập lý do từ chối để gửi cho người bán...</div>
+            </div>
+            <button style="width:100%;box-sizing:border-box;font-family:'Manrope',sans-serif;font-weight:700;font-size:13px;color:#fff;background:#1A9E5C;border:none;border-radius:9px;padding:11px;cursor:pointer;margin-bottom:8px;">✓ Phê duyệt gian hàng</button>
+            <button style="width:100%;box-sizing:border-box;font-family:'Manrope',sans-serif;font-weight:700;font-size:13px;color:#D6293E;background:#FDEAEC;border:none;border-radius:9px;padding:11px;cursor:pointer;">✕ Từ chối</button>
+          </div>
+
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:14px;">Kiểm tra hồ sơ</div>
+            <sc-for list="{{ checklist }}" as="c" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 0;">
+                <span style="color:#1A9E5C;font-size:13px;">✓</span>
+                <span style="font-size:12px;color:#3B4059;">{{ c }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { view: 'list' };
+  goDetail = () => this.setState({ view: 'detail' });
+  goList = () => this.setState({ view: 'list' });
+
+  renderVals() {
+    const navItems = [
+      { icon: '📊', label: 'Tổng quan', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '👥', label: 'Người dùng', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '🏪', label: 'Duyệt gian hàng', bg: '#3A56E8', color: '#fff' },
+      { icon: '📦', label: 'Kiểm duyệt sản phẩm', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '🗂', label: 'Danh mục', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '📈', label: 'Báo cáo & phân tích', bg: 'transparent', color: '#C3C9DB' },
+    ];
+    const statusTabs = [
+      { label: 'Chờ duyệt', count: 32, bg: '#3A56E8', color: '#fff' },
+      { label: 'Đã duyệt', count: 6842, bg: 'transparent', color: '#6E7591' },
+      { label: 'Từ chối', count: 118, bg: 'transparent', color: '#6E7591' },
+    ];
+    const shops = [
+      { initial: 'F', bg: '#EEF1FF', color: '#2A3FD1', name: 'Fashion Corner VN', owner: 'Trần Thị Mai', category: 'Thời trang', date: '01/08/2026', status: 'Chờ duyệt', statusBg: '#FFF4E0', statusColor: '#D97706' },
+      { initial: 'G', bg: '#E6F7EE', color: '#1A9E5C', name: 'GreenHome Living', owner: 'Phạm Văn Sơn', category: 'Nhà cửa', date: '31/07/2026', status: 'Chờ duyệt', statusBg: '#FFF4E0', statusColor: '#D97706' },
+      { initial: 'P', bg: '#FDEAEC', color: '#D6293E', name: 'PetCare Shop', owner: 'Ngô Thị Yến', category: 'Thú cưng', date: '30/07/2026', status: 'Chờ duyệt', statusBg: '#FFF4E0', statusColor: '#D97706' },
+      { initial: 'B', bg: '#FFF4E0', color: '#D97706', name: 'BeautyBox VN', owner: 'Lý Thảo Vy', category: 'Làm đẹp', date: '29/07/2026', status: 'Chờ duyệt', statusBg: '#FFF4E0', statusColor: '#D97706' },
+      { initial: 'K', bg: '#EAF1FD', color: '#2563C7', name: 'Kids World', owner: 'Đặng Thu Hằng', category: 'Mẹ & bé', date: '29/07/2026', status: 'Chờ duyệt', statusBg: '#FFF4E0', statusColor: '#D97706' },
+      { initial: 'S', bg: '#EEF1FF', color: '#2A3FD1', name: 'SportMax VN', owner: 'Bùi Quốc Huy', category: 'Thể thao', date: '28/07/2026', status: 'Chờ duyệt', statusBg: '#FFF4E0', statusColor: '#D97706' },
+    ];
+    const documents = [
+      { name: 'Giấy phép kinh doanh', file: 'giay_phep_kinh_doanh.pdf' },
+      { name: 'CMND/CCCD chủ sở hữu', file: 'cccd_tran_thi_mai.pdf' },
+      { name: 'Xác nhận tài khoản ngân hàng', file: 'xac_nhan_ngan_hang.pdf' },
+    ];
+    const checklist = [
+      'Thông tin doanh nghiệp hợp lệ',
+      'Giấy phép kinh doanh còn hiệu lực',
+      'Danh mục sản phẩm phù hợp chính sách',
+      'Tài khoản ngân hàng đã xác minh',
+    ];
+    return {
+      navItems, statusTabs, shops, documents, checklist,
+      isList: this.state.view === 'list', isDetail: this.state.view === 'detail',
+      headerTitle: this.state.view === 'list' ? 'Duyệt gian hàng' : 'Xét duyệt gian hàng',
+      goDetail: this.goDetail, goList: this.goList,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

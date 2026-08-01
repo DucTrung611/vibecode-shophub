@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#EEF0F7;font-family:'Manrope',sans-serif;}
+  a{color:#2A3FD1;}
+  a:hover{color:#1F30A8;}
+</style>
+</helmet>
+
+<div style="display:flex;width:1440px;min-height:900px;background:#F7F8FC;">
+
+  <div style="width:236px;flex-shrink:0;background:#101A5C;padding:20px 16px;display:flex;flex-direction:column;gap:4px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;padding:0 6px;">
+      <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#5C79F5,#3A56E8);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;color:#fff;font-size:15px;">S</div>
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:16px;color:#fff;">ShopHub <span style="font-weight:600;color:#8FA3FF;font-size:11px;">Seller</span></div>
+    </div>
+    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;background:{{ n.bg }};color:{{ n.color }};font-size:13px;font-weight:700;cursor:pointer;">
+        <span style="font-size:15px;">{{ n.icon }}</span>{{ n.label }}
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
+    <div style="height:64px;background:#fff;border-bottom:1px solid #DDE1EC;display:flex;align-items:center;justify-content:space-between;padding:0 28px;">
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:#14162A;">Cài đặt gian hàng</div>
+      <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:13px;color:#fff;background:#3A56E8;border:none;border-radius:9px;padding:10px 18px;cursor:pointer;">Lưu thay đổi</button>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding:24px 28px 40px;display:grid;grid-template-columns:220px 1fr;gap:20px;">
+
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+          <div onClick="{{ onTabClick }}" data-val="{{ t.value }}" style="padding:11px 14px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;background:{{ t.bg }};color:{{ t.color }};">{{ t.label }}</div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <sc-if value="{{ isInfo }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:16px;">Thông tin gian hàng</div>
+            <div style="display:flex;gap:16px;align-items:center;margin-bottom:20px;">
+              <div style="width:72px;height:72px;border-radius:16px;background:#3A56E8;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:26px;color:#fff;">A</div>
+              <div style="display:flex;gap:8px;">
+                <div style="font-size:12px;font-weight:700;color:#2A3FD1;border:1.5px solid #3A56E8;border-radius:8px;padding:8px 14px;cursor:pointer;">Đổi logo</div>
+                <div style="font-size:12px;font-weight:700;color:#D6293E;border:1.5px solid #DDE1EC;border-radius:8px;padding:8px 14px;cursor:pointer;">Xóa</div>
+              </div>
+            </div>
+            <div style="margin-bottom:14px;">
+              <label style="font-size:12px;font-weight:700;color:#3B4059;display:block;margin-bottom:6px;">Tên gian hàng</label>
+              <div style="padding:10px 14px;border-radius:8px;border:1.5px solid #DDE1EC;font-size:13px;color:#14162A;">Audio House Official</div>
+            </div>
+            <div>
+              <label style="font-size:12px;font-weight:700;color:#3B4059;display:block;margin-bottom:6px;">Mô tả gian hàng</label>
+              <div style="padding:10px 14px;border-radius:8px;border:1.5px solid #DDE1EC;font-size:13px;color:#3B4059;min-height:64px;line-height:1.5;">Chuyên cung cấp thiết bị âm thanh chính hãng: tai nghe, loa, micro thu âm...</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isContact }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:16px;">Địa chỉ &amp; liên hệ</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <div>
+                <label style="font-size:12px;font-weight:700;color:#3B4059;display:block;margin-bottom:6px;">Email liên hệ</label>
+                <div style="padding:10px 14px;border-radius:8px;border:1.5px solid #DDE1EC;font-size:13px;color:#14162A;">contact@audiohouse.vn</div>
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:700;color:#3B4059;display:block;margin-bottom:6px;">Số điện thoại</label>
+                <div style="padding:10px 14px;border-radius:8px;border:1.5px solid #DDE1EC;font-size:13px;color:#14162A;">028 3822 1190</div>
+              </div>
+            </div>
+            <div style="margin-top:14px;">
+              <label style="font-size:12px;font-weight:700;color:#3B4059;display:block;margin-bottom:6px;">Địa chỉ kho hàng</label>
+              <div style="padding:10px 14px;border-radius:8px;border:1.5px solid #DDE1EC;font-size:13px;color:#14162A;">45 Đường Điện Biên Phủ, Quận Bình Thạnh, TP.HCM</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isShipping }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:16px;">Đơn vị vận chuyển</div>
+            <sc-for list="{{ carriers }}" as="c" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #EEF0F7;">
+                <div style="font-size:13px;font-weight:600;color:#14162A;">{{ c.name }}</div>
+                <div style="width:38px;height:22px;border-radius:99px;background:{{ c.toggleBg }};position:relative;">
+                  <div style="width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:3px;left:{{ c.togglePos }};"></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isPayment }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:16px;">Tài khoản nhận thanh toán</div>
+            <div style="display:flex;align-items:center;gap:12px;padding:14px;border:1.5px solid #DDE1EC;border-radius:10px;">
+              <div style="width:40px;height:40px;border-radius:9px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font-size:18px;">🏦</div>
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:700;color:#14162A;">Vietcombank</div>
+                <div style="font-size:12px;color:#9AA1B9;">**** **** **** 4821 · Audio House Official</div>
+              </div>
+              <div style="font-size:12px;font-weight:700;color:#2A3FD1;cursor:pointer;">Thay đổi</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isNotif }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:16px;">Tùy chọn thông báo</div>
+            <sc-for list="{{ notifOptions }}" as="n" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #EEF0F7;">
+                <div>
+                  <div style="font-size:13px;font-weight:600;color:#14162A;">{{ n.label }}</div>
+                  <div style="font-size:11px;color:#9AA1B9;margin-top:2px;">{{ n.desc }}</div>
+                </div>
+                <div style="width:38px;height:22px;border-radius:99px;background:{{ n.toggleBg }};position:relative;flex-shrink:0;">
+                  <div style="width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:3px;left:{{ n.togglePos }};"></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'info' };
+  onTabClick = (e) => this.setState({ tab: e.currentTarget.dataset.val });
+
+  renderVals() {
+    const navItems = [
+      { icon: '📊', label: 'Tổng quan', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '📦', label: 'Sản phẩm', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '🧾', label: 'Đơn hàng', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '📋', label: 'Kho hàng', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '⚙', label: 'Cài đặt shop', bg: '#3A56E8', color: '#fff' },
+    ];
+    const tabDefs = [
+      { value: 'info', label: 'Thông tin shop' },
+      { value: 'contact', label: 'Địa chỉ & liên hệ' },
+      { value: 'shipping', label: 'Vận chuyển' },
+      { value: 'payment', label: 'Thanh toán' },
+      { value: 'notif', label: 'Thông báo' },
+    ];
+    const tabs = tabDefs.map(t => ({
+      ...t,
+      bg: this.state.tab === t.value ? '#EEF1FF' : 'transparent',
+      color: this.state.tab === t.value ? '#2A3FD1' : '#6E7591',
+    }));
+    const carriers = [
+      { name: 'ShopHub Express', toggleBg: '#3A56E8', togglePos: '19px' },
+      { name: 'Giao Hàng Nhanh (GHN)', toggleBg: '#3A56E8', togglePos: '19px' },
+      { name: 'Viettel Post', toggleBg: '#DDE1EC', togglePos: '3px' },
+    ];
+    const notifOptions = [
+      { label: 'Đơn hàng mới', desc: 'Nhận thông báo khi có đơn hàng mới', toggleBg: '#3A56E8', togglePos: '19px' },
+      { label: 'Tin nhắn khách hàng', desc: 'Nhận thông báo khi khách hàng nhắn tin', toggleBg: '#3A56E8', togglePos: '19px' },
+      { label: 'Sắp hết hàng', desc: 'Cảnh báo khi tồn kho dưới ngưỡng', toggleBg: '#3A56E8', togglePos: '19px' },
+      { label: 'Khuyến mãi ShopHub', desc: 'Thông tin chương trình khuyến mãi từ nền tảng', toggleBg: '#DDE1EC', togglePos: '3px' },
+    ];
+    return {
+      navItems, tabs, carriers, notifOptions,
+      isInfo: this.state.tab === 'info', isContact: this.state.tab === 'contact',
+      isShipping: this.state.tab === 'shipping', isPayment: this.state.tab === 'payment', isNotif: this.state.tab === 'notif',
+      onTabClick: this.onTabClick,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

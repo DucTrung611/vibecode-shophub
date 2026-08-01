@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#EEF0F7;font-family:'Manrope',sans-serif;}
+  a{color:#2A3FD1;}
+  a:hover{color:#1F30A8;}
+</style>
+</helmet>
+
+<div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:40px 20px;">
+  <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;color:#6E7591;text-transform:uppercase;">Buyer · Cart · Mobile</div>
+
+  <div style="display:flex;gap:16px;">
+    <div style="display:flex;gap:8px;background:#fff;border:1px solid #DDE1EC;border-radius:10px;padding:4px;">
+      <sc-for list="{{ stateOptions }}" as="s" hint-placeholder-count="3">
+        <div onClick="{{ onStateClick }}" data-val="{{ s.value }}" style="padding:7px 14px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;background:{{ s.bg }};color:{{ s.color }};">{{ s.label }}</div>
+      </sc-for>
+    </div>
+    <div style="display:flex;gap:8px;background:#fff;border:1px solid #DDE1EC;border-radius:10px;padding:4px;">
+      <sc-for list="{{ deviceOptions }}" as="d" hint-placeholder-count="2">
+        <div onClick="{{ onDeviceClick }}" data-val="{{ d.value }}" style="padding:7px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;background:{{ d.bg }};color:{{ d.color }};">{{ d.label }}</div>
+      </sc-for>
+    </div>
+  </div>
+
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ true }}">
+  <x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" width="{{ 412 }}" height="{{ 892 }}" hint-size="412,892">
+    <div style="display:flex;flex-direction:column;height:100%;background:#F7F8FC;font-family:'Manrope',sans-serif;position:relative;">
+
+      <div style="background:#fff;border-bottom:1px solid #EEF0F7;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:18px;color:#14162A;">←</span>
+          <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:16px;color:#14162A;">Giỏ hàng {{ cartCountLabel }}</span>
+        </div>
+        <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
+          <span style="font-size:12px;font-weight:700;color:#D6293E;">Sửa</span>
+        </sc-if>
+      </div>
+
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 32px;">
+          <div style="width:88px;height:88px;border-radius:50%;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:20px;">🛒</div>
+          <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:16px;color:#14162A;margin-bottom:8px;">Giỏ hàng của bạn đang trống</div>
+          <div style="font-size:13px;color:#6E7591;line-height:1.5;margin-bottom:22px;">Hãy khám phá hàng ngàn sản phẩm và thêm vào giỏ để bắt đầu mua sắm.</div>
+          <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:13px;color:#fff;background:#3A56E8;border:none;border-radius:10px;padding:12px 26px;cursor:pointer;">Mua sắm ngay</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;overflow-y:auto;padding-bottom:150px;">
+
+          <sc-if value="{{ isIssue }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:8px;align-items:flex-start;background:#FDEAEC;border-left:4px solid #D6293E;padding:10px 14px;margin:12px 16px 0;border-radius:8px;">
+              <span style="font-size:14px;">⚠</span>
+              <div style="font-size:12px;color:#D6293E;font-weight:600;line-height:1.4;">1 sản phẩm đã hết hàng và bị bỏ chọn. Vui lòng kiểm tra trước khi thanh toán.</div>
+            </div>
+          </sc-if>
+
+          <div style="margin:16px 16px 0;background:#EEF1FF;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px;">
+            <span style="font-size:13px;">🎟</span>
+            <span style="font-size:12px;color:#2A3FD1;font-weight:700;flex:1;">Áp dụng mã giảm giá ShopHub</span>
+            <span style="font-size:11px;color:#2A3FD1;">›</span>
+          </div>
+
+          <sc-for list="{{ shops }}" as="shop" hint-placeholder-count="2">
+            <div style="margin:16px 16px 0;background:#fff;border-radius:14px;overflow:hidden;">
+              <div style="display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid #EEF0F7;">
+                <div style="width:18px;height:18px;border-radius:5px;border:1.5px solid #C3C9DB;background:{{ shop.checkBg }};"></div>
+                <span style="font-size:12px;font-weight:700;color:#14162A;">🏪 {{ shop.name }}</span>
+                <span style="font-size:11px;color:#9AA1B9;">›</span>
+              </div>
+              <sc-for list="{{ shop.items }}" as="it" hint-placeholder-count="2">
+                <div style="display:flex;gap:10px;padding:12px 14px;border-bottom:1px solid #EEF0F7;opacity:{{ it.opacity }};">
+                  <div style="width:18px;height:18px;border-radius:5px;border:1.5px solid #C3C9DB;background:{{ it.checkBg }};flex-shrink:0;margin-top:24px;"></div>
+                  <div style="width:64px;height:64px;flex-shrink:0;border-radius:10px;background:{{ it.bg }};display:flex;align-items:center;justify-content:center;font-size:26px;">{{ it.emoji }}</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-size:12px;color:#3B4059;font-weight:600;line-height:1.35;">{{ it.name }}</div>
+                    <div style="font-size:11px;color:#9AA1B9;margin-top:3px;">Phân loại: {{ it.variant }}</div>
+                    <sc-if value="{{ it.outOfStock }}" hint-placeholder-val="{{ false }}">
+                      <div style="font-size:11px;color:#D6293E;font-weight:700;margin-top:3px;">Hết hàng</div>
+                    </sc-if>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+                      <div style="font-size:13px;font-weight:800;color:#14162A;">{{ it.price }}₫</div>
+                      <div style="display:flex;align-items:center;gap:8px;border:1px solid #DDE1EC;border-radius:8px;">
+                        <div style="width:22px;text-align:center;font-size:13px;color:#3B4059;">−</div>
+                        <div style="font-size:12px;font-weight:700;color:#14162A;">{{ it.qty }}</div>
+                        <div style="width:22px;text-align:center;font-size:13px;color:#3B4059;">+</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+
+          <div style="margin:16px 16px 0;background:#fff;border-radius:14px;padding:14px;">
+            <div style="font-size:12px;font-weight:700;color:#14162A;margin-bottom:8px;">Có thể bạn cũng thích</div>
+            <div style="display:flex;gap:10px;overflow-x:auto;">
+              <sc-for list="{{ recs }}" as="r" hint-placeholder-count="4">
+                <div style="flex-shrink:0;width:88px;">
+                  <div style="height:80px;border-radius:10px;background:{{ r.bg }};display:flex;align-items:center;justify-content:center;font-size:24px;">{{ r.emoji }}</div>
+                  <div style="font-size:11px;font-weight:700;color:#14162A;margin-top:4px;">{{ r.price }}₫</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #EEF0F7;padding:12px 16px 14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:18px;height:18px;border-radius:5px;border:1.5px solid #3A56E8;background:#3A56E8;"></div>
+              <span style="font-size:12px;font-weight:600;color:#3B4059;">Tất cả ({{ selectedCount }})</span>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:11px;color:#6E7591;">Tổng thanh toán</div>
+              <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:#D6293E;">{{ total }}₫</div>
+            </div>
+          </div>
+          <button style="width:100%;box-sizing:border-box;font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#fff;background:#FF8A1E;border:none;border-radius:10px;padding:13px;cursor:pointer;">Mua hàng ({{ selectedCount }})</button>
+        </div>
+      </sc-if>
+
+    </div>
+  </x-import>
+  </sc-if>
+
+  <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ false }}">
+  <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="{{ 1360 }}" height="{{ 860 }}" url="shophub.vn/cart" hint-size="1360,860">
+    <div style="display:flex;flex-direction:column;height:100%;background:#F7F8FC;font-family:'Manrope',sans-serif;overflow-y:auto;">
+      <div style="background:#fff;border-bottom:1px solid #EEF0F7;padding:16px 40px;"><span style="font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:#14162A;">Giỏ hàng {{ cartCountLabel }}</span></div>
+
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+          <div style="width:88px;height:88px;border-radius:50%;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:20px;">🛒</div>
+          <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:#14162A;margin-bottom:8px;">Giỏ hàng của bạn đang trống</div>
+          <div style="font-size:13px;color:#6E7591;line-height:1.5;margin-bottom:22px;">Hãy khám phá hàng ngàn sản phẩm và thêm vào giỏ để bắt đầu mua sắm.</div>
+          <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:13px;color:#fff;background:#3A56E8;border:none;border-radius:10px;padding:12px 26px;cursor:pointer;">Mua sắm ngay</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;padding:24px 40px 40px;display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start;">
+          <div>
+            <sc-if value="{{ isIssue }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:8px;align-items:flex-start;background:#FDEAEC;border-left:4px solid #D6293E;padding:12px 16px;margin-bottom:16px;border-radius:8px;">
+                <span style="font-size:14px;">⚠</span>
+                <div style="font-size:13px;color:#D6293E;font-weight:600;line-height:1.4;">1 sản phẩm đã hết hàng và bị bỏ chọn. Vui lòng kiểm tra trước khi thanh toán.</div>
+              </div>
+            </sc-if>
+            <sc-for list="{{ shops }}" as="shop" hint-placeholder-count="2">
+              <div style="background:#fff;border-radius:14px;overflow:hidden;margin-bottom:16px;">
+                <div style="display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid #EEF0F7;">
+                  <div style="width:18px;height:18px;border-radius:5px;border:1.5px solid #C3C9DB;background:{{ shop.checkBg }};"></div>
+                  <span style="font-size:13px;font-weight:700;color:#14162A;">🏪 {{ shop.name }}</span>
+                </div>
+                <sc-for list="{{ shop.items }}" as="it" hint-placeholder-count="2">
+                  <div style="display:flex;gap:14px;padding:16px 18px;border-bottom:1px solid #EEF0F7;opacity:{{ it.opacity }};align-items:center;">
+                    <div style="width:18px;height:18px;border-radius:5px;border:1.5px solid #C3C9DB;background:{{ it.checkBg }};flex-shrink:0;"></div>
+                    <div style="width:72px;height:72px;flex-shrink:0;border-radius:10px;background:{{ it.bg }};display:flex;align-items:center;justify-content:center;font-size:28px;">{{ it.emoji }}</div>
+                    <div style="flex:1;min-width:0;">
+                      <div style="font-size:13px;color:#3B4059;font-weight:600;">{{ it.name }}</div>
+                      <div style="font-size:12px;color:#9AA1B9;margin-top:3px;">Phân loại: {{ it.variant }}</div>
+                      <sc-if value="{{ it.outOfStock }}" hint-placeholder-val="{{ false }}"><div style="font-size:11px;color:#D6293E;font-weight:700;margin-top:3px;">Hết hàng</div></sc-if>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;border:1px solid #DDE1EC;border-radius:8px;padding:2px 4px;">
+                      <div style="width:22px;text-align:center;font-size:13px;color:#3B4059;">−</div>
+                      <div style="font-size:12px;font-weight:700;color:#14162A;">{{ it.qty }}</div>
+                      <div style="width:22px;text-align:center;font-size:13px;color:#3B4059;">+</div>
+                    </div>
+                    <div style="font-size:14px;font-weight:800;color:#14162A;width:100px;text-align:right;">{{ it.price }}₫</div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border-radius:14px;padding:20px;position:sticky;top:0;">
+            <div style="font-size:13px;font-weight:700;color:#14162A;margin-bottom:12px;">Tóm tắt đơn hàng</div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:#6E7591;padding:5px 0;"><span>Tạm tính</span><span>{{ total }}₫</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:800;color:#14162A;padding:12px 0 0;border-top:1px solid #EEF0F7;margin-top:8px;"><span>Tổng thanh toán</span><span style="color:#D6293E;">{{ total }}₫</span></div>
+            <button style="width:100%;box-sizing:border-box;margin-top:16px;font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#fff;background:#FF8A1E;border:none;border-radius:10px;padding:13px;cursor:pointer;">Mua hàng ({{ selectedCount }})</button>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </x-import>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { demoState: 'full', device: 'mobile' };
+  onStateClick = (e) => this.setState({ demoState: e.currentTarget.dataset.val });
+  onDeviceClick = (e) => this.setState({ device: e.currentTarget.dataset.val });
+
+  renderVals() {
+    const issue = this.state.demoState === 'issue';
+    const shops = [
+      { name: 'Audio House Official', checkBg: '#3A56E8', items: [
+        { emoji: '🎧', bg: '#EEF1FF', name: 'Tai nghe Bluetooth chống ồn ShopHub X1', variant: 'Đen, Tiêu chuẩn', price: '399.000', qty: 1, checkBg: '#3A56E8', opacity: '1', outOfStock: false },
+      ]},
+      { name: 'TechZone Store', checkBg: '#3A56E8', items: [
+        { emoji: '⌚', bg: '#FFF4E0', name: 'Đồng hồ thông minh theo dõi sức khỏe', variant: 'Xám, 44mm', price: '899.000', qty: 1, checkBg: '#3A56E8', opacity: '1', outOfStock: false },
+        issue
+          ? { emoji: '🔌', bg: '#EEF0F7', name: 'Sạc nhanh 65W GaN 3 cổng', variant: 'Trắng', price: '349.000', qty: 1, checkBg: '#fff', opacity: '0.5', outOfStock: true }
+          : { emoji: '🔌', bg: '#E6F7EE', name: 'Sạc nhanh 65W GaN 3 cổng', variant: 'Trắng', price: '349.000', qty: 1, checkBg: '#3A56E8', opacity: '1', outOfStock: false },
+      ]},
+    ];
+    const recs = [
+      { emoji: '🎒', bg: '#EEF1FF', price: '299.000' },
+      { emoji: '🍳', bg: '#FFF4E0', price: '279.000' },
+      { emoji: '🧴', bg: '#FDEAEC', price: '215.000' },
+      { emoji: '👟', bg: '#E6F7EE', price: '650.000' },
+    ];
+    const stateOptions = ['full', 'issue', 'empty'].map(v => ({
+      value: v, label: v === 'full' ? 'Đầy đủ' : v === 'issue' ? 'Có lỗi (hết hàng)' : 'Trống',
+      bg: this.state.demoState === v ? '#3A56E8' : 'transparent',
+      color: this.state.demoState === v ? '#fff' : '#6E7591',
+    }));
+    const total = issue ? '1.298.000' : '1.647.000';
+    const selectedCount = issue ? 2 : 3;
+    const deviceOptions = ['mobile', 'desktop'].map(v => ({
+      value: v, label: v === 'mobile' ? '📱 Mobile' : '💻 Website',
+      bg: this.state.device === v ? '#3A56E8' : 'transparent',
+      color: this.state.device === v ? '#fff' : '#6E7591',
+    }));
+    return {
+      shops, recs, stateOptions, deviceOptions, total, selectedCount,
+      isEmpty: this.state.demoState === 'empty',
+      hasItems: this.state.demoState !== 'empty',
+      isIssue: issue,
+      cartCountLabel: this.state.demoState === 'empty' ? '' : `(3)`,
+      isMobile: this.state.device === 'mobile', isDesktop: this.state.device === 'desktop',
+      onStateClick: this.onStateClick, onDeviceClick: this.onDeviceClick,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

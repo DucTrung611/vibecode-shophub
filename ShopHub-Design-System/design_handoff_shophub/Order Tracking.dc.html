@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#EEF0F7;font-family:'Manrope',sans-serif;}
+  a{color:#2A3FD1;}
+  a:hover{color:#1F30A8;}
+</style>
+</helmet>
+
+<div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:40px 20px;">
+  <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;color:#6E7591;text-transform:uppercase;">Buyer · Order History / Tracking · Mobile</div>
+
+  <div style="display:flex;gap:8px;background:#fff;border:1px solid #DDE1EC;border-radius:10px;padding:4px;">
+    <sc-for list="{{ deviceOptions }}" as="d" hint-placeholder-count="2">
+      <div onClick="{{ onDeviceClick }}" data-val="{{ d.value }}" style="padding:7px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;background:{{ d.bg }};color:{{ d.color }};">{{ d.label }}</div>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ true }}">
+  <x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" width="{{ 412 }}" height="{{ 892 }}" hint-size="412,892">
+    <div style="display:flex;flex-direction:column;height:100%;background:#F7F8FC;font-family:'Manrope',sans-serif;position:relative;">
+
+      <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+        <div style="background:#fff;border-bottom:1px solid #EEF0F7;">
+          <div style="display:flex;align-items:center;gap:10px;padding:14px 16px 10px;">
+            <span style="font-size:18px;color:#14162A;">←</span>
+            <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:16px;color:#14162A;">Đơn hàng của tôi</span>
+          </div>
+          <div style="display:flex;gap:4px;overflow-x:auto;padding:0 12px 12px;">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6">
+              <div onClick="{{ onTabClick }}" data-val="{{ t.value }}" style="flex-shrink:0;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:{{ t.bg }};color:{{ t.color }};">{{ t.label }}</div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="flex:1;overflow-y:auto;padding:14px 16px;">
+          <sc-for list="{{ orders }}" as="o" hint-placeholder-count="3">
+            <div onClick="{{ onOrderClick }}" data-val="{{ o.id }}" style="background:#fff;border-radius:14px;margin-bottom:12px;padding:14px;cursor:pointer;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                <span style="font-size:12px;font-weight:700;color:#14162A;">🏪 {{ o.shop }}</span>
+                <span style="font-size:11px;font-weight:800;color:{{ o.statusColor }};background:{{ o.statusBg }};padding:3px 9px;border-radius:99px;">{{ o.status }}</span>
+              </div>
+              <div style="display:flex;gap:10px;">
+                <div style="width:56px;height:56px;border-radius:8px;background:{{ o.bg }};display:flex;align-items:center;justify-content:center;font-size:24px;">{{ o.emoji }}</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12px;color:#3B4059;font-weight:600;line-height:1.35;">{{ o.name }}</div>
+                  <div style="font-size:11px;color:#9AA1B9;margin-top:3px;">x{{ o.qty }} · {{ o.date }}</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid #EEF0F7;">
+                <div style="font-size:13px;font-weight:800;color:#14162A;">Tổng: {{ o.total }}₫</div>
+                <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:12px;color:{{ o.actionColor }};background:{{ o.actionBg }};border:1.5px solid {{ o.actionBorder }};border-radius:8px;padding:7px 14px;cursor:pointer;">{{ o.actionLabel }}</button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border-bottom:1px solid #EEF0F7;padding:14px 16px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span onClick="{{ backToList }}" style="font-size:18px;color:#14162A;cursor:pointer;">←</span>
+            <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:15px;color:#14162A;">Đơn hàng #SH20479</span>
+          </div>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:16px;">
+          <div style="background:#EEF1FF;border-radius:12px;padding:14px;margin-bottom:16px;">
+            <div style="font-size:13px;font-weight:800;color:#2A3FD1;">📦 Đang giao hàng</div>
+            <div style="font-size:12px;color:#3B4059;margin-top:4px;">Dự kiến giao 03 Th08, 2026</div>
+          </div>
+
+          <div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;">
+            <sc-for list="{{ timeline }}" as="tl" hint-placeholder-count="5">
+              <div style="display:flex;gap:12px;">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                  <div style="width:14px;height:14px;border-radius:50%;background:{{ tl.dot }};flex-shrink:0;"></div>
+                  <sc-if value="{{ tl.showLine }}" hint-placeholder-val="{{ true }}">
+                    <div style="width:2px;flex:1;background:{{ tl.lineColor }};min-height:32px;"></div>
+                  </sc-if>
+                </div>
+                <div style="padding-bottom:20px;">
+                  <div style="font-size:12px;font-weight:700;color:{{ tl.textColor }};">{{ tl.label }}</div>
+                  <div style="font-size:11px;color:#9AA1B9;margin-top:2px;">{{ tl.time }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:700;color:#14162A;margin-bottom:8px;">Địa chỉ giao hàng</div>
+            <div style="font-size:12px;color:#3B4059;line-height:1.5;">Nguyễn Thị Lan · 090 123 4567<br/>123 Đường Nguyễn Huệ, Quận 1, TP.HCM</div>
+          </div>
+
+          <div style="background:#fff;border-radius:12px;padding:16px;">
+            <div style="display:flex;gap:10px;">
+              <div style="width:56px;height:56px;border-radius:8px;background:#FFF4E0;display:flex;align-items:center;justify-content:center;font-size:24px;">🔌</div>
+              <div style="flex:1;">
+                <div style="font-size:12px;color:#3B4059;font-weight:600;">Sạc nhanh 65W GaN 3 cổng</div>
+                <div style="font-size:11px;color:#9AA1B9;margin-top:3px;">x1 · Trắng</div>
+              </div>
+              <div style="font-size:13px;font-weight:800;color:#14162A;">349.000₫</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:#14162A;margin-top:14px;padding-top:14px;border-top:1px solid #EEF0F7;"><span>Tổng cộng</span><span style="color:#D6293E;">2.150.000₫</span></div>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </x-import>
+  </sc-if>
+
+  <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ false }}">
+  <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="{{ 1360 }}" height="{{ 860 }}" url="shophub.vn/orders" hint-size="1360,860">
+    <div style="display:flex;flex-direction:column;height:100%;background:#F7F8FC;font-family:'Manrope',sans-serif;overflow-y:auto;">
+      <div style="background:#fff;border-bottom:1px solid #EEF0F7;padding:20px 40px;">
+        <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:#14162A;margin-bottom:12px;">Đơn hàng của tôi</div>
+        <div style="display:flex;gap:4px;">
+          <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6">
+            <div onClick="{{ onTabClick }}" data-val="{{ t.value }}" style="padding:9px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;background:{{ t.bg }};color:{{ t.color }};">{{ t.label }}</div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="padding:24px 40px 40px;display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:start;">
+        <div>
+          <sc-for list="{{ orders }}" as="o" hint-placeholder-count="3">
+            <div style="background:#fff;border-radius:14px;margin-bottom:14px;padding:18px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                <span style="font-size:13px;font-weight:700;color:#14162A;">🏪 {{ o.shop }}</span>
+                <span style="font-size:11px;font-weight:800;color:{{ o.statusColor }};background:{{ o.statusBg }};padding:4px 10px;border-radius:99px;">{{ o.status }}</span>
+              </div>
+              <div style="display:flex;gap:12px;">
+                <div style="width:64px;height:64px;border-radius:9px;background:{{ o.bg }};display:flex;align-items:center;justify-content:center;font-size:28px;">{{ o.emoji }}</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:13px;color:#3B4059;font-weight:600;">{{ o.name }}</div>
+                  <div style="font-size:12px;color:#9AA1B9;margin-top:3px;">x{{ o.qty }} · {{ o.date }}</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid #EEF0F7;">
+                <div style="font-size:14px;font-weight:800;color:#14162A;">Tổng: {{ o.total }}₫</div>
+                <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:12px;color:{{ o.actionColor }};background:{{ o.actionBg }};border:1.5px solid {{ o.actionBorder }};border-radius:8px;padding:8px 16px;cursor:pointer;">{{ o.actionLabel }}</button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:20px;">
+          <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:14px;">Chi tiết đơn hàng #SH20479</div>
+          <div style="background:#EEF1FF;border-radius:10px;padding:12px;margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:800;color:#2A3FD1;">📦 Đang giao hàng</div>
+          </div>
+          <sc-for list="{{ timeline }}" as="tl" hint-placeholder-count="5">
+            <div style="display:flex;gap:12px;">
+              <div style="display:flex;flex-direction:column;align-items:center;">
+                <div style="width:12px;height:12px;border-radius:50%;background:{{ tl.dot }};flex-shrink:0;"></div>
+                <sc-if value="{{ tl.showLine }}" hint-placeholder-val="{{ true }}"><div style="width:2px;flex:1;background:{{ tl.lineColor }};min-height:26px;"></div></sc-if>
+              </div>
+              <div style="padding-bottom:16px;">
+                <div style="font-size:12px;font-weight:700;color:{{ tl.textColor }};">{{ tl.label }}</div>
+                <div style="font-size:11px;color:#9AA1B9;margin-top:2px;">{{ tl.time }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </x-import>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { activeTab: 'all', view: 'list', device: 'mobile' };
+  onTabClick = (e) => this.setState({ activeTab: e.currentTarget.dataset.val });
+  onOrderClick = () => this.setState({ view: 'detail' });
+  backToList = () => this.setState({ view: 'list' });
+  onDeviceClick = (e) => this.setState({ device: e.currentTarget.dataset.val });
+
+  renderVals() {
+    const tabDefs = ['all', 'pay', 'ship', 'receive', 'done', 'cancel'];
+    const tabLabels = { all: 'Tất cả', pay: 'Chờ thanh toán', ship: 'Vận chuyển', receive: 'Chờ giao', done: 'Hoàn thành', cancel: 'Đã hủy' };
+    const tabs = tabDefs.map(v => ({
+      value: v, label: tabLabels[v],
+      bg: this.state.activeTab === v ? '#3A56E8' : '#EEF0F7',
+      color: this.state.activeTab === v ? '#fff' : '#6E7591',
+    }));
+    const orders = [
+      { id: 'a', shop: 'TechZone Store', status: 'Đang giao', statusColor: '#2563C7', statusBg: '#EAF1FD', emoji: '🔌', bg: '#FFF4E0', name: 'Sạc nhanh 65W GaN 3 cổng', qty: 1, date: '31/07/2026', total: '2.150.000', actionLabel: 'Theo dõi', actionColor: '#fff', actionBg: '#3A56E8', actionBorder: '#3A56E8' },
+      { id: 'b', shop: 'Audio House Official', status: 'Đã giao', statusColor: '#1A9E5C', statusBg: '#E6F7EE', emoji: '🎧', bg: '#EEF1FF', name: 'Tai nghe Bluetooth chống ồn ShopHub X1', qty: 1, date: '28/07/2026', total: '399.000', actionLabel: 'Đánh giá', actionColor: '#2A3FD1', actionBg: '#fff', actionBorder: '#3A56E8' },
+      { id: 'c', shop: 'Fashion Corner', status: 'Đã hủy', statusColor: '#D6293E', statusBg: '#FDEAEC', emoji: '👕', bg: '#FDEAEC', name: 'Áo thun cotton form rộng unisex', qty: 2, date: '20/07/2026', total: '258.000', actionLabel: 'Mua lại', actionColor: '#3B4059', actionBg: '#EEF0F7', actionBorder: '#EEF0F7' },
+    ];
+    const timeline = [
+      { label: 'Đơn hàng đã đặt', time: '31/07/2026, 09:14', dot: '#3A56E8', lineColor: '#3A56E8', textColor: '#14162A', showLine: true },
+      { label: 'Đã xác nhận & chuẩn bị hàng', time: '31/07/2026, 10:02', dot: '#3A56E8', lineColor: '#3A56E8', textColor: '#14162A', showLine: true },
+      { label: 'Đã giao cho đơn vị vận chuyển', time: '31/07/2026, 15:40', dot: '#3A56E8', lineColor: '#3A56E8', textColor: '#14162A', showLine: true },
+      { label: 'Đang giao hàng', time: '01/08/2026, 08:20', dot: '#3A56E8', lineColor: '#DDE1EC', textColor: '#14162A', showLine: true },
+      { label: 'Giao hàng thành công', time: 'Dự kiến 03/08/2026', dot: '#DDE1EC', lineColor: 'transparent', textColor: '#9AA1B9', showLine: false },
+    ];
+    const deviceOptions = ['mobile', 'desktop'].map(v => ({
+      value: v, label: v === 'mobile' ? '📱 Mobile' : '💻 Website',
+      bg: this.state.device === v ? '#3A56E8' : 'transparent',
+      color: this.state.device === v ? '#fff' : '#6E7591',
+    }));
+    return {
+      tabs, orders, timeline, deviceOptions,
+      isList: this.state.view === 'list', isDetail: this.state.view === 'detail',
+      isMobile: this.state.device === 'mobile', isDesktop: this.state.device === 'desktop',
+      onTabClick: this.onTabClick, onOrderClick: this.onOrderClick, backToList: this.backToList, onDeviceClick: this.onDeviceClick,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

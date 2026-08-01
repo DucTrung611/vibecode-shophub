@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#EEF0F7;font-family:'Manrope',sans-serif;}
+  a{color:#2A3FD1;}
+  a:hover{color:#1F30A8;}
+</style>
+</helmet>
+
+<div style="display:flex;width:1440px;min-height:900px;background:#F7F8FC;">
+
+  <div style="width:236px;flex-shrink:0;background:#0B0F24;padding:20px 16px;display:flex;flex-direction:column;gap:4px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;padding:0 6px;">
+      <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#5C79F5,#3A56E8);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;color:#fff;font-size:15px;">S</div>
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:16px;color:#fff;">ShopHub <span style="font-weight:600;color:#8FA3FF;font-size:11px;">Admin</span></div>
+    </div>
+    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;background:{{ n.bg }};color:{{ n.color }};font-size:13px;font-weight:700;cursor:pointer;">
+        <span style="font-size:15px;">{{ n.icon }}</span>{{ n.label }}
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
+    <div style="height:64px;background:#fff;border-bottom:1px solid #DDE1EC;display:flex;align-items:center;justify-content:space-between;padding:0 28px;">
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:#14162A;">{{ headerTitle }}</div>
+      <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ goList }}" style="font-size:13px;font-weight:700;color:#2A3FD1;cursor:pointer;">← Quay lại danh sách</div>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:1;overflow-y:auto;padding:24px 28px 40px;">
+        <div style="display:flex;gap:4px;margin-bottom:16px;background:#fff;border:1px solid #DDE1EC;border-radius:10px;padding:4px;width:fit-content;">
+          <sc-for list="{{ statusTabs }}" as="t" hint-placeholder-count="3">
+            <div style="padding:8px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;background:{{ t.bg }};color:{{ t.color }};">{{ t.label }} <span style="opacity:0.7;">({{ t.count }})</span></div>
+          </sc-for>
+        </div>
+
+        <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:2.2fr 1.2fr 1fr 1.2fr 1fr 1fr;padding:12px 20px;background:#F7F8FC;">
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">SẢN PHẨM</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">GIAN HÀNG</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">DANH MỤC</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">LÝ DO GẮN CỜ</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;">TRẠNG THÁI</div>
+            <div style="font-size:11px;font-weight:700;color:#6E7591;text-align:right;">THAO TÁC</div>
+          </div>
+          <sc-for list="{{ products }}" as="p" hint-placeholder-count="6">
+            <div style="display:grid;grid-template-columns:2.2fr 1.2fr 1fr 1.2fr 1fr 1fr;padding:14px 20px;border-top:1px solid #EEF0F7;align-items:center;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:36px;height:36px;border-radius:9px;background:{{ p.bg }};display:flex;align-items:center;justify-content:center;font-size:16px;">{{ p.emoji }}</div>
+                <div style="font-size:12px;font-weight:700;color:#14162A;">{{ p.name }}</div>
+              </div>
+              <div style="font-size:12px;color:#3B4059;">{{ p.shop }}</div>
+              <div style="font-size:12px;color:#3B4059;">{{ p.category }}</div>
+              <div style="font-size:12px;color:#D6293E;font-weight:600;">{{ p.reason }}</div>
+              <div><span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;background:{{ p.statusBg }};color:{{ p.statusColor }};">{{ p.status }}</span></div>
+              <div onClick="{{ goDetail }}" style="text-align:right;font-size:12px;font-weight:700;color:#2A3FD1;cursor:pointer;">Xem xét</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;overflow-y:auto;padding:24px 28px 40px;display:grid;grid-template-columns:1fr 340px;gap:20px;">
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="display:flex;gap:16px;">
+              <div style="width:96px;height:96px;border-radius:12px;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font-size:40px;flex-shrink:0;">🎧</div>
+              <div style="flex:1;">
+                <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:15px;color:#14162A;">Tai nghe Bluetooth "Chính hãng Apple" giá rẻ</div>
+                <div style="font-size:12px;color:#9AA1B9;margin-top:4px;">Gian hàng: TechDeal 24H · Danh mục: Điện tử &gt; Âm thanh</div>
+                <div style="font-size:13px;font-weight:800;color:#14162A;margin-top:8px;">89.000₫</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#FDEAEC;border-left:4px solid #D6293E;border-radius:10px;padding:14px 16px;">
+            <div style="font-size:12px;font-weight:800;color:#D6293E;margin-bottom:4px;">⚠ Lý do gắn cờ: Nghi ngờ vi phạm thương hiệu</div>
+            <div style="font-size:12px;color:#7A1E29;line-height:1.5;">Tiêu đề sản phẩm sử dụng tên thương hiệu "Apple" không có giấy phép, có thể gây hiểu nhầm về nguồn gốc sản phẩm.</div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:14px;">Mô tả sản phẩm (do người bán cung cấp)</div>
+            <div style="font-size:12px;color:#3B4059;line-height:1.6;">Tai nghe bluetooth chính hãng Apple, chống ồn, pin trâu, giá tốt nhất thị trường. Hàng có sẵn, giao ngay trong 24h...</div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:14px;">Lịch sử kiểm duyệt</div>
+            <sc-for list="{{ history }}" as="h" hint-placeholder-count="2">
+              <div style="display:flex;gap:10px;padding:8px 0;">
+                <div style="width:6px;height:6px;border-radius:50%;background:#9AA1B9;margin-top:6px;flex-shrink:0;"></div>
+                <div>
+                  <div style="font-size:12px;color:#3B4059;">{{ h.text }}</div>
+                  <div style="font-size:11px;color:#9AA1B9;">{{ h.time }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:20px 24px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:14px;">Quyết định kiểm duyệt</div>
+            <div style="margin-bottom:14px;">
+              <label style="font-size:12px;font-weight:700;color:#3B4059;display:block;margin-bottom:6px;">Ghi chú cho người bán</label>
+              <div style="padding:10px 14px;border-radius:8px;border:1.5px solid #DDE1EC;font-size:12px;color:#9AA1B9;min-height:60px;">Vui lòng chỉnh sửa tiêu đề, không sử dụng tên thương hiệu chưa xác thực...</div>
+            </div>
+            <button style="width:100%;box-sizing:border-box;font-family:'Manrope',sans-serif;font-weight:700;font-size:13px;color:#fff;background:#1A9E5C;border:none;border-radius:9px;padding:11px;cursor:pointer;margin-bottom:8px;">✓ Duyệt sản phẩm</button>
+            <button style="width:100%;box-sizing:border-box;font-family:'Manrope',sans-serif;font-weight:700;font-size:13px;color:#D97706;background:#FFF4E0;border:none;border-radius:9px;padding:11px;cursor:pointer;margin-bottom:8px;">✎ Yêu cầu chỉnh sửa</button>
+            <button style="width:100%;box-sizing:border-box;font-family:'Manrope',sans-serif;font-weight:700;font-size:13px;color:#D6293E;background:#FDEAEC;border:none;border-radius:9px;padding:11px;cursor:pointer;">✕ Gỡ sản phẩm</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { view: 'list' };
+  goDetail = () => this.setState({ view: 'detail' });
+  goList = () => this.setState({ view: 'list' });
+
+  renderVals() {
+    const navItems = [
+      { icon: '📊', label: 'Tổng quan', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '👥', label: 'Người dùng', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '🏪', label: 'Duyệt gian hàng', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '📦', label: 'Kiểm duyệt sản phẩm', bg: '#3A56E8', color: '#fff' },
+      { icon: '🗂', label: 'Danh mục', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '📈', label: 'Báo cáo & phân tích', bg: 'transparent', color: '#C3C9DB' },
+    ];
+    const statusTabs = [
+      { label: 'Chờ kiểm duyệt', count: 118, bg: '#3A56E8', color: '#fff' },
+      { label: 'Đã duyệt', count: 84210, bg: 'transparent', color: '#6E7591' },
+      { label: 'Đã gỡ', count: 342, bg: 'transparent', color: '#6E7591' },
+    ];
+    const products = [
+      { emoji: '🎧', bg: '#FDEAEC', name: 'Tai nghe Bluetooth "Chính hãng Apple" giá rẻ', shop: 'TechDeal 24H', category: 'Âm thanh', reason: 'Vi phạm thương hiệu', status: 'Chờ duyệt', statusBg: '#FFF4E0', statusColor: '#D97706' },
+      { emoji: '💊', bg: '#FDEAEC', name: 'Viên uống giảm cân siêu tốc 7 ngày', shop: 'HealthPlus Store', category: 'Sức khỏe', reason: 'Nghi ngờ sai công dụng', status: 'Chờ duyệt', statusBg: '#FFF4E0', statusColor: '#D97706' },
+      { emoji: '👜', bg: '#FFF4E0', name: 'Túi xách "Louis Vuitton" siêu cấp', shop: 'LuxBags VN', category: 'Thời trang', reason: 'Nghi hàng giả', status: 'Chờ duyệt', statusBg: '#FFF4E0', statusColor: '#D97706' },
+      { emoji: '📱', bg: '#EEF1FF', name: 'iPhone 15 Pro Max like new 99%', shop: 'MobileWorld', category: 'Điện tử', reason: 'Thiếu giấy tờ nguồn gốc', status: 'Chờ duyệt', statusBg: '#FFF4E0', statusColor: '#D97706' },
+      { emoji: '🔫', bg: '#FDEAEC', name: 'Súng đồ chơi bắn đạn nhựa cứng', shop: 'ToyZone', category: 'Đồ chơi', reason: 'Sản phẩm bị hạn chế', status: 'Chờ duyệt', statusBg: '#FFF4E0', statusColor: '#D97706' },
+      { emoji: '🧴', bg: '#E6F7EE', name: 'Kem trị mụn cấp tốc không rõ nguồn gốc', shop: 'BeautySecret', category: 'Làm đẹp', reason: 'Thiếu công bố mỹ phẩm', status: 'Chờ duyệt', statusBg: '#FFF4E0', statusColor: '#D97706' },
+    ];
+    const history = [
+      { text: 'Hệ thống tự động gắn cờ do phát hiện từ khóa thương hiệu trong tiêu đề.', time: '01/08/2026, 06:02' },
+      { text: 'Sản phẩm được người bán đăng tải.', time: '31/07/2026, 21:40' },
+    ];
+    return {
+      navItems, statusTabs, products, history,
+      isList: this.state.view === 'list', isDetail: this.state.view === 'detail',
+      headerTitle: this.state.view === 'list' ? 'Kiểm duyệt sản phẩm' : 'Xem xét sản phẩm',
+      goDetail: this.goDetail, goList: this.goList,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

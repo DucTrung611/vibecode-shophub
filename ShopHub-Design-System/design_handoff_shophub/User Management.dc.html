@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#EEF0F7;font-family:'Manrope',sans-serif;}
+  a{color:#2A3FD1;}
+  a:hover{color:#1F30A8;}
+</style>
+</helmet>
+
+<div style="display:flex;width:1440px;min-height:900px;background:#F7F8FC;">
+
+  <div style="width:236px;flex-shrink:0;background:#0B0F24;padding:20px 16px;display:flex;flex-direction:column;gap:4px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;padding:0 6px;">
+      <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#5C79F5,#3A56E8);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;color:#fff;font-size:15px;">S</div>
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:16px;color:#fff;">ShopHub <span style="font-weight:600;color:#8FA3FF;font-size:11px;">Admin</span></div>
+    </div>
+    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;background:{{ n.bg }};color:{{ n.color }};font-size:13px;font-weight:700;cursor:pointer;">
+        <span style="font-size:15px;">{{ n.icon }}</span>{{ n.label }}
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
+    <div style="height:64px;background:#fff;border-bottom:1px solid #DDE1EC;display:flex;align-items:center;justify-content:space-between;padding:0 28px;">
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:#14162A;">Quản lý người dùng</div>
+      <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:13px;color:#fff;background:#3A56E8;border:none;border-radius:9px;padding:10px 18px;cursor:pointer;">+ Thêm quản trị viên</button>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding:24px 28px 40px;">
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:18px 20px;">
+            <div style="font-size:12px;color:#6E7591;font-weight:600;">{{ k.label }}</div>
+            <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#14162A;margin-top:8px;">{{ k.value }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="display:flex;gap:4px;background:#fff;border:1px solid #DDE1EC;border-radius:10px;padding:4px;">
+          <sc-for list="{{ roleTabs }}" as="t" hint-placeholder-count="4">
+            <div onClick="{{ onTabClick }}" data-val="{{ t.value }}" style="padding:8px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;background:{{ t.bg }};color:{{ t.color }};">{{ t.label }}</div>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #DDE1EC;border-radius:9px;padding:9px 14px;width:280px;">
+          <span style="color:#9AA1B9;">🔍</span><span style="color:#9AA1B9;font-size:13px;">Tìm theo tên hoặc email...</span>
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;overflow:hidden;">
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;padding:12px 20px;background:#F7F8FC;">
+          <div style="font-size:11px;font-weight:700;color:#6E7591;">NGƯỜI DÙNG</div>
+          <div style="font-size:11px;font-weight:700;color:#6E7591;">VAI TRÒ</div>
+          <div style="font-size:11px;font-weight:700;color:#6E7591;">NGÀY THAM GIA</div>
+          <div style="font-size:11px;font-weight:700;color:#6E7591;">ĐƠN HÀNG</div>
+          <div style="font-size:11px;font-weight:700;color:#6E7591;">TRẠNG THÁI</div>
+          <div style="font-size:11px;font-weight:700;color:#6E7591;text-align:right;">THAO TÁC</div>
+        </div>
+        <sc-for list="{{ users }}" as="u" hint-placeholder-count="7">
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;padding:14px 20px;border-top:1px solid #EEF0F7;align-items:center;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:34px;height:34px;border-radius:50%;background:{{ u.avatarBg }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:{{ u.avatarColor }};">{{ u.initial }}</div>
+              <div>
+                <div style="font-size:12px;font-weight:700;color:#14162A;">{{ u.name }}</div>
+                <div style="font-size:11px;color:#9AA1B9;">{{ u.email }}</div>
+              </div>
+            </div>
+            <div><span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;background:{{ u.roleBg }};color:{{ u.roleColor }};">{{ u.role }}</span></div>
+            <div style="font-size:12px;color:#6E7591;">{{ u.joined }}</div>
+            <div style="font-size:12px;color:#3B4059;">{{ u.orders }}</div>
+            <div><span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;background:{{ u.statusBg }};color:{{ u.statusColor }};">{{ u.status }}</span></div>
+            <div style="display:flex;gap:8px;justify-content:flex-end;">
+              <div style="font-size:12px;font-weight:700;color:#2A3FD1;cursor:pointer;">Xem</div>
+              <div style="font-size:12px;font-weight:700;color:{{ u.actionColor }};cursor:pointer;">{{ u.actionLabel }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+        <div style="font-size:12px;color:#6E7591;">Hiển thị 1–7 trong 284.612 người dùng</div>
+        <div style="display:flex;gap:6px;">
+          <div style="width:30px;height:30px;border-radius:8px;border:1px solid #DDE1EC;display:flex;align-items:center;justify-content:center;color:#9AA1B9;font-size:12px;">‹</div>
+          <div style="width:30px;height:30px;border-radius:8px;background:#3A56E8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">1</div>
+          <div style="width:30px;height:30px;border-radius:8px;border:1px solid #DDE1EC;display:flex;align-items:center;justify-content:center;color:#3B4059;font-size:12px;font-weight:600;">2</div>
+          <div style="width:30px;height:30px;border-radius:8px;border:1px solid #DDE1EC;display:flex;align-items:center;justify-content:center;color:#9AA1B9;font-size:12px;">›</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'all' };
+  onTabClick = (e) => this.setState({ tab: e.currentTarget.dataset.val });
+
+  renderVals() {
+    const navItems = [
+      { icon: '📊', label: 'Tổng quan', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '👥', label: 'Người dùng', bg: '#3A56E8', color: '#fff' },
+      { icon: '🏪', label: 'Duyệt gian hàng', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '📦', label: 'Kiểm duyệt sản phẩm', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '🗂', label: 'Danh mục', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '📈', label: 'Báo cáo & phân tích', bg: 'transparent', color: '#C3C9DB' },
+    ];
+    const kpis = [
+      { label: 'Tổng người dùng', value: '284.612' },
+      { label: 'Người mua', value: '271.204' },
+      { label: 'Người bán', value: '13.286' },
+      { label: 'Quản trị viên', value: '122' },
+    ];
+    const roleTabDefs = [
+      { value: 'all', label: 'Tất cả' },
+      { value: 'buyer', label: 'Người mua' },
+      { value: 'seller', label: 'Người bán' },
+      { value: 'admin', label: 'Quản trị viên' },
+    ];
+    const roleTabs = roleTabDefs.map(t => ({
+      ...t, bg: this.state.tab === t.value ? '#3A56E8' : 'transparent', color: this.state.tab === t.value ? '#fff' : '#6E7591',
+    }));
+    const users = [
+      { initial: 'L', avatarBg: '#EEF1FF', avatarColor: '#2A3FD1', name: 'Nguyễn Thị Lan', email: 'lan.nguyen@gmail.com', role: 'Người mua', roleBg: '#EAF1FD', roleColor: '#2563C7', joined: '12/03/2024', orders: '24', status: 'Hoạt động', statusBg: '#E6F7EE', statusColor: '#1A9E5C', actionLabel: 'Khóa', actionColor: '#D6293E' },
+      { initial: 'A', avatarBg: '#FFF4E0', avatarColor: '#D97706', name: 'Audio House Official', email: 'contact@audiohouse.vn', role: 'Người bán', roleBg: '#FFF4E0', roleColor: '#D97706', joined: '05/06/2023', orders: '2.284', status: 'Hoạt động', statusBg: '#E6F7EE', statusColor: '#1A9E5C', actionLabel: 'Khóa', actionColor: '#D6293E' },
+      { initial: 'B', avatarBg: '#EEF1FF', avatarColor: '#2A3FD1', name: 'Trần Văn Bình', email: 'binh.tran@gmail.com', role: 'Người mua', roleBg: '#EAF1FD', roleColor: '#2563C7', joined: '20/01/2025', orders: '8', status: 'Bị khóa', statusBg: '#FDEAEC', statusColor: '#D6293E', actionLabel: 'Mở khóa', actionColor: '#1A9E5C' },
+      { initial: 'Q', avatarBg: '#FDEAEC', avatarColor: '#D6293E', name: 'Quản trị viên Nội dung', email: 'admin.content@shophub.vn', role: 'Quản trị viên', roleBg: '#FDEAEC', roleColor: '#D6293E', joined: '10/11/2022', orders: '—', status: 'Hoạt động', statusBg: '#E6F7EE', statusColor: '#1A9E5C', actionLabel: 'Khóa', actionColor: '#D6293E' },
+      { initial: 'F', avatarBg: '#FFF4E0', avatarColor: '#D97706', name: 'Fashion Corner VN', email: 'hello@fashioncorner.vn', role: 'Người bán', roleBg: '#FFF4E0', roleColor: '#D97706', joined: '01/08/2026', orders: '0', status: 'Chờ duyệt', statusBg: '#FFF4E0', statusColor: '#D97706', actionLabel: 'Duyệt', actionColor: '#2A3FD1' },
+      { initial: 'H', avatarBg: '#EEF1FF', avatarColor: '#2A3FD1', name: 'Lê Thị Hoa', email: 'hoa.le@gmail.com', role: 'Người mua', roleBg: '#EAF1FD', roleColor: '#2563C7', joined: '15/09/2024', orders: '41', status: 'Hoạt động', statusBg: '#E6F7EE', statusColor: '#1A9E5C', actionLabel: 'Khóa', actionColor: '#D6293E' },
+      { initial: 'D', avatarBg: '#EEF1FF', avatarColor: '#2A3FD1', name: 'Đỗ Anh Khoa', email: 'khoa.do@gmail.com', role: 'Người mua', roleBg: '#EAF1FD', roleColor: '#2563C7', joined: '28/02/2025', orders: '3', status: 'Hoạt động', statusBg: '#E6F7EE', statusColor: '#1A9E5C', actionLabel: 'Khóa', actionColor: '#D6293E' },
+    ];
+    return { navItems, kpis, roleTabs, users, onTabClick: this.onTabClick };
+  }
+}
+
+</script>
+</body>
+</html>

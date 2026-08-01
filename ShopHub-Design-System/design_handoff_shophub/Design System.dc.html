@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#F7F8FC;font-family:'Manrope',sans-serif;}
+  ::selection{background:#3A56E8;color:#fff;}
+  a{color:#2A3FD1;}
+  a:hover{color:#1F30A8;}
+</style>
+</helmet>
+
+<div style="display:flex;min-height:100vh;">
+  <nav style="width:232px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;background:#101A5C;padding:28px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
+      <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#5C79F5,#3A56E8);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;color:#fff;font-size:16px;">S</div>
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:#fff;letter-spacing:-0.02em;">ShopHub</div>
+    </div>
+    <div style="font-family:'Sora',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;color:#8FA3FF;text-transform:uppercase;margin:8px 0 4px 4px;">Design System</div>
+    <a href="#brand" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Thương hiệu</a>
+    <a href="#colors" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Bảng màu</a>
+    <a href="#type" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Typography</a>
+    <a href="#spacing" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Spacing &amp; Grid</a>
+    <a href="#breakpoints" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Breakpoints</a>
+    <div style="height:1px;background:#26305C;margin:12px 4px;"></div>
+    <div style="font-family:'Sora',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;color:#8FA3FF;text-transform:uppercase;margin:4px 0 4px 4px;">Components</div>
+    <a href="#buttons" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Buttons</a>
+    <a href="#inputs" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Input fields</a>
+    <a href="#badges" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Badges</a>
+    <a href="#cards" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Cards</a>
+    <a href="#tabs" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Tabs</a>
+    <a href="#table" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Table</a>
+    <a href="#pagination" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Pagination &amp; Breadcrumbs</a>
+    <a href="#modal" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Modal</a>
+    <a href="#toast" style="padding:8px 10px;border-radius:8px;color:#C3C9DB;text-decoration:none;font-size:14px;font-weight:600;">Toast / Notification</a>
+  </nav>
+
+  <main style="flex:1;min-width:0;padding:48px 56px 120px;max-width:1180px;">
+
+    <section id="brand" style="margin-bottom:64px;">
+      <div style="display:inline-block;background:#DCE3FF;color:#1F30A8;font-family:'Sora',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.06em;padding:5px 12px;border-radius:99px;margin-bottom:16px;">HỆ THỐNG THIẾT KẾ</div>
+      <h1 style="font-family:'Sora',sans-serif;font-size:44px;font-weight:800;letter-spacing:-0.02em;color:#14162A;margin:0 0 12px;">ShopHub Design System</h1>
+      <p style="font-size:17px;line-height:1.6;color:#545A75;max-width:640px;margin:0 0 32px;">Nền tảng thị trường đa gian hàng — đáng tin cậy, chuyên nghiệp, và nhất quán trên trải nghiệm Người mua, Người bán và Quản trị viên.</p>
+      <div style="display:flex;gap:16px;align-items:center;background:#fff;border:1px solid #DDE1EC;border-radius:16px;padding:28px 32px;">
+        <div style="width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#5C79F5,#2A3FD1);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;color:#fff;font-size:30px;flex-shrink:0;">S</div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:26px;color:#14162A;letter-spacing:-0.01em;">ShopHub</div>
+          <div style="font-size:13px;color:#6E7591;margin-top:2px;">Wordmark: Sora Extrabold · Mark: ô vuông bo góc chứa chữ "S" dạng gradient thương hiệu</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="colors" style="margin-bottom:64px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#14162A;margin:0 0 6px;">Bảng màu</h2>
+      <p style="font-size:14px;color:#6E7591;margin:0 0 24px;">Primary dùng cho điều hướng &amp; thương hiệu. Accent (Amber) dành riêng cho hành động mua hàng để tạo tương phản mạnh và cảm giác khẩn cấp.</p>
+
+      <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#3B4059;margin-bottom:8px;">Primary — Hub Blue</div>
+      <sc-for list="{{ primaryColors }}" as="c" hint-placeholder-count="10">
+        <div style="display:inline-flex;flex-direction:column;width:96px;margin:0 8px 24px 0;vertical-align:top;">
+          <div style="height:64px;border-radius:10px;background:{{ c.hex }};border:1px solid rgba(0,0,0,0.06);"></div>
+          <div style="font-size:12px;font-weight:700;color:#14162A;margin-top:6px;">{{ c.label }}</div>
+          <div style="font-size:11px;color:#9AA1B9;font-family:monospace;">{{ c.hex }}</div>
+        </div>
+      </sc-for>
+
+      <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#3B4059;margin-bottom:8px;">Accent — Signal Amber (CTA)</div>
+      <sc-for list="{{ accentColors }}" as="c" hint-placeholder-count="5">
+        <div style="display:inline-flex;flex-direction:column;width:96px;margin:0 8px 24px 0;vertical-align:top;">
+          <div style="height:64px;border-radius:10px;background:{{ c.hex }};border:1px solid rgba(0,0,0,0.06);"></div>
+          <div style="font-size:12px;font-weight:700;color:#14162A;margin-top:6px;">{{ c.label }}</div>
+          <div style="font-size:11px;color:#9AA1B9;font-family:monospace;">{{ c.hex }}</div>
+        </div>
+      </sc-for>
+
+      <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#3B4059;margin-bottom:8px;">Neutrals</div>
+      <sc-for list="{{ neutralColors }}" as="c" hint-placeholder-count="10">
+        <div style="display:inline-flex;flex-direction:column;width:96px;margin:0 8px 24px 0;vertical-align:top;">
+          <div style="height:64px;border-radius:10px;background:{{ c.hex }};border:1px solid rgba(0,0,0,0.08);"></div>
+          <div style="font-size:12px;font-weight:700;color:#14162A;margin-top:6px;">{{ c.label }}</div>
+          <div style="font-size:11px;color:#9AA1B9;font-family:monospace;">{{ c.hex }}</div>
+        </div>
+      </sc-for>
+
+      <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#3B4059;margin:16px 0 8px;">Semantic</div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <sc-for list="{{ semanticColors }}" as="c" hint-placeholder-count="4">
+          <div style="width:220px;border-radius:12px;border:1px solid #DDE1EC;overflow:hidden;background:#fff;">
+            <div style="height:8px;background:{{ c.hex }};"></div>
+            <div style="padding:12px 14px;">
+              <div style="font-size:13px;font-weight:700;color:#14162A;">{{ c.label }}</div>
+              <div style="font-size:11px;color:#9AA1B9;font-family:monospace;margin-top:2px;">{{ c.hex }}</div>
+              <div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:700;background:{{ c.tint }};color:{{ c.hex }};">{{ c.usage }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section id="type" style="margin-bottom:64px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#14162A;margin:0 0 6px;">Typography</h2>
+      <p style="font-size:14px;color:#6E7591;margin:0 0 24px;">Sora (display, đậm chất thương hiệu) cho tiêu đề · Manrope (dễ đọc, trung tính) cho nội dung.</p>
+      <div style="background:#fff;border:1px solid #DDE1EC;border-radius:16px;padding:8px 32px;">
+        <sc-for list="{{ typeScale }}" as="t" hint-placeholder-count="8">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:20px 0;border-bottom:1px solid #EEF0F7;">
+            <div style="font-family:{{ t.font }};font-weight:{{ t.weight }};font-size:{{ t.size }};line-height:{{ t.lineHeight }};color:#14162A;flex:1;">{{ t.sample }}</div>
+            <div style="text-align:right;flex-shrink:0;">
+              <div style="font-size:13px;font-weight:700;color:#14162A;">{{ t.name }}</div>
+              <div style="font-size:11px;color:#9AA1B9;font-family:monospace;">{{ t.spec }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section id="spacing" style="margin-bottom:64px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#14162A;margin:0 0 6px;">Spacing &amp; Grid</h2>
+      <p style="font-size:14px;color:#6E7591;margin:0 0 24px;">Thang đo 4px. Bố cục: container 1200px, grid 12 cột, gutter 24px (desktop) / 16px (mobile).</p>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;">
+        <div style="background:#fff;border:1px solid #DDE1EC;border-radius:16px;padding:24px 28px;flex:1;min-width:320px;">
+          <sc-for list="{{ spacingScale }}" as="s" hint-placeholder-count="9">
+            <div style="display:flex;align-items:center;gap:16px;padding:8px 0;">
+              <div style="width:48px;font-size:12px;font-family:monospace;color:#6E7591;">{{ s.token }}</div>
+              <div style="height:14px;border-radius:4px;background:#3A56E8;width:{{ s.px }};"></div>
+              <div style="font-size:12px;color:#9AA1B9;">{{ s.pxLabel }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid #DDE1EC;border-radius:16px;padding:24px 28px;flex:1;min-width:320px;">
+          <div style="font-size:13px;font-weight:700;color:#14162A;margin-bottom:12px;">Container &amp; Radius</div>
+          <div style="font-size:13px;color:#3B4059;line-height:2;">
+            Container max-width: <strong>1200px</strong><br/>
+            Grid: <strong>12 cột</strong>, gutter 24px<br/>
+            Radius nhỏ (input, badge): <strong>8px</strong><br/>
+            Radius vừa (button, card nhỏ): <strong>10px</strong><br/>
+            Radius lớn (card, modal): <strong>16px</strong><br/>
+            Shadow chuẩn: <span style="font-family:monospace;font-size:12px;">0 4px 16px rgba(16,26,92,0.08)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="breakpoints" style="margin-bottom:64px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#14162A;margin:0 0 6px;">Responsive Breakpoints</h2>
+      <p style="font-size:14px;color:#6E7591;margin:0 0 24px;">Mobile-first cho trải nghiệm Người mua · Desktop-first cho Seller/Admin Center.</p>
+      <div style="background:#fff;border:1px solid #DDE1EC;border-radius:16px;overflow:hidden;">
+        <sc-for list="{{ breakpoints }}" as="b" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:20px;padding:16px 24px;border-bottom:1px solid #EEF0F7;">
+            <div style="width:110px;font-family:'Sora',sans-serif;font-weight:700;font-size:14px;color:#14162A;">{{ b.name }}</div>
+            <div style="width:140px;font-size:13px;color:#6E7591;font-family:monospace;">{{ b.range }}</div>
+            <div style="flex:1;font-size:13px;color:#3B4059;">{{ b.note }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section id="buttons" style="margin-bottom:64px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#14162A;margin:0 0 6px;">Buttons</h2>
+      <p style="font-size:14px;color:#6E7591;margin:0 0 24px;">Primary = hành động chính (Mua ngay). Amber = mua hàng khẩn cấp/flash sale. Ghost/Outline = phụ.</p>
+      <div style="background:#fff;border:1px solid #DDE1EC;border-radius:16px;padding:28px 32px;display:flex;flex-direction:column;gap:20px;">
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+          <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#fff;background:#3A56E8;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;" style-hover="background:#2A3FD1;">Primary</button>
+          <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#fff;background:#FF8A1E;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;" style-hover="background:#E86F00;">Mua ngay</button>
+          <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#2A3FD1;background:#fff;border:1.5px solid #3A56E8;border-radius:10px;padding:11px 22px;cursor:pointer;" style-hover="background:#EEF1FF;">Outline</button>
+          <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#3B4059;background:transparent;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;" style-hover="background:#EEF0F7;">Ghost</button>
+          <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#D6293E;background:#fff;border:1.5px solid #D6293E;border-radius:10px;padding:11px 22px;cursor:pointer;" style-hover="background:#FDEAEC;">Xóa / Nguy hiểm</button>
+          <button disabled="" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#9AA1B9;background:#EEF0F7;border:none;border-radius:10px;padding:12px 22px;cursor:not-allowed;">Disabled</button>
+        </div>
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+          <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:12px;color:#fff;background:#3A56E8;border:none;border-radius:8px;padding:7px 14px;cursor:pointer;">Small</button>
+          <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#fff;background:#3A56E8;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;">Medium</button>
+          <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:16px;color:#fff;background:#3A56E8;border:none;border-radius:12px;padding:15px 28px;cursor:pointer;">Large</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="inputs" style="margin-bottom:64px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#14162A;margin:0 0 6px;">Input fields</h2>
+      <div style="background:#fff;border:1px solid #DDE1EC;border-radius:16px;padding:28px 32px;display:flex;gap:24px;flex-wrap:wrap;">
+        <div style="width:240px;">
+          <label style="font-size:12px;font-weight:700;color:#3B4059;display:block;margin-bottom:6px;">Mặc định</label>
+          <input placeholder="Nhập email của bạn" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:8px;border:1.5px solid #DDE1EC;font-size:14px;font-family:'Manrope',sans-serif;outline:none;" style-focus="border-color:#3A56E8;box-shadow:0 0 0 3px #DCE3FF;"/>
+        </div>
+        <div style="width:240px;">
+          <label style="font-size:12px;font-weight:700;color:#3B4059;display:block;margin-bottom:6px;">Lỗi</label>
+          <input value="matkhau123" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:8px;border:1.5px solid #D6293E;font-size:14px;font-family:'Manrope',sans-serif;outline:none;color:#14162A;"/>
+          <div style="font-size:12px;color:#D6293E;margin-top:4px;">Mật khẩu phải có ít nhất 8 ký tự</div>
+        </div>
+        <div style="width:240px;">
+          <label style="font-size:12px;font-weight:700;color:#3B4059;display:block;margin-bottom:6px;">Thành công</label>
+          <input value="user@shophub.vn" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:8px;border:1.5px solid #1A9E5C;font-size:14px;font-family:'Manrope',sans-serif;outline:none;color:#14162A;"/>
+        </div>
+        <div style="width:240px;">
+          <label style="font-size:12px;font-weight:700;color:#9AA1B9;display:block;margin-bottom:6px;">Disabled</label>
+          <input placeholder="Không khả dụng" disabled="" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:8px;border:1.5px solid #DDE1EC;background:#F7F8FC;font-size:14px;font-family:'Manrope',sans-serif;color:#9AA1B9;outline:none;"/>
+        </div>
+      </div>
+    </section>
+
+    <section id="badges" style="margin-bottom:64px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#14162A;margin:0 0 6px;">Badges</h2>
+      <div style="background:#fff;border:1px solid #DDE1EC;border-radius:16px;padding:28px 32px;display:flex;gap:10px;flex-wrap:wrap;">
+        <span style="background:#DCE3FF;color:#1F30A8;font-size:12px;font-weight:700;padding:5px 12px;border-radius:99px;">Mới</span>
+        <span style="background:#E6F7EE;color:#1A9E5C;font-size:12px;font-weight:700;padding:5px 12px;border-radius:99px;">Còn hàng</span>
+        <span style="background:#FFF4E0;color:#D97706;font-size:12px;font-weight:700;padding:5px 12px;border-radius:99px;">Sắp hết hàng</span>
+        <span style="background:#FDEAEC;color:#D6293E;font-size:12px;font-weight:700;padding:5px 12px;border-radius:99px;">Hết hàng</span>
+        <span style="background:#EAF1FD;color:#2563C7;font-size:12px;font-weight:700;padding:5px 12px;border-radius:99px;">Đã xác minh</span>
+        <span style="background:#FF8A1E;color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:99px;">-40%</span>
+        <span style="background:#14162A;color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:99px;">ShopHub Mall</span>
+      </div>
+    </section>
+
+    <section id="cards" style="margin-bottom:64px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#14162A;margin:0 0 6px;">Cards</h2>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <div style="width:220px;border:1px solid #DDE1EC;border-radius:16px;overflow:hidden;background:#fff;" style-hover="box-shadow:0 8px 24px rgba(16,26,92,0.1);">
+          <div style="height:140px;background:linear-gradient(135deg,#DCE3FF,#B9C7FF);display:flex;align-items:center;justify-content:center;color:#5C79F5;font-size:12px;">Ảnh sản phẩm</div>
+          <div style="padding:14px;">
+            <div style="font-size:13px;font-weight:600;color:#14162A;line-height:1.4;">Tai nghe Bluetooth chống ồn ShopHub X1</div>
+            <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px;">
+              <div style="font-size:16px;font-weight:800;color:#D6293E;">399.000₫</div>
+              <div style="font-size:12px;color:#9AA1B9;text-decoration:line-through;">599.000₫</div>
+            </div>
+            <div style="font-size:12px;color:#9AA1B9;margin-top:4px;">★ 4.8 · Đã bán 2.3k</div>
+          </div>
+        </div>
+        <div style="width:340px;border:1px solid #DDE1EC;border-radius:16px;background:#fff;padding:20px;">
+          <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:15px;color:#14162A;margin-bottom:12px;">Card thống kê</div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;">
+            <div style="font-size:13px;color:#6E7591;">Doanh thu hôm nay</div>
+            <div style="font-size:12px;color:#1A9E5C;font-weight:700;">+12.4%</div>
+          </div>
+          <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:#14162A;margin-top:6px;">18.420.000₫</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tabs" style="margin-bottom:64px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#14162A;margin:0 0 6px;">Tabs</h2>
+      <div style="background:#fff;border:1px solid #DDE1EC;border-radius:16px;padding:12px 20px;">
+        <div style="display:flex;gap:4px;border-bottom:1px solid #EEF0F7;">
+          <sc-for list="{{ tabsDemo }}" as="tb" hint-placeholder-count="4">
+            <div onClick="{{ onTabClick }}" data-idx="{{ tb.idx }}" style="padding:12px 18px;font-size:14px;font-weight:700;cursor:pointer;color:{{ tb.color }};border-bottom:2px solid {{ tb.border }};">{{ tb.label }}</div>
+          </sc-for>
+        </div>
+        <div style="padding:20px 4px;font-size:13px;color:#6E7591;">{{ activeTabContent }}</div>
+      </div>
+    </section>
+
+    <section id="table" style="margin-bottom:64px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#14162A;margin:0 0 6px;">Table</h2>
+      <div style="background:#fff;border:1px solid #DDE1EC;border-radius:16px;overflow:hidden;">
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;background:#F7F8FC;padding:12px 20px;">
+          <div style="font-size:12px;font-weight:700;color:#6E7591;">ĐƠN HÀNG</div>
+          <div style="font-size:12px;font-weight:700;color:#6E7591;">NGÀY</div>
+          <div style="font-size:12px;font-weight:700;color:#6E7591;">TRẠNG THÁI</div>
+          <div style="font-size:12px;font-weight:700;color:#6E7591;text-align:right;">TỔNG</div>
+        </div>
+        <sc-for list="{{ tableRows }}" as="r" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;padding:14px 20px;border-top:1px solid #EEF0F7;align-items:center;">
+            <div style="font-size:13px;font-weight:600;color:#14162A;">{{ r.id }}</div>
+            <div style="font-size:13px;color:#6E7591;">{{ r.date }}</div>
+            <div><span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;background:{{ r.statusBg }};color:{{ r.statusColor }};">{{ r.status }}</span></div>
+            <div style="font-size:13px;font-weight:700;color:#14162A;text-align:right;">{{ r.total }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section id="pagination" style="margin-bottom:64px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#14162A;margin:0 0 6px;">Pagination &amp; Breadcrumbs</h2>
+      <div style="background:#fff;border:1px solid #DDE1EC;border-radius:16px;padding:24px 32px;display:flex;flex-direction:column;gap:20px;">
+        <div style="font-size:13px;color:#6E7591;">
+          <a href="#" style="color:#6E7591;text-decoration:none;">Trang chủ</a> <span style="margin:0 6px;color:#C3C9DB;">/</span>
+          <a href="#" style="color:#6E7591;text-decoration:none;">Điện tử</a> <span style="margin:0 6px;color:#C3C9DB;">/</span>
+          <span style="color:#14162A;font-weight:700;">Tai nghe</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div style="width:32px;height:32px;border-radius:8px;border:1px solid #DDE1EC;display:flex;align-items:center;justify-content:center;color:#9AA1B9;font-size:13px;">‹</div>
+          <div style="width:32px;height:32px;border-radius:8px;background:#3A56E8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">1</div>
+          <div style="width:32px;height:32px;border-radius:8px;border:1px solid #DDE1EC;display:flex;align-items:center;justify-content:center;color:#3B4059;font-size:13px;font-weight:600;">2</div>
+          <div style="width:32px;height:32px;border-radius:8px;border:1px solid #DDE1EC;display:flex;align-items:center;justify-content:center;color:#3B4059;font-size:13px;font-weight:600;">3</div>
+          <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:#9AA1B9;font-size:13px;">…</div>
+          <div style="width:32px;height:32px;border-radius:8px;border:1px solid #DDE1EC;display:flex;align-items:center;justify-content:center;color:#3B4059;font-size:13px;font-weight:600;">12</div>
+          <div style="width:32px;height:32px;border-radius:8px;border:1px solid #DDE1EC;display:flex;align-items:center;justify-content:center;color:#9AA1B9;font-size:13px;">›</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="modal" style="margin-bottom:64px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#14162A;margin:0 0 6px;">Modal</h2>
+      <button onClick="{{ openModal }}" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#fff;background:#3A56E8;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;">Mở modal mẫu</button>
+      <sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="position:fixed;inset:0;background:rgba(16,26,92,0.45);display:flex;align-items:center;justify-content:center;z-index:100;" onClick="{{ closeModal }}">
+          <div style="background:#fff;border-radius:16px;width:400px;padding:28px;box-shadow:0 20px 60px rgba(16,26,92,0.25);" onClick="{{ stopProp }}">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:#14162A;margin-bottom:8px;">Xác nhận xóa sản phẩm?</div>
+            <div style="font-size:14px;color:#6E7591;line-height:1.5;margin-bottom:24px;">Hành động này không thể hoàn tác. Sản phẩm sẽ bị gỡ khỏi gian hàng của bạn.</div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+              <button onClick="{{ closeModal }}" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#3B4059;background:#EEF0F7;border:none;border-radius:10px;padding:10px 18px;cursor:pointer;">Hủy</button>
+              <button onClick="{{ closeModal }}" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#fff;background:#D6293E;border:none;border-radius:10px;padding:10px 18px;cursor:pointer;">Xóa</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </section>
+
+    <section id="toast" style="margin-bottom:32px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#14162A;margin:0 0 6px;">Toast / Notification</h2>
+      <button onClick="{{ showToast }}" style="font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#fff;background:#1A9E5C;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;margin-bottom:20px;">Hiện toast thành công</button>
+      <div style="display:flex;flex-direction:column;gap:12px;max-width:380px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;background:#fff;border-left:4px solid #1A9E5C;border-radius:10px;padding:14px 16px;box-shadow:0 4px 16px rgba(16,26,92,0.08);">
+          <div style="font-size:13px;font-weight:700;color:#14162A;">Đặt hàng thành công! Mã đơn #SH20481</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;background:#fff;border-left:4px solid #D6293E;border-radius:10px;padding:14px 16px;box-shadow:0 4px 16px rgba(16,26,92,0.08);">
+          <div style="font-size:13px;font-weight:700;color:#14162A;">Thanh toán thất bại. Vui lòng thử lại.</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;background:#fff;border-left:4px solid #D97706;border-radius:10px;padding:14px 16px;box-shadow:0 4px 16px rgba(16,26,92,0.08);">
+          <div style="font-size:13px;font-weight:700;color:#14162A;">Sản phẩm sắp hết hàng — chỉ còn 3 sản phẩm.</div>
+        </div>
+      </div>
+      <sc-if value="{{ toastVisible }}" hint-placeholder-val="{{ false }}">
+        <div style="position:fixed;bottom:28px;right:28px;background:#fff;border-left:4px solid #1A9E5C;border-radius:10px;padding:14px 18px;box-shadow:0 12px 32px rgba(16,26,92,0.2);font-size:13px;font-weight:700;color:#14162A;z-index:200;">✓ Đã lưu thay đổi thành công</div>
+      </sc-if>
+    </section>
+
+  </main>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { modalOpen: false, toastVisible: false, activeTab: 0 };
+
+  tabDefs = [
+    { label: 'Tổng quan', content: 'Nội dung tab Tổng quan — hiển thị số liệu chính.' },
+    { label: 'Sản phẩm', content: 'Nội dung tab Sản phẩm — danh sách sản phẩm của gian hàng.' },
+    { label: 'Đơn hàng', content: 'Nội dung tab Đơn hàng — theo dõi trạng thái xử lý.' },
+    { label: 'Đánh giá', content: 'Nội dung tab Đánh giá — phản hồi từ khách hàng.' },
+  ];
+
+  componentDidMount() {
+    this._toastTimer = null;
+  }
+
+  showToast = () => {
+    this.setState({ toastVisible: true });
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => this.setState({ toastVisible: false }), 2600);
+  };
+
+  renderVals() {
+    const primaryColors = [
+      { label: '50', hex: '#EEF1FF' }, { label: '100', hex: '#DCE3FF' }, { label: '200', hex: '#B9C7FF' },
+      { label: '300', hex: '#8FA3FF' }, { label: '400', hex: '#5C79F5' }, { label: '500 · Base', hex: '#3A56E8' },
+      { label: '600', hex: '#2A3FD1' }, { label: '700', hex: '#1F30A8' }, { label: '800', hex: '#172480' }, { label: '900', hex: '#101A5C' },
+    ];
+    const accentColors = [
+      { label: '50', hex: '#FFF4E5' }, { label: '100', hex: '#FFE2B8' }, { label: '300', hex: '#FFB25C' },
+      { label: '500 · Base', hex: '#FF8A1E' }, { label: '700', hex: '#B85600' },
+    ];
+    const neutralColors = [
+      { label: '0', hex: '#FFFFFF' }, { label: '50', hex: '#F7F8FC' }, { label: '100', hex: '#EEF0F7' },
+      { label: '200', hex: '#DDE1EC' }, { label: '300', hex: '#C3C9DB' }, { label: '400', hex: '#9AA1B9' },
+      { label: '500', hex: '#6E7591' }, { label: '600', hex: '#545A75' }, { label: '700', hex: '#3B4059' },
+      { label: '900 · Ink', hex: '#14162A' },
+    ];
+    const semanticColors = [
+      { label: 'Success', hex: '#1A9E5C', tint: '#E6F7EE', usage: 'Còn hàng / Thành công' },
+      { label: 'Warning', hex: '#D97706', tint: '#FFF4E0', usage: 'Sắp hết hàng / Chú ý' },
+      { label: 'Error', hex: '#D6293E', tint: '#FDEAEC', usage: 'Hết hàng / Lỗi' },
+      { label: 'Info', hex: '#2563C7', tint: '#EAF1FD', usage: 'Thông báo / Đang xử lý' },
+    ];
+    const typeScale = [
+      { name: 'Display', spec: "Sora 800 / 48px / 56px", font: "'Sora',sans-serif", weight: 800, size: '48px', lineHeight: '56px', sample: 'Mua sắm thông minh hơn' },
+      { name: 'H1', spec: "Sora 800 / 36px / 44px", font: "'Sora',sans-serif", weight: 800, size: '36px', lineHeight: '44px', sample: 'Flash Sale hôm nay' },
+      { name: 'H2', spec: "Sora 700 / 28px / 36px", font: "'Sora',sans-serif", weight: 700, size: '28px', lineHeight: '36px', sample: 'Danh mục nổi bật' },
+      { name: 'H3', spec: "Sora 700 / 22px / 30px", font: "'Sora',sans-serif", weight: 700, size: '22px', lineHeight: '30px', sample: 'Chi tiết sản phẩm' },
+      { name: 'H4', spec: "Sora 600 / 18px / 26px", font: "'Sora',sans-serif", weight: 600, size: '18px', lineHeight: '26px', sample: 'Đánh giá từ khách hàng' },
+      { name: 'Body L', spec: "Manrope 400 / 16px / 24px", font: "'Manrope',sans-serif", weight: 400, size: '16px', lineHeight: '24px', sample: 'Giao hàng nhanh trong 2 giờ tại nội thành.' },
+      { name: 'Body M', spec: "Manrope 500 / 14px / 22px", font: "'Manrope',sans-serif", weight: 500, size: '14px', lineHeight: '22px', sample: 'Miễn phí vận chuyển cho đơn từ 199.000₫.' },
+      { name: 'Caption', spec: "Manrope 600 / 12px / 16px", font: "'Manrope',sans-serif", weight: 600, size: '12px', lineHeight: '16px', sample: 'ĐÃ BÁN 2.300 · ĐÁNH GIÁ 4.8/5' },
+    ];
+    const spacingScale = [
+      { token: '1', px: '4px', pxLabel: '4px' }, { token: '2', px: '8px', pxLabel: '8px' },
+      { token: '3', px: '12px', pxLabel: '12px' }, { token: '4', px: '16px', pxLabel: '16px' },
+      { token: '6', px: '24px', pxLabel: '24px' }, { token: '8', px: '32px', pxLabel: '32px' },
+      { token: '12', px: '48px', pxLabel: '48px' }, { token: '16', px: '64px', pxLabel: '64px' },
+      { token: '24', px: '96px', pxLabel: '96px' },
+    ];
+    const breakpoints = [
+      { name: 'Mobile', range: '≤ 599px', note: 'Buyer: single column, thanh điều hướng dưới, ưu tiên vuốt ngang cho carousel.' },
+      { name: 'Tablet', range: '600–1023px', note: 'Buyer: grid 2 cột; Seller/Admin: sidebar thu gọn dạng icon.' },
+      { name: 'Desktop', range: '1024–1439px', note: 'Seller/Admin: layout chuẩn, sidebar mở rộng, bảng đầy đủ cột.' },
+      { name: 'Wide', range: '≥ 1440px', note: 'Container căn giữa tối đa 1200px, thêm khoảng lề hai bên.' },
+    ];
+    const tableRows = [
+      { id: '#SH20481', date: '01/08/2026', status: 'Đã giao', statusBg: '#E6F7EE', statusColor: '#1A9E5C', total: '1.240.000₫' },
+      { id: '#SH20480', date: '31/07/2026', status: 'Đang giao', statusBg: '#EAF1FD', statusColor: '#2563C7', total: '399.000₫' },
+      { id: '#SH20479', date: '31/07/2026', status: 'Chờ xử lý', statusBg: '#FFF4E0', statusColor: '#D97706', total: '2.150.000₫' },
+      { id: '#SH20478', date: '30/07/2026', status: 'Đã hủy', statusBg: '#FDEAEC', statusColor: '#D6293E', total: '599.000₫' },
+    ];
+    const tabsDemo = this.tabDefs.map((t, idx) => ({
+      idx, label: t.label,
+      color: this.state.activeTab === idx ? '#2A3FD1' : '#6E7591',
+      border: this.state.activeTab === idx ? '#3A56E8' : 'transparent',
+    }));
+
+    return {
+      primaryColors, accentColors, neutralColors, semanticColors, typeScale, spacingScale, breakpoints, tableRows,
+      tabsDemo, activeTabContent: this.tabDefs[this.state.activeTab].content,
+      onTabClick: (e) => this.setState({ activeTab: Number(e.currentTarget.dataset.idx) }),
+      modalOpen: this.state.modalOpen,
+      openModal: () => this.setState({ modalOpen: true }),
+      closeModal: () => this.setState({ modalOpen: false }),
+      stopProp: (e) => e.stopPropagation(),
+      toastVisible: this.state.toastVisible,
+      showToast: this.showToast,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

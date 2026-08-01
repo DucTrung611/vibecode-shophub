@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#EEF0F7;font-family:'Manrope',sans-serif;}
+  a{color:#2A3FD1;}
+  a:hover{color:#1F30A8;}
+</style>
+</helmet>
+
+<div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:40px 20px;">
+  <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;color:#6E7591;text-transform:uppercase;">Buyer · Product Detail · Mobile</div>
+
+  <div style="display:flex;gap:8px;background:#fff;border:1px solid #DDE1EC;border-radius:10px;padding:4px;">
+    <sc-for list="{{ deviceOptions }}" as="d" hint-placeholder-count="2">
+      <div onClick="{{ onDeviceClick }}" data-val="{{ d.value }}" style="padding:7px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;background:{{ d.bg }};color:{{ d.color }};">{{ d.label }}</div>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ true }}">
+  <x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" width="{{ 412 }}" height="{{ 892 }}" hint-size="412,892">
+    <div style="display:flex;flex-direction:column;height:100%;background:#F7F8FC;font-family:'Manrope',sans-serif;position:relative;">
+
+      <div style="flex:1;overflow-y:auto;padding-bottom:72px;">
+
+        <div style="position:relative;height:260px;background:linear-gradient(135deg,#DCE3FF,#B9C7FF);display:flex;align-items:center;justify-content:center;font-size:80px;">
+          🎧
+          <div style="position:absolute;top:14px;left:14px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:16px;">←</div>
+          <div style="position:absolute;top:14px;right:14px;display:flex;gap:8px;">
+            <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:16px;">↗</div>
+            <div onClick="{{ toggleWishlist }}" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:{{ wishlistColor }};">♥</div>
+          </div>
+          <div style="position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:5px;">
+            <div style="width:16px;height:5px;border-radius:99px;background:#3A56E8;"></div>
+            <div style="width:5px;height:5px;border-radius:99px;background:rgba(58,86,232,0.3);"></div>
+            <div style="width:5px;height:5px;border-radius:99px;background:rgba(58,86,232,0.3);"></div>
+            <div style="width:5px;height:5px;border-radius:99px;background:rgba(58,86,232,0.3);"></div>
+          </div>
+        </div>
+
+        <div style="padding:16px;background:#fff;">
+          <div style="display:inline-block;background:#FDEAEC;color:#D6293E;font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;margin-bottom:8px;">-33% FLASH SALE</div>
+          <div style="font-size:15px;font-weight:700;color:#14162A;line-height:1.4;">Tai nghe Bluetooth chống ồn ShopHub X1 — Pin 40 giờ, chống nước IPX5</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;color:#6E7591;">
+            <span style="color:#FF8A1E;">★★★★★</span> <span style="font-weight:700;color:#14162A;">4.8</span> <span>(1.284 đánh giá)</span> <span style="color:#C3C9DB;">|</span> <span>Đã bán 2.3k</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:10px;margin-top:12px;">
+            <div style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#D6293E;">399.000₫</div>
+            <div style="font-size:14px;color:#9AA1B9;text-decoration:line-through;">599.000₫</div>
+          </div>
+        </div>
+
+        <div style="margin-top:8px;background:#fff;padding:16px;">
+          <div style="font-size:13px;font-weight:700;color:#14162A;margin-bottom:10px;">Màu sắc: <span style="font-weight:600;color:#6E7591;">{{ selectedColorLabel }}</span></div>
+          <div style="display:flex;gap:10px;margin-bottom:16px;">
+            <sc-for list="{{ colors }}" as="c" hint-placeholder-count="3">
+              <div onClick="{{ onColorClick }}" data-val="{{ c.value }}" style="width:56px;height:56px;border-radius:10px;background:{{ c.bg }};display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;border:2px solid {{ c.border }};">{{ c.emoji }}</div>
+            </sc-for>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:#14162A;margin-bottom:10px;">Phiên bản: <span style="font-weight:600;color:#6E7591;">{{ selectedSizeLabel }}</span></div>
+          <div style="display:flex;gap:10px;">
+            <sc-for list="{{ sizes }}" as="s" hint-placeholder-count="3">
+              <div onClick="{{ onSizeClick }}" data-val="{{ s.value }}" style="padding:9px 18px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid {{ s.border }};color:{{ s.color }};background:{{ s.bg }};">{{ s.label }}</div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top:8px;background:#fff;padding:16px;display:flex;align-items:center;gap:10px;">
+          <span style="font-size:18px;">🚚</span>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#14162A;">Miễn phí vận chuyển</div>
+            <div style="font-size:11px;color:#6E7591;">Giao dự kiến 3–5 Th08, ShopHub Express</div>
+          </div>
+        </div>
+
+        <div style="margin-top:8px;background:#fff;padding:16px;display:flex;align-items:center;gap:12px;">
+          <div style="width:42px;height:42px;border-radius:50%;background:#3A56E8;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;">A</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:700;color:#14162A;">Audio House Official <span style="background:#EAF1FD;color:#2563C7;font-size:9px;font-weight:800;padding:2px 6px;border-radius:99px;margin-left:4px;">Đã xác minh</span></div>
+            <div style="font-size:11px;color:#6E7591;margin-top:2px;">98% phản hồi chat · Tham gia 3 năm</div>
+          </div>
+          <div style="border:1.5px solid #3A56E8;color:#2A3FD1;font-size:12px;font-weight:700;padding:7px 14px;border-radius:9px;">+ Theo dõi</div>
+        </div>
+
+        <div style="margin-top:8px;background:#fff;padding:16px;">
+          <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:8px;">Mô tả sản phẩm</div>
+          <div style="font-size:13px;color:#3B4059;line-height:1.6;">Tai nghe chụp tai không dây với công nghệ chống ồn chủ động (ANC), pin sử dụng liên tục lên đến 40 giờ, kết nối Bluetooth 5.3 ổn định, chống nước đạt chuẩn IPX5. Đệm tai êm ái, phù hợp đeo cả ngày...</div>
+        </div>
+
+        <div style="margin-top:8px;background:#fff;padding:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;">Đánh giá sản phẩm</div>
+            <div style="font-size:12px;font-weight:700;color:#2A3FD1;">Xem tất cả</div>
+          </div>
+          <div style="display:flex;gap:20px;align-items:center;margin-bottom:16px;">
+            <div style="text-align:center;">
+              <div style="font-family:'Sora',sans-serif;font-size:32px;font-weight:800;color:#14162A;">4.8</div>
+              <div style="color:#FF8A1E;font-size:13px;">★★★★★</div>
+              <div style="font-size:11px;color:#9AA1B9;">1.284 đánh giá</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:5px;">
+              <sc-for list="{{ ratingBars }}" as="r" hint-placeholder-count="5">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <div style="font-size:10px;color:#6E7591;width:10px;">{{ r.star }}</div>
+                  <div style="flex:1;height:5px;background:#EEF0F7;border-radius:99px;overflow:hidden;">
+                    <div style="height:100%;background:#FF8A1E;width:{{ r.pct }}%;"></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <sc-for list="{{ reviews }}" as="rv" hint-placeholder-count="2">
+            <div style="border-top:1px solid #EEF0F7;padding:12px 0;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:28px;height:28px;border-radius:50%;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#2A3FD1;">{{ rv.initial }}</div>
+                <div>
+                  <div style="font-size:12px;font-weight:700;color:#14162A;">{{ rv.name }}</div>
+                  <div style="color:#FF8A1E;font-size:11px;">{{ rv.stars }}</div>
+                </div>
+              </div>
+              <div style="font-size:12px;color:#3B4059;line-height:1.5;margin-top:8px;">{{ rv.text }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top:8px;background:#fff;padding:16px;">
+          <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#14162A;margin-bottom:12px;">Hỏi đáp</div>
+          <sc-for list="{{ qna }}" as="q" hint-placeholder-count="2">
+            <div style="margin-bottom:14px;">
+              <div style="font-size:12px;font-weight:700;color:#14162A;">Q: {{ q.question }}</div>
+              <div style="font-size:12px;color:#6E7591;margin-top:4px;padding-left:14px;border-left:2px solid #EEF0F7;">A: {{ q.answer }}</div>
+            </div>
+          </sc-for>
+          <div style="border:1.5px solid #DDE1EC;border-radius:9px;padding:9px 12px;font-size:12px;color:#9AA1B9;">Đặt câu hỏi cho người bán...</div>
+        </div>
+
+      </div>
+
+      <div style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #EEF0F7;display:flex;align-items:center;gap:10px;padding:10px 14px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;color:#6E7591;">
+          <span style="font-size:18px;">💬</span>
+          <span style="font-size:9px;font-weight:700;">Chat</span>
+        </div>
+        <button style="flex:1;font-family:'Manrope',sans-serif;font-weight:700;font-size:13px;color:#2A3FD1;background:#EEF1FF;border:none;border-radius:10px;padding:12px;cursor:pointer;">Thêm vào giỏ</button>
+        <button style="flex:1;font-family:'Manrope',sans-serif;font-weight:700;font-size:13px;color:#fff;background:#FF8A1E;border:none;border-radius:10px;padding:12px;cursor:pointer;">Mua ngay</button>
+      </div>
+
+    </div>
+  </x-import>
+  </sc-if>
+
+  <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ false }}">
+  <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="{{ 1360 }}" height="{{ 900 }}" url="shophub.vn/san-pham/tai-nghe-x1" hint-size="1360,900">
+    <div style="display:flex;flex-direction:column;height:100%;background:#F7F8FC;font-family:'Manrope',sans-serif;overflow-y:auto;">
+      <div style="padding:24px 40px 0;display:grid;grid-template-columns:1fr 1fr;gap:32px;">
+        <div>
+          <div style="border-radius:16px;background:linear-gradient(135deg,#DCE3FF,#B9C7FF);height:400px;display:flex;align-items:center;justify-content:center;font-size:120px;">🎧</div>
+          <div style="display:flex;gap:10px;margin-top:12px;">
+            <sc-for list="{{ galleryThumbs }}" as="g" hint-placeholder-count="4">
+              <div style="width:72px;height:72px;border-radius:10px;background:{{ g.bg }};border:2px solid {{ g.border }};display:flex;align-items:center;justify-content:center;font-size:26px;">{{ g.emoji }}</div>
+            </sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="display:inline-block;background:#FDEAEC;color:#D6293E;font-size:11px;font-weight:800;padding:4px 10px;border-radius:6px;margin-bottom:10px;">-33% FLASH SALE</div>
+          <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#14162A;line-height:1.4;">Tai nghe Bluetooth chống ồn ShopHub X1 — Pin 40 giờ, chống nước IPX5</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:10px;font-size:13px;color:#6E7591;">
+            <span style="color:#FF8A1E;">★★★★★</span> <span style="font-weight:700;color:#14162A;">4.8</span> <span>(1.284 đánh giá)</span> <span style="color:#C3C9DB;">|</span> <span>Đã bán 2.3k</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:12px;margin-top:16px;background:#F7F8FC;border-radius:10px;padding:16px 20px;">
+            <div style="font-family:'Sora',sans-serif;font-size:32px;font-weight:800;color:#D6293E;">399.000₫</div>
+            <div style="font-size:16px;color:#9AA1B9;text-decoration:line-through;">599.000₫</div>
+          </div>
+          <div style="margin-top:20px;font-size:13px;font-weight:700;color:#14162A;margin-bottom:10px;">Màu sắc: <span style="font-weight:600;color:#6E7591;">{{ selectedColorLabel }}</span></div>
+          <div style="display:flex;gap:10px;margin-bottom:16px;">
+            <sc-for list="{{ colors }}" as="c" hint-placeholder-count="3">
+              <div onClick="{{ onColorClick }}" data-val="{{ c.value }}" style="width:56px;height:56px;border-radius:10px;background:{{ c.bg }};display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;border:2px solid {{ c.border }};">{{ c.emoji }}</div>
+            </sc-for>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:#14162A;margin-bottom:10px;">Phiên bản: <span style="font-weight:600;color:#6E7591;">{{ selectedSizeLabel }}</span></div>
+          <div style="display:flex;gap:10px;margin-bottom:24px;">
+            <sc-for list="{{ sizes }}" as="s" hint-placeholder-count="3">
+              <div onClick="{{ onSizeClick }}" data-val="{{ s.value }}" style="padding:9px 18px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid {{ s.border }};color:{{ s.color }};background:{{ s.bg }};">{{ s.label }}</div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:12px;margin-bottom:20px;">
+            <button style="flex:1;font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#2A3FD1;background:#EEF1FF;border:none;border-radius:10px;padding:14px;cursor:pointer;">Thêm vào giỏ</button>
+            <button style="flex:1;font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#fff;background:#FF8A1E;border:none;border-radius:10px;padding:14px;cursor:pointer;">Mua ngay</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid #EEF0F7;border-radius:12px;">
+            <div style="width:42px;height:42px;border-radius:50%;background:#3A56E8;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;">A</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:700;color:#14162A;">Audio House Official <span style="background:#EAF1FD;color:#2563C7;font-size:9px;font-weight:800;padding:2px 6px;border-radius:99px;margin-left:4px;">Đã xác minh</span></div>
+              <div style="font-size:11px;color:#6E7591;margin-top:2px;">98% phản hồi chat · Tham gia 3 năm</div>
+            </div>
+            <div style="border:1.5px solid #3A56E8;color:#2A3FD1;font-size:12px;font-weight:700;padding:8px 16px;border-radius:9px;">+ Theo dõi</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:24px 40px 40px;display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+        <div style="background:#fff;border:1px solid #EEF0F7;border-radius:14px;padding:20px 24px;">
+          <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:15px;color:#14162A;margin-bottom:10px;">Mô tả sản phẩm</div>
+          <div style="font-size:13px;color:#3B4059;line-height:1.7;">Tai nghe chụp tai không dây với công nghệ chống ồn chủ động (ANC), pin sử dụng liên tục lên đến 40 giờ, kết nối Bluetooth 5.3 ổn định, chống nước đạt chuẩn IPX5.</div>
+          <div style="margin-top:20px;">
+            <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:13px;color:#14162A;margin-bottom:10px;">Hỏi đáp</div>
+            <sc-for list="{{ qna }}" as="q" hint-placeholder-count="2">
+              <div style="margin-bottom:12px;">
+                <div style="font-size:12px;font-weight:700;color:#14162A;">Q: {{ q.question }}</div>
+                <div style="font-size:12px;color:#6E7591;margin-top:4px;padding-left:14px;border-left:2px solid #EEF0F7;">A: {{ q.answer }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #EEF0F7;border-radius:14px;padding:20px 24px;">
+          <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:15px;color:#14162A;margin-bottom:14px;">Đánh giá sản phẩm</div>
+          <div style="display:flex;gap:20px;align-items:center;margin-bottom:16px;">
+            <div style="text-align:center;">
+              <div style="font-family:'Sora',sans-serif;font-size:32px;font-weight:800;color:#14162A;">4.8</div>
+              <div style="color:#FF8A1E;font-size:13px;">★★★★★</div>
+              <div style="font-size:11px;color:#9AA1B9;">1.284 đánh giá</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:5px;">
+              <sc-for list="{{ ratingBars }}" as="r" hint-placeholder-count="5">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <div style="font-size:10px;color:#6E7591;width:10px;">{{ r.star }}</div>
+                  <div style="flex:1;height:5px;background:#EEF0F7;border-radius:99px;overflow:hidden;"><div style="height:100%;background:#FF8A1E;width:{{ r.pct }}%;"></div></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <sc-for list="{{ reviews }}" as="rv" hint-placeholder-count="2">
+            <div style="border-top:1px solid #EEF0F7;padding:12px 0;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:28px;height:28px;border-radius:50%;background:#EEF1FF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#2A3FD1;">{{ rv.initial }}</div>
+                <div><div style="font-size:12px;font-weight:700;color:#14162A;">{{ rv.name }}</div><div style="color:#FF8A1E;font-size:11px;">{{ rv.stars }}</div></div>
+              </div>
+              <div style="font-size:12px;color:#3B4059;line-height:1.5;margin-top:8px;">{{ rv.text }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </x-import>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { color: 'black', size: 'std', wishlisted: false, device: 'mobile' };
+
+  onColorClick = (e) => this.setState({ color: e.currentTarget.dataset.val });
+  onSizeClick = (e) => this.setState({ size: e.currentTarget.dataset.val });
+  toggleWishlist = () => this.setState(s => ({ wishlisted: !s.wishlisted }));
+  onDeviceClick = (e) => this.setState({ device: e.currentTarget.dataset.val });
+
+  renderVals() {
+    const colorDefs = [
+      { value: 'black', label: 'Đen', emoji: '⚫' },
+      { value: 'white', label: 'Trắng', emoji: '⚪' },
+      { value: 'blue', label: 'Xanh', emoji: '🔵' },
+    ];
+    const sizeDefs = [
+      { value: 'std', label: 'Tiêu chuẩn' },
+      { value: 'pro', label: 'Pro Edition' },
+    ];
+    const colors = colorDefs.map(c => ({
+      ...c, bg: '#F7F8FC',
+      border: this.state.color === c.value ? '#3A56E8' : '#EEF0F7',
+    }));
+    const sizes = sizeDefs.map(s => ({
+      ...s,
+      border: this.state.size === s.value ? '#3A56E8' : '#DDE1EC',
+      color: this.state.size === s.value ? '#2A3FD1' : '#3B4059',
+      bg: this.state.size === s.value ? '#EEF1FF' : '#fff',
+    }));
+    const ratingBars = [
+      { star: 5, pct: 82 }, { star: 4, pct: 12 }, { star: 3, pct: 4 }, { star: 2, pct: 1 }, { star: 1, pct: 1 },
+    ];
+    const reviews = [
+      { initial: 'M', name: 'Minh Anh T.', stars: '★★★★★', text: 'Chất lượng âm thanh rất tốt, chống ồn hiệu quả. Pin dùng được cả tuần mới sạc lại.' },
+      { initial: 'H', name: 'Hoàng Long', stars: '★★★★☆', text: 'Giao hàng nhanh, đóng gói cẩn thận. Đeo hơi nặng tai sau vài giờ nhưng nhìn chung ổn.' },
+    ];
+    const qna = [
+      { question: 'Tai nghe có tương thích với iPhone không?', answer: 'Có, hỗ trợ cả iOS và Android qua Bluetooth 5.3.' },
+      { question: 'Bảo hành bao lâu?', answer: '12 tháng chính hãng, đổi mới trong 30 ngày đầu nếu lỗi.' },
+    ];
+    const deviceOptions = ['mobile', 'desktop'].map(v => ({
+      value: v, label: v === 'mobile' ? '📱 Mobile' : '💻 Website',
+      bg: this.state.device === v ? '#3A56E8' : 'transparent',
+      color: this.state.device === v ? '#fff' : '#6E7591',
+    }));
+    const galleryThumbs = [
+      { emoji: '🎧', bg: '#EEF1FF', border: '#3A56E8' },
+      { emoji: '🎧', bg: '#F7F8FC', border: '#EEF0F7' },
+      { emoji: '🎧', bg: '#F7F8FC', border: '#EEF0F7' },
+      { emoji: '🎧', bg: '#F7F8FC', border: '#EEF0F7' },
+    ];
+    return {
+      colors, sizes, ratingBars, reviews, qna, deviceOptions, galleryThumbs,
+      selectedColorLabel: colorDefs.find(c => c.value === this.state.color).label,
+      selectedSizeLabel: sizeDefs.find(s => s.value === this.state.size).label,
+      wishlistColor: this.state.wishlisted ? '#D6293E' : '#9AA1B9',
+      isMobile: this.state.device === 'mobile', isDesktop: this.state.device === 'desktop',
+      onColorClick: this.onColorClick, onSizeClick: this.onSizeClick, toggleWishlist: this.toggleWishlist, onDeviceClick: this.onDeviceClick,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

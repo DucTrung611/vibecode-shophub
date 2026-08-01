@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#EEF0F7;font-family:'Manrope',sans-serif;}
+  a{color:#2A3FD1;}
+  a:hover{color:#1F30A8;}
+</style>
+</helmet>
+
+<div style="display:flex;width:1440px;min-height:900px;background:#F7F8FC;">
+
+  <div style="width:236px;flex-shrink:0;background:#101A5C;padding:20px 16px;display:flex;flex-direction:column;gap:4px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;padding:0 6px;">
+      <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#5C79F5,#3A56E8);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;color:#fff;font-size:15px;">S</div>
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:16px;color:#fff;">ShopHub <span style="font-weight:600;color:#8FA3FF;font-size:11px;">Seller</span></div>
+    </div>
+    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;background:{{ n.bg }};color:{{ n.color }};font-size:13px;font-weight:700;cursor:pointer;">
+        <span style="font-size:15px;">{{ n.icon }}</span>{{ n.label }}
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
+    <div style="height:64px;background:#fff;border-bottom:1px solid #DDE1EC;display:flex;align-items:center;justify-content:space-between;padding:0 28px;">
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:#14162A;">Kho hàng</div>
+      <button style="font-family:'Manrope',sans-serif;font-weight:700;font-size:13px;color:#fff;background:#3A56E8;border:none;border-radius:9px;padding:10px 18px;cursor:pointer;">Nhập kho hàng loạt</button>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding:24px 28px 40px;">
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+          <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;padding:18px 20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:12px;color:#6E7591;font-weight:600;">{{ k.label }}</div>
+              <div style="width:32px;height:32px;border-radius:9px;background:{{ k.iconBg }};display:flex;align-items:center;justify-content:center;font-size:15px;">{{ k.icon }}</div>
+            </div>
+            <div style="font-family:'Sora',sans-serif;font-size:24px;font-weight:800;color:{{ k.valueColor }};margin-top:10px;">{{ k.value }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;gap:8px;align-items:center;background:#FFF4E0;border-left:4px solid #D97706;padding:12px 16px;border-radius:8px;margin-bottom:16px;">
+        <span style="font-size:14px;">⚠</span>
+        <span style="font-size:12px;color:#92600A;font-weight:600;">8 sản phẩm sắp hết hàng (dưới 10 đơn vị). Hãy nhập thêm hàng để tránh gián đoạn bán hàng.</span>
+      </div>
+
+      <div style="display:flex;gap:4px;margin-bottom:16px;background:#fff;border:1px solid #DDE1EC;border-radius:10px;padding:4px;width:fit-content;">
+        <sc-for list="{{ filterTabs }}" as="t" hint-placeholder-count="3">
+          <div style="padding:8px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;background:{{ t.bg }};color:{{ t.color }};">{{ t.label }}</div>
+        </sc-for>
+      </div>
+
+      <div style="background:#fff;border:1px solid #DDE1EC;border-radius:14px;overflow:hidden;">
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.4fr 1fr;padding:12px 20px;background:#F7F8FC;">
+          <div style="font-size:11px;font-weight:700;color:#6E7591;">SẢN PHẨM / SKU</div>
+          <div style="font-size:11px;font-weight:700;color:#6E7591;">TỒN KHO</div>
+          <div style="font-size:11px;font-weight:700;color:#6E7591;">ĐÃ ĐẶT</div>
+          <div style="font-size:11px;font-weight:700;color:#6E7591;">CÓ THỂ BÁN</div>
+          <div style="font-size:11px;font-weight:700;color:#6E7591;">TRẠNG THÁI</div>
+          <div style="font-size:11px;font-weight:700;color:#6E7591;text-align:right;">THAO TÁC</div>
+        </div>
+        <sc-for list="{{ items }}" as="p" hint-placeholder-count="7">
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.4fr 1fr;padding:14px 20px;border-top:1px solid #EEF0F7;align-items:center;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:40px;height:40px;border-radius:9px;background:{{ p.bg }};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">{{ p.emoji }}</div>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:#14162A;">{{ p.name }}</div>
+                <div style="font-size:10px;color:#9AA1B9;font-family:monospace;margin-top:2px;">{{ p.sku }}</div>
+              </div>
+            </div>
+            <div style="font-size:13px;font-weight:700;color:{{ p.stockColor }};">{{ p.stock }}</div>
+            <div style="font-size:12px;color:#6E7591;">{{ p.reserved }}</div>
+            <div style="font-size:12px;color:#3B4059;">{{ p.available }}</div>
+            <div>
+              <div style="height:6px;width:100px;background:#EEF0F7;border-radius:99px;overflow:hidden;">
+                <div style="height:100%;background:{{ p.barColor }};width:{{ p.barPct }}%;"></div>
+              </div>
+              <div style="font-size:10px;color:{{ p.barColor }};font-weight:700;margin-top:4px;">{{ p.statusLabel }}</div>
+            </div>
+            <div style="text-align:right;font-size:12px;font-weight:700;color:#2A3FD1;cursor:pointer;">Điều chỉnh</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const navItems = [
+      { icon: '📊', label: 'Tổng quan', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '📦', label: 'Sản phẩm', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '🧾', label: 'Đơn hàng', bg: 'transparent', color: '#C3C9DB' },
+      { icon: '📋', label: 'Kho hàng', bg: '#3A56E8', color: '#fff' },
+      { icon: '⚙', label: 'Cài đặt shop', bg: 'transparent', color: '#C3C9DB' },
+    ];
+    const kpis = [
+      { label: 'Tổng số SKU', value: '186', valueColor: '#14162A', icon: '📦', iconBg: '#EEF1FF' },
+      { label: 'Sắp hết hàng', value: '8', valueColor: '#D97706', icon: '⚠', iconBg: '#FFF4E0' },
+      { label: 'Hết hàng', value: '3', valueColor: '#D6293E', icon: '⛔', iconBg: '#FDEAEC' },
+      { label: 'Giá trị tồn kho', value: '842.500.000₫', valueColor: '#14162A', icon: '💰', iconBg: '#E6F7EE' },
+    ];
+    const filterTabs = [
+      { label: 'Tất cả', bg: '#3A56E8', color: '#fff' },
+      { label: 'Sắp hết hàng', bg: 'transparent', color: '#6E7591' },
+      { label: 'Hết hàng', bg: 'transparent', color: '#6E7591' },
+    ];
+    const raw = [
+      { emoji: '🎧', bg: '#EEF1FF', name: 'Tai nghe Bluetooth chống ồn X1 - Đen', sku: 'SH-X1-BLK-STD', stock: 64, reserved: 12 },
+      { emoji: '🎧', bg: '#EEF1FF', name: 'Tai nghe Bluetooth chống ồn X1 - Trắng', sku: 'SH-X1-WHT-STD', stock: 8, reserved: 3 },
+      { emoji: '⌚', bg: '#FFF4E0', name: 'Đồng hồ thông minh sức khỏe', sku: 'SH-WATCH-GRY', stock: 6, reserved: 2 },
+      { emoji: '🔌', bg: '#E6F7EE', name: 'Sạc nhanh 65W GaN 3 cổng', sku: 'SH-CHG-65W', stock: 0, reserved: 0 },
+      { emoji: '🔊', bg: '#FDEAEC', name: 'Loa bluetooth mini di động', sku: 'SH-SPK-MINI', stock: 56, reserved: 5 },
+      { emoji: '🎤', bg: '#EAF1FD', name: 'Micro thu âm livestream USB', sku: 'SH-MIC-USB', stock: 31, reserved: 4 },
+      { emoji: '🎒', bg: '#EEF1FF', name: 'Balo laptop chống nước 15.6"', sku: 'SH-BAG-156', stock: 78, reserved: 8 },
+    ];
+    const items = raw.map(p => {
+      const available = p.stock - p.reserved;
+      let barColor = '#1A9E5C', statusLabel = 'Đủ hàng', barPct = 100;
+      if (p.stock === 0) { barColor = '#D6293E'; statusLabel = 'Hết hàng'; barPct = 0; }
+      else if (p.stock <= 10) { barColor = '#D97706'; statusLabel = 'Sắp hết'; barPct = 30; }
+      return { ...p, available, stockColor: p.stock === 0 ? '#D6293E' : p.stock <= 10 ? '#D97706' : '#14162A', barColor, statusLabel, barPct };
+    });
+    return { navItems, kpis, filterTabs, items };
+  }
+}
+
+</script>
+</body>
+</html>
