@@ -21,6 +21,10 @@ export class ShopRepository {
     return this.prisma.shop.findUnique({ where: { ownerId } });
   }
 
+  findById(id: number): Promise<ShopEntity | null> {
+    return this.prisma.shop.findUnique({ where: { id } });
+  }
+
   findBySlug(slug: string): Promise<ShopEntity | null> {
     return this.prisma.shop.findUnique({ where: { slug } });
   }

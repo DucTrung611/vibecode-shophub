@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../core/database/prisma.service';
+import { CatalogPort, CatalogVariantForCart } from './catalog.port';
 import {
   PRODUCT_DETAIL_INCLUDE,
   PRODUCT_LIST_INCLUDE,
@@ -49,7 +50,7 @@ export interface UpdateVariantData {
 }
 
 @Injectable()
-export class ProductRepository {
+export class ProductRepository implements CatalogPort {
   constructor(private readonly prisma: PrismaService) {}
 
   private buildWhere(filters: ProductListFilters) {
@@ -144,6 +145,54 @@ export class ProductRepository {
     return this.prisma.productVariant.update({
       where: { id: variantId },
       data,
+    });
+  }
+
+  async getVariantForCart(
+    variantId: number,
+  ): Promise<CatalogVariantForCart | null> {
+    const variant = await this.prisma.productVariant.findUnique({
+      where: { id: variantId },
+      include: { product: { select: { name: true } } },
+    });
+    if (!variant) return null;
+    return {
+      id: variant.id,
+      productId: variant.productId,
+      productName: variant.product.name,
+      attributes: variant.attributes,
+      price: variant.price.toString(),
+      stockQuantity: variant.stockQuantity,
+    };
+  }
+
+  async decrementVariantStock(
+    variantId: number,
+    quantity: number,
+  ): Promise<void> {
+    await this.prisma.productVariant.update({
+      where: { id: variantId },
+      data: { stockQuantity: { decrement: quantity } },
+    });
+  }
+
+  async incrementProductSoldCount(
+    productId: number,
+    quantity: number,
+  ): Promise<void> {
+    await this.prisma.product.update({
+      where: { id: productId },
+      data: { soldCount: { increment: quantity } },
+    });
+  }
+
+  async updateProductRating(
+    productId: number,
+    ratingAvg: number,
+  ): Promise<void> {
+    await this.prisma.product.update({
+      where: { id: productId },
+      data: { ratingAvg },
     });
   }
 }

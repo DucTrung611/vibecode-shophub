@@ -10,6 +10,8 @@ describe('AuthService', () => {
     findByEmail: jest.Mock;
     findById: jest.Mock;
     create: jest.Mock;
+    updateRole: jest.Mock;
+    findAddressByIdForUser: jest.Mock;
   };
   let jwtService: { signAsync: jest.Mock; verifyAsync: jest.Mock };
   let redisService: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
@@ -33,6 +35,8 @@ describe('AuthService', () => {
       findByEmail: jest.fn(),
       findById: jest.fn(),
       create: jest.fn(),
+      updateRole: jest.fn(),
+      findAddressByIdForUser: jest.fn(),
     };
     jwtService = {
       signAsync: jest.fn().mockResolvedValue('signed-token'),
