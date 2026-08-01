@@ -1,20 +1,24 @@
 import { apiClient } from "../../../shared/services/api-client";
+import type { ApiResult } from "../../../shared/types/api-response.types";
 import type { AuthResponse } from "../types/auth.types";
 import type { LoginFormValues, RegisterFormValues } from "../utils/auth.schema";
 
-// apiClient's response interceptor unwraps { success, data, meta } down to `data`,
-// so the declared generic here is the actual runtime resolved type despite the
-// AxiosResponse<T> signature — see shared/services/api-client.ts.
 export async function login(values: LoginFormValues): Promise<AuthResponse> {
-  const response = await apiClient.post("/auth/login", values);
-  return response as unknown as AuthResponse;
+  const result = (await apiClient.post(
+    "/auth/login",
+    values,
+  )) as unknown as ApiResult<AuthResponse>;
+  return result.data;
 }
 
 export async function register(
   values: Omit<RegisterFormValues, "agreeTerms">,
 ): Promise<AuthResponse> {
-  const response = await apiClient.post("/auth/register", values);
-  return response as unknown as AuthResponse;
+  const result = (await apiClient.post(
+    "/auth/register",
+    values,
+  )) as unknown as ApiResult<AuthResponse>;
+  return result.data;
 }
 
 export async function logout(): Promise<void> {

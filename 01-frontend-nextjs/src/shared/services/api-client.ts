@@ -4,6 +4,8 @@ import { ApiError, type ApiErrorResponse, type ApiSuccess } from "../types/api-r
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:6060/api/v1";
 
+// Response interceptor below resolves every call to `ApiResult<T>` (`{data, meta}`),
+// not an AxiosResponse — see the interceptor and shared/types/api-response.types.ts.
 export const apiClient = axios.create({ baseURL });
 
 apiClient.interceptors.request.use((config) => {
@@ -32,7 +34,11 @@ async function refreshAccessToken(): Promise<string> {
 }
 
 apiClient.interceptors.response.use(
-  (response) => response.data.data,
+  // Every call site casts the resolved value to ApiResult<T> (see the module
+  // comment above) — axios' interceptor typing expects an AxiosResponse back,
+  // so this cast documents that the actual runtime shape intentionally diverges.
+  (response) =>
+    ({ data: response.data.data, meta: response.data.meta }) as unknown as typeof response,
   async (error: AxiosError<ApiErrorResponse>) => {
     const originalRequest = error.config as
       | (InternalAxiosRequestConfig & { _retried?: boolean })

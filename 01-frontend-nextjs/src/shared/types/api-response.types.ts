@@ -10,6 +10,16 @@ export interface ApiSuccess<T> {
   meta: PaginatedMeta | null;
 }
 
+/**
+ * What `apiClient`'s response interceptor actually resolves every call to
+ * (see shared/services/api-client.ts) — the envelope's `data`/`meta`, with
+ * `success`/`error` already handled (thrown as ApiError on failure).
+ */
+export interface ApiResult<T> {
+  data: T;
+  meta: PaginatedMeta | null;
+}
+
 export interface ApiErrorBody {
   code: string;
   message: string;
