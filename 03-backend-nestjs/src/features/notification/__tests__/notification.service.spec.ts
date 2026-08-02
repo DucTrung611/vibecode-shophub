@@ -1,3 +1,4 @@
+import { EventsGateway } from '../../../core/events/ws.gateway';
 import { NotificationRepository } from '../notification.repository';
 import { NotificationService } from '../notification.service';
 
@@ -10,6 +11,7 @@ describe('NotificationService', () => {
     markAllRead: jest.Mock;
     create: jest.Mock;
   };
+  let eventsGateway: { emitToUser: jest.Mock; emitToShop: jest.Mock };
 
   const userId = 1;
   const otherUserId = 2;
@@ -22,9 +24,11 @@ describe('NotificationService', () => {
       markAllRead: jest.fn(),
       create: jest.fn(),
     };
+    eventsGateway = { emitToUser: jest.fn(), emitToShop: jest.fn() };
 
     service = new NotificationService(
       notificationRepository as unknown as NotificationRepository,
+      eventsGateway as unknown as EventsGateway,
     );
   });
 

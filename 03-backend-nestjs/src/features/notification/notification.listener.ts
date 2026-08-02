@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import { EventsGateway } from '../../core/events/ws.gateway';
 import { ORDER_CREATED, ORDER_STATUS_UPDATED } from '../order/order.events';
 import type {
   OrderCreatedEvent,
@@ -16,6 +17,7 @@ export class NotificationListener {
   constructor(
     private readonly notificationService: NotificationService,
     @Inject(SHOP_PORT) private readonly shopPort: ShopPort,
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   @OnEvent(ORDER_CREATED)
@@ -48,6 +50,12 @@ export class NotificationListener {
       content: `Your order status changed to ${payload.status}.`,
       type: 'order_update',
       referenceId: payload.orderId,
+    });
+
+    this.eventsGateway.emitToUser(payload.buyerId, 'order.status.updated', {
+      orderId: payload.orderId,
+      status: payload.status,
+      updatedAt: payload.updatedAt,
     });
   }
 }

@@ -1,4 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { EventsGateway } from '../../core/events/ws.gateway';
 import { AppException } from '../../shared/exceptions/app.exception';
 import {
   CreateNotificationData,
@@ -9,6 +10,7 @@ import {
 export class NotificationService {
   constructor(
     private readonly notificationRepository: NotificationRepository,
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   async list(userId: number, page: number, limit: number) {
@@ -43,7 +45,17 @@ export class NotificationService {
     await this.notificationRepository.markAllRead(userId);
   }
 
-  notifyUser(userId: number, data: CreateNotificationData) {
-    return this.notificationRepository.create(userId, data);
+  async notifyUser(userId: number, data: CreateNotificationData) {
+    const notification = await this.notificationRepository.create(
+      userId,
+      data,
+    );
+    this.eventsGateway.emitToUser(userId, 'notification.new', {
+      id: notification.id,
+      title: notification.title,
+      type: notification.type,
+      createdAt: notification.createdAt,
+    });
+    return notification;
   }
 }

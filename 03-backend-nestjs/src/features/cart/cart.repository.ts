@@ -73,4 +73,16 @@ export class CartRepository implements CartPort {
       where: { cartId: cart.id, id: { in: itemIds } },
     });
   }
+
+  async findUserIdsWithVariantInCart(variantId: number): Promise<number[]> {
+    const items = await this.prisma.cartItem.findMany({
+      where: { variantId, cart: { userId: { not: null } } },
+      select: { cart: { select: { userId: true } } },
+    });
+    const userIds = new Set<number>();
+    for (const item of items) {
+      if (item.cart.userId !== null) userIds.add(item.cart.userId);
+    }
+    return [...userIds];
+  }
 }
