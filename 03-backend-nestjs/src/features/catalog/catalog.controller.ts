@@ -16,9 +16,13 @@ import { Public } from '../../shared/decorators/public.decorator';
 import { Roles } from '../../shared/decorators/roles.decorator';
 import type { AuthenticatedUser } from '../../shared/types/auth.types';
 import { CatalogService } from './catalog.service';
+import { CreateCategoryDto } from './dto/create-category.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateVariantDto } from './dto/create-variant.dto';
+import { ListFlaggedProductsQueryDto } from './dto/list-flagged-products.query.dto';
 import { ListProductsQueryDto } from './dto/list-products.query.dto';
+import { ModerateProductDto } from './dto/moderate-product.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { UpdateVariantDto } from './dto/update-variant.dto';
 
@@ -93,5 +97,53 @@ export class CatalogController {
     @Body() dto: UpdateVariantDto,
   ) {
     return this.catalogService.updateVariant(user.id, id, variantId, dto);
+  }
+
+  @Roles('seller')
+  @Get('shops/me/inventory/summary')
+  getInventorySummary(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query('status') status?: 'in_stock' | 'low_stock' | 'out_of_stock',
+  ) {
+    return this.catalogService.getInventorySummary(user.id, status);
+  }
+
+  @Roles('admin')
+  @Post('categories')
+  @HttpCode(HttpStatus.CREATED)
+  createCategory(@Body() dto: CreateCategoryDto) {
+    return this.catalogService.createCategory(dto);
+  }
+
+  @Roles('admin')
+  @Patch('categories/:id')
+  updateCategory(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateCategoryDto,
+  ) {
+    return this.catalogService.updateCategory(id, dto);
+  }
+
+  @Roles('admin')
+  @Delete('categories/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  deleteCategory(@Param('id', ParseIntPipe) id: number) {
+    return this.catalogService.deleteCategory(id);
+  }
+
+  @Roles('admin')
+  @Get('admin/products')
+  listFlaggedProducts(@Query() query: ListFlaggedProductsQueryDto) {
+    return this.catalogService.listFlaggedProducts(query);
+  }
+
+  @Roles('admin')
+  @Patch('admin/products/:id/moderate')
+  moderateProduct(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: ModerateProductDto,
+  ) {
+    return this.catalogService.moderateProduct(user.id, id, dto);
   }
 }

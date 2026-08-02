@@ -16,4 +16,5 @@ export interface UserPort {
     userId: number,
     addressId: number,
   ): Promise<AddressEntity | null>;
+  countTotal(): Promise<number>;
 }

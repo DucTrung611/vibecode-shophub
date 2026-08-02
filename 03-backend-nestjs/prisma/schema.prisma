@@ -35,8 +35,17 @@ enum ProductStatus {
   draft
   active
   inactive
+  flagged
 
   @@map("product_status")
+}
+
+enum ModerationAction {
+  approve
+  request_changes
+  remove
+
+  @@map("moderation_action")
 }
 
 enum OrderStatus {
@@ -96,14 +105,16 @@ model User {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
 
-  addresses       Address[]
-  shop            Shop?
-  carts           Cart[]
-  orderGroups     OrderGroup[]
-  orders          Order[]
-  reviews         Review[]
-  wishlists       Wishlist[]
-  notifications   Notification[]
+  addresses         Address[]
+  shop              Shop?
+  carts             Cart[]
+  orderGroups       OrderGroup[]
+  orders            Order[]
+  reviews           Review[]
+  wishlists         Wishlist[]
+  notifications     Notification[]
+  moderatedProducts Product[]              @relation("ProductModerator")
+  moderationLogs    ProductModerationLog[]
 
   @@map("users")
 }
@@ -130,15 +141,18 @@ model Address {
 // ---------- shop ----------
 
 model Shop {
-  id        Int        @id @default(autoincrement())
-  ownerId   Int        @unique @map("owner_id")
-  name      String
-  slug      String     @unique
-  status    ShopStatus @default(pending)
-  ratingAvg Decimal    @default(0) @map("rating_avg") @db.Decimal(3, 2)
-  totalSold Int        @default(0) @map("total_sold")
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @default(now()) @updatedAt @map("updated_at")
+  id                 Int        @id @default(autoincrement())
+  ownerId            Int        @unique @map("owner_id")
+  name               String
+  slug               String     @unique
+  status             ShopStatus @default(pending)
+  ratingAvg          Decimal    @default(0) @map("rating_avg") @db.Decimal(3, 2)
+  totalSold          Int        @default(0) @map("total_sold")
+  businessLicenseUrl String?    @map("business_license_url")
+  documents          Json?
+  rejectionReason    String?    @map("rejection_reason")
+  createdAt          DateTime   @default(now()) @map("created_at")
+  updatedAt          DateTime   @default(now()) @updatedAt @map("updated_at")
 
   owner     User       @relation(fields: [ownerId], references: [id])
   products  Product[]
@@ -151,13 +165,15 @@ model Shop {
 // ---------- catalog ----------
 
 model Category {
-  id        Int        @id @default(autoincrement())
-  parentId  Int?       @map("parent_id")
-  name      String
-  slug      String     @unique
-  sortOrder Int        @default(0) @map("sort_order")
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @default(now()) @updatedAt @map("updated_at")
+  id             Int        @id @default(autoincrement())
+  parentId       Int?       @map("parent_id")
+  name           String
+  slug           String     @unique
+  sortOrder      Int        @default(0) @map("sort_order")
+  commissionRate Decimal    @default(0) @map("commission_rate") @db.Decimal(5, 2)
+  isActive       Boolean    @default(true) @map("is_active")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @default(now()) @updatedAt @map("updated_at")
 
   parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id])
   children  Category[] @relation("CategoryTree")
@@ -168,29 +184,49 @@ model Category {
 }
 
 model Product {
-  id         Int              @id @default(autoincrement())
-  shopId     Int              @map("shop_id")
-  categoryId Int              @map("category_id")
-  name       String
-  slug       String           @unique
-  status     ProductStatus    @default(draft)
-  ratingAvg  Decimal          @default(0) @map("rating_avg") @db.Decimal(3, 2)
-  soldCount  Int              @default(0) @map("sold_count")
-  createdAt  DateTime         @default(now()) @map("created_at")
-  updatedAt  DateTime         @default(now()) @updatedAt @map("updated_at")
+  id            Int                    @id @default(autoincrement())
+  shopId        Int                    @map("shop_id")
+  categoryId    Int                    @map("category_id")
+  name          String
+  slug          String                 @unique
+  status        ProductStatus          @default(draft)
+  ratingAvg     Decimal                @default(0) @map("rating_avg") @db.Decimal(3, 2)
+  soldCount     Int                    @default(0) @map("sold_count")
+  flagReason    String?                @map("flag_reason")
+  moderatedAt   DateTime?              @map("moderated_at")
+  moderatedBy   Int?                   @map("moderated_by")
+  createdAt     DateTime               @default(now()) @map("created_at")
+  updatedAt     DateTime               @default(now()) @updatedAt @map("updated_at")
 
-  shop       Shop             @relation(fields: [shopId], references: [id])
-  category   Category         @relation(fields: [categoryId], references: [id])
-  images     ProductImage[]
-  variants   ProductVariant[]
-  wishlists  Wishlist[]
-  orderItems OrderItem[]
-  reviews    Review[]
+  shop          Shop                   @relation(fields: [shopId], references: [id])
+  category      Category               @relation(fields: [categoryId], references: [id])
+  moderator     User?                  @relation("ProductModerator", fields: [moderatedBy], references: [id])
+  images        ProductImage[]
+  variants      ProductVariant[]
+  wishlists     Wishlist[]
+  orderItems    OrderItem[]
+  reviews       Review[]
+  moderationLogs ProductModerationLog[]
 
   @@index([shopId], map: "idx_products_shop")
   @@index([categoryId], map: "idx_products_category")
   @@index([status], map: "idx_products_status")
   @@map("products")
+}
+
+model ProductModerationLog {
+  id        Int               @id @default(autoincrement())
+  productId Int               @map("product_id")
+  adminId   Int               @map("admin_id")
+  action    ModerationAction
+  note      String?
+  createdAt DateTime          @default(now()) @map("created_at")
+
+  product   Product           @relation(fields: [productId], references: [id])
+  admin     User              @relation(fields: [adminId], references: [id])
+
+  @@index([productId], map: "idx_moderation_logs_product")
+  @@map("product_moderation_logs")
 }
 
 model ProductImage {

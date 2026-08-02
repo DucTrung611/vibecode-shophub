@@ -7,7 +7,13 @@ import {
   OrderDetail,
   OrderListItem,
 } from './entities/order.entity';
-import { OrderItemForReview, OrderPort } from './order.port';
+import {
+  OrderItemForReview,
+  OrderPort,
+  PlatformOrderStats,
+  RevenueBar,
+  ShopOrderStats,
+} from './order.port';
 import { OrderListFilters, OrderStatusValue } from './types/order.types';
 import { generateOrderCode } from './utils/order-code.util';
 
@@ -188,4 +194,169 @@ export class OrderRepository implements OrderPort {
     if (!item || item.order.buyerId !== userId) return null;
     return { id: item.id, productId: item.productId };
   }
+
+  async getShopOrderStats(shopId: number): Promise<ShopOrderStats> {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    const [
+      todayOrders,
+      last7DaysOrders,
+      statusGroups,
+      totalOrders,
+      cancelledCount,
+      recentOrders,
+    ] = await Promise.all([
+      this.prisma.order.findMany({
+        where: { shopId, createdAt: { gte: startOfToday } },
+        select: { totalAmount: true },
+      }),
+      this.prisma.order.findMany({
+        where: { shopId, createdAt: { gte: sevenDaysAgo } },
+        select: { totalAmount: true, createdAt: true },
+      }),
+      this.prisma.order.groupBy({
+        by: ['status'],
+        where: { shopId },
+        _count: { _all: true },
+      }),
+      this.prisma.order.count({ where: { shopId } }),
+      this.prisma.order.count({ where: { shopId, status: 'cancelled' } }),
+      this.prisma.order.findMany({
+        where: { shopId },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        select: {
+          id: true,
+          orderCode: true,
+          status: true,
+          totalAmount: true,
+          createdAt: true,
+        },
+      }),
+    ]);
+
+    return {
+      todayRevenue: todayOrders.reduce(
+        (s, o) => s + o.totalAmount.toNumber(),
+        0,
+      ),
+      last7DaysRevenue: bucketByDay(last7DaysOrders, 7),
+      statusBreakdown: statusGroups.map((g) => ({
+        status: g.status,
+        count: g._count._all,
+      })),
+      cancelRate: totalOrders > 0 ? cancelledCount / totalOrders : 0,
+      totalOrders,
+      recentOrders: recentOrders.map((o) => ({
+        id: o.id,
+        orderCode: o.orderCode,
+        status: o.status,
+        totalAmount: o.totalAmount.toNumber(),
+        createdAt: o.createdAt,
+      })),
+    };
+  }
+
+  async getPlatformOrderStats(): Promise<PlatformOrderStats> {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
+    thirtyDaysAgo.setHours(0, 0, 0, 0);
+    const eightWeeksAgo = new Date();
+    eightWeeksAgo.setDate(eightWeeksAgo.getDate() - 55);
+    eightWeeksAgo.setHours(0, 0, 0, 0);
+
+    const [totalOrders, last30dOrders, last8WeeksOrders] = await Promise.all([
+      this.prisma.order.count(),
+      this.prisma.order.findMany({
+        where: { createdAt: { gte: thirtyDaysAgo } },
+        select: { totalAmount: true },
+      }),
+      this.prisma.order.findMany({
+        where: { createdAt: { gte: eightWeeksAgo } },
+        select: { totalAmount: true, createdAt: true },
+      }),
+    ]);
+
+    return {
+      totalOrders,
+      gmv30d: last30dOrders.reduce((s, o) => s + o.totalAmount.toNumber(), 0),
+      gmvWeekly8: bucketByWeek(last8WeeksOrders, 8),
+    };
+  }
+
+  async getCarrierPerformance() {
+    const grouped = await this.prisma.shipment.groupBy({
+      by: ['carrier', 'status'],
+      _count: { _all: true },
+    });
+    const byCarrier = new Map<
+      string,
+      { carrier: string; total: number; delivered: number }
+    >();
+    for (const row of grouped) {
+      const carrier = row.carrier ?? 'Không xác định';
+      const entry = byCarrier.get(carrier) ?? {
+        carrier,
+        total: 0,
+        delivered: 0,
+      };
+      entry.total += row._count._all;
+      if (row.status === 'delivered') entry.delivered += row._count._all;
+      byCarrier.set(carrier, entry);
+    }
+    return Array.from(byCarrier.values()).map((e) => ({
+      carrier: e.carrier,
+      totalShipments: e.total,
+      delivered: e.delivered,
+      deliveryRate: e.total > 0 ? e.delivered / e.total : 0,
+    }));
+  }
+}
+
+function bucketByDay(
+  orders: { totalAmount: Prisma.Decimal; createdAt: Date }[],
+  days: number,
+): RevenueBar[] {
+  const buckets: RevenueBar[] = [];
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  for (let i = days - 1; i >= 0; i--) {
+    const day = new Date(now);
+    day.setDate(day.getDate() - i);
+    const next = new Date(day);
+    next.setDate(next.getDate() + 1);
+    const value = orders
+      .filter((o) => o.createdAt >= day && o.createdAt < next)
+      .reduce((s, o) => s + o.totalAmount.toNumber(), 0);
+    buckets.push({
+      label: day.toLocaleDateString('vi-VN', { weekday: 'short' }),
+      value,
+    });
+  }
+  return buckets;
+}
+
+function bucketByWeek(
+  orders: { totalAmount: Prisma.Decimal; createdAt: Date }[],
+  weeks: number,
+): RevenueBar[] {
+  const buckets: RevenueBar[] = Array.from({ length: weeks }, (_, i) => ({
+    label: `Tuần ${i + 1}`,
+    value: 0,
+  }));
+  const now = Date.now();
+  for (const o of orders) {
+    const weeksAgo = Math.floor(
+      (now - o.createdAt.getTime()) / (7 * 24 * 60 * 60 * 1000),
+    );
+    const bucket = weeks - 1 - weeksAgo;
+    if (bucket >= 0 && bucket < weeks) {
+      buckets[bucket].value += o.totalAmount.toNumber();
+    }
+  }
+  return buckets;
 }

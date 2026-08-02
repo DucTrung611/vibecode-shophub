@@ -361,4 +361,8 @@ export class OrderService {
 
     return { id: updated.id, paymentStatus: updated.paymentStatus };
   }
+
+  getCarrierPerformanceReport() {
+    return this.orderRepository.getCarrierPerformance();
+  }
 }

@@ -97,4 +97,79 @@ export class UserRepository {
   deleteAddress(id: number): Promise<AddressEntity> {
     return this.prisma.address.delete({ where: { id } });
   }
+
+  async findMany(filters: {
+    page: number;
+    limit: number;
+    role?: 'buyer' | 'seller' | 'admin';
+    search?: string;
+  }): Promise<{ items: UserEntity[]; total: number }> {
+    const where = {
+      ...(filters.role ? { role: filters.role } : {}),
+      ...(filters.search
+        ? {
+            OR: [
+              {
+                fullName: {
+                  contains: filters.search,
+                  mode: 'insensitive' as const,
+                },
+              },
+              {
+                email: {
+                  contains: filters.search,
+                  mode: 'insensitive' as const,
+                },
+              },
+            ],
+          }
+        : {}),
+    };
+    const [items, total] = await Promise.all([
+      this.prisma.user.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: (filters.page - 1) * filters.limit,
+        take: filters.limit,
+      }),
+      this.prisma.user.count({ where }),
+    ]);
+    return { items, total };
+  }
+
+  updateActiveStatus(id: number, isActive: boolean): Promise<UserEntity> {
+    return this.prisma.user.update({ where: { id }, data: { isActive } });
+  }
+
+  countTotal(): Promise<number> {
+    return this.prisma.user.count();
+  }
+
+  async countWeeklySignups(
+    weeks: number,
+  ): Promise<{ label: string; value: number }[]> {
+    const since = new Date();
+    since.setDate(since.getDate() - weeks * 7);
+    const users = await this.prisma.user.findMany({
+      where: { createdAt: { gte: since } },
+      select: { createdAt: true },
+    });
+
+    const buckets = new Map<number, number>();
+    for (let i = 0; i < weeks; i++) buckets.set(i, 0);
+    const now = Date.now();
+    for (const u of users) {
+      const weeksAgo = Math.floor(
+        (now - u.createdAt.getTime()) / (7 * 24 * 60 * 60 * 1000),
+      );
+      const bucket = weeks - 1 - weeksAgo;
+      if (bucket >= 0 && bucket < weeks) {
+        buckets.set(bucket, (buckets.get(bucket) ?? 0) + 1);
+      }
+    }
+    return Array.from(buckets.entries()).map(([i, value]) => ({
+      label: `Tuần ${i + 1}`,
+      value,
+    }));
+  }
 }

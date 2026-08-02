@@ -195,4 +195,125 @@ export class ProductRepository implements CatalogPort {
       data: { ratingAvg },
     });
   }
+
+  async findFlagged(page: number, limit: number) {
+    const where = { status: 'flagged' as const };
+    const [items, total] = await Promise.all([
+      this.prisma.product.findMany({
+        where,
+        include: PRODUCT_LIST_INCLUDE,
+        orderBy: { updatedAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prisma.product.count({ where }),
+    ]);
+    return { items, total };
+  }
+
+  countFlaggedProducts(): Promise<number> {
+    return this.prisma.product.count({ where: { status: 'flagged' } });
+  }
+
+  async getTopCategories(limit: number) {
+    const grouped = await this.prisma.product.groupBy({
+      by: ['categoryId'],
+      _count: { _all: true },
+      orderBy: { _count: { categoryId: 'desc' } },
+      take: limit,
+    });
+    const categories = await this.prisma.category.findMany({
+      where: { id: { in: grouped.map((g) => g.categoryId) } },
+    });
+    const nameById = new Map(categories.map((c) => [c.id, c.name]));
+    return grouped.map((g) => ({
+      categoryId: g.categoryId,
+      name: nameById.get(g.categoryId) ?? 'Unknown',
+      count: g._count._all,
+    }));
+  }
+
+  async moderate(
+    productId: number,
+    adminId: number,
+    action: 'approve' | 'request_changes' | 'remove',
+    note: string | undefined,
+  ) {
+    const status =
+      action === 'approve'
+        ? ('active' as const)
+        : action === 'remove'
+          ? ('inactive' as const)
+          : ('flagged' as const);
+
+    const [product] = await this.prisma.$transaction([
+      this.prisma.product.update({
+        where: { id: productId },
+        data: {
+          status,
+          flagReason: action === 'request_changes' ? (note ?? null) : null,
+          moderatedAt: new Date(),
+          moderatedBy: adminId,
+        },
+      }),
+      this.prisma.productModerationLog.create({
+        data: { productId, adminId, action, note },
+      }),
+    ]);
+    return product;
+  }
+
+  async getShopProductStats(shopId: number) {
+    const [totalListings, topProducts] = await Promise.all([
+      this.prisma.product.count({ where: { shopId } }),
+      this.prisma.product.findMany({
+        where: { shopId },
+        orderBy: { soldCount: 'desc' },
+        take: 5,
+        select: { id: true, name: true, soldCount: true },
+      }),
+    ]);
+    return { totalListings, topProducts };
+  }
+
+  async getInventorySummary(
+    shopId: number,
+    status?: 'in_stock' | 'low_stock' | 'out_of_stock',
+  ) {
+    const LOW_STOCK_THRESHOLD = 10;
+    const variants = await this.prisma.productVariant.findMany({
+      where: { product: { shopId } },
+      include: { product: { select: { name: true, status: true } } },
+      orderBy: { stockQuantity: 'asc' },
+    });
+
+    const withStatus = variants.map((v) => ({
+      id: v.id,
+      sku: v.sku,
+      productName: v.product.name,
+      attributes: v.attributes,
+      stockQuantity: v.stockQuantity,
+      reserved: 0,
+      available: v.stockQuantity,
+      stockStatus:
+        v.stockQuantity === 0
+          ? ('out_of_stock' as const)
+          : v.stockQuantity <= LOW_STOCK_THRESHOLD
+            ? ('low_stock' as const)
+            : ('in_stock' as const),
+    }));
+
+    const totalSkus = withStatus.length;
+    const outOfStock = withStatus.filter(
+      (v) => v.stockStatus === 'out_of_stock',
+    ).length;
+    const lowStock = withStatus.filter(
+      (v) => v.stockStatus === 'low_stock',
+    ).length;
+    const items = status
+      ? withStatus.filter((v) => v.stockStatus === status)
+      : withStatus;
+
+    return { totalSkus, outOfStock, lowStock, items };
+  }
 }

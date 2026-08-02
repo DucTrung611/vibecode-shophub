@@ -8,6 +8,9 @@ export interface ShopEntity {
   status: 'pending' | 'approved' | 'suspended' | 'rejected';
   ratingAvg: Prisma.Decimal;
   totalSold: number;
+  businessLicenseUrl: string | null;
+  documents: Prisma.JsonValue | null;
+  rejectionReason: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -115,6 +115,10 @@ Content-Type: multipart/form-data
 | `SHOP_001` | 403 | Shop not approved — seller actions blocked |
 | `VOUCHER_001` | 400 | Voucher expired or usage limit reached |
 | `REVIEW_001` | 409 | Order item already reviewed |
+| `SHOP_002` | 409 | Owner already has a shop |
+| `SHOP_003` | 400 | `rejectionReason` missing when rejecting a shop |
+| `USER_001` | 404 | User not found |
+| `CATEGORY_001` | 409 | Category has products or child categories, cannot delete |
 
 **HTTP status usage:** `200` read/update success, `201` created, `204` deleted (no body), `400` validation, `401`/`403` auth, `404` not found, `409` conflict/state error, `402` payment failed, `422` semantically invalid (e.g. checkout with empty cart), `429` rate limited, `500` unhandled.
 
@@ -140,15 +144,19 @@ Content-Type: multipart/form-data
 | POST | `/users/me/addresses` | Add address | Bearer |
 | PATCH | `/users/me/addresses/:id` | Update address | Bearer |
 | DELETE | `/users/me/addresses/:id` | Delete address | Bearer |
+| GET | `/admin/users` | List/filter users (role, status, search) | Bearer (admin) |
+| PATCH | `/admin/users/:id/status` | Lock/unlock a user account | Bearer (admin) |
 
 ### shop
 | Method | Path | Description | Auth |
 |---|---|---|---|
-| POST | `/shops` | Create shop (seller onboarding) | Bearer (buyer→seller) |
+| POST | `/shops` | Create shop (seller onboarding, starts `pending`) | Bearer (buyer→seller) |
 | GET | `/shops/:slug` | Public shop profile | Public |
 | PATCH | `/shops/me` | Update own shop | Bearer (seller) |
-| GET | `/shops/me/dashboard` | Seller dashboard summary | Bearer (seller) |
-| PATCH | `/admin/shops/:id/status` | Approve/suspend shop | Bearer (admin) |
+| GET | `/shops/me/dashboard` | Seller dashboard summary (KPIs, revenue trend, recent orders, top products) | Bearer (seller) |
+| GET | `/admin/shops` | List shops filtered by status (pending/approved/suspended/rejected) | Bearer (admin) |
+| GET | `/admin/shops/:id` | Shop detail incl. documents, for approval review | Bearer (admin) |
+| PATCH | `/admin/shops/:id/status` | Approve/reject/suspend shop (`rejectionReason` required when rejecting) | Bearer (admin) |
 
 ### catalog
 | Method | Path | Description | Auth |
@@ -162,6 +170,20 @@ Content-Type: multipart/form-data
 | POST | `/products/:id/images` | Upload product images | Bearer (seller, owner) |
 | POST | `/products/:id/variants` | Add variant | Bearer (seller, owner) |
 | PATCH | `/products/:id/variants/:variantId` | Update variant (price/stock) | Bearer (seller, owner) |
+| GET | `/shops/me/inventory/summary` | Stock KPIs + low-stock variant list for own shop | Bearer (seller) |
+| POST | `/categories` | Create category | Bearer (admin) |
+| PATCH | `/categories/:id` | Update category (incl. `commissionRate`, `isActive`) | Bearer (admin) |
+| DELETE | `/categories/:id` | Delete category (only if no products/children) | Bearer (admin) |
+| GET | `/admin/products` | List flagged/pending-moderation products | Bearer (admin) |
+| PATCH | `/admin/products/:id/moderate` | Approve / request-changes / remove a product | Bearer (admin) |
+
+### admin dashboard & reports
+| Method | Path | Description | Auth |
+|---|---|---|---|
+| GET | `/admin/dashboard` | Platform KPIs, GMV trend, needs-action queue, new shops, top categories | Bearer (admin) |
+| GET | `/admin/reports/revenue` | Weekly GMV bars + category breakdown + top sellers | Bearer (admin) |
+| GET | `/admin/reports/users` | Weekly new-user bars | Bearer (admin) |
+| GET | `/admin/reports/orders` | Carrier performance table | Bearer (admin) |
 
 ### cart
 | Method | Path | Description | Auth |

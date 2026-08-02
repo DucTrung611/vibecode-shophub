@@ -4,7 +4,9 @@ import { slugify } from '../../shared/utils/slugify.util';
 import { USER_PORT } from '../user/user.port';
 import type { UserPort } from '../user/user.port';
 import { CreateShopDto } from './dto/create-shop.dto';
+import { ListShopsQueryDto } from './dto/list-shops.query.dto';
 import { UpdateShopDto } from './dto/update-shop.dto';
+import { UpdateShopStatusDto } from './dto/update-shop-status.dto';
 import { SHOP_PORT } from './shop.port';
 import type { ShopPort } from './shop.port';
 
@@ -32,8 +34,8 @@ export class ShopService {
       ownerId,
       name: dto.name,
       slug,
-      // No admin shop-approval flow yet — auto-approve at creation (MVP simplification).
-      status: 'approved',
+      // New shops require admin approval before they're publicly visible/sellable.
+      status: 'pending',
     });
 
     await this.userPort.updateRole(ownerId, 'seller');
@@ -63,6 +65,42 @@ export class ShopService {
       );
     }
     return this.shopPort.updateByOwnerId(ownerId, dto);
+  }
+
+  async listShops(query: ListShopsQueryDto) {
+    const { items, total } = await this.shopPort.findManyByStatus(
+      query.status,
+      query.page,
+      query.limit,
+    );
+    return { items, meta: { page: query.page, limit: query.limit, total } };
+  }
+
+  async getShopDetail(id: number) {
+    const shop = await this.shopPort.findById(id);
+    if (!shop) {
+      throw new AppException(
+        'COMMON_404',
+        'Shop not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return shop;
+  }
+
+  async updateShopStatus(id: number, dto: UpdateShopStatusDto) {
+    if (dto.status === 'rejected' && !dto.rejectionReason) {
+      throw new AppException(
+        'SHOP_003',
+        'rejectionReason is required when rejecting a shop',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    await this.getShopDetail(id);
+    return this.shopPort.updateStatus(id, {
+      status: dto.status,
+      rejectionReason: dto.rejectionReason,
+    });
   }
 
   private async resolveUniqueSlug(baseSlug: string): Promise<string> {

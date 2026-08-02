@@ -7,7 +7,7 @@ Multi-vendor marketplace data model. Order-per-shop pattern: a buyer's cart span
 - `features/auth`: `users`
 - `features/user`: `users`, `addresses`
 - `features/shop`: `shops`
-- `features/catalog`: `categories`, `products`, `product_images`, `product_variants`
+- `features/catalog`: `categories`, `products`, `product_images`, `product_variants`, `product_moderation_logs`
 - `features/cart`: `carts`, `cart_items`
 - `features/order`: `order_groups`, `orders`, `order_items`, `payments`, `shipments`
 - `features/review`: `reviews`
@@ -41,13 +41,14 @@ Multi-vendor marketplace data model. Order-per-shop pattern: a buyer's cart span
 ### Feature: shop
 | Table | Key Fields | Notes |
 |---|---|---|
-| `shops` | `id` PK, `owner_id` FK→users, `name`, `slug` UQ, `status` (enum: pending/approved/suspended/rejected), `rating_avg`, `total_sold` | Owner must have `role = seller` (app-level check) |
+| `shops` | `id` PK, `owner_id` FK→users, `name`, `slug` UQ, `status` (enum: pending/approved/suspended/rejected), `rating_avg`, `total_sold`, `business_license_url`, `documents` JSONB, `rejection_reason` | Owner must have `role = seller` (app-level check). New shops start `pending`; `rejection_reason` set only when `status = rejected` |
 
 ### Feature: catalog
 | Table | Key Fields | Notes |
 |---|---|---|
-| `categories` | `id` PK, `parent_id` FK→categories (self-ref), `name`, `slug` UQ, `sort_order` | Multi-level tree; query via recursive CTE |
-| `products` | `id` PK, `shop_id` FK→shops, `category_id` FK→categories, `name`, `slug` UQ, `status` (enum: draft/active/inactive), `rating_avg`, `sold_count` | |
+| `categories` | `id` PK, `parent_id` FK→categories (self-ref), `name`, `slug` UQ, `sort_order`, `commission_rate` NUMERIC(5,2) default 0, `is_active` default true | Multi-level tree; query via recursive CTE |
+| `products` | `id` PK, `shop_id` FK→shops, `category_id` FK→categories, `name`, `slug` UQ, `status` (enum: draft/active/inactive/flagged), `rating_avg`, `sold_count`, `flag_reason`, `moderated_at`, `moderated_by` FK→users (nullable) | `flagged` = pending admin moderation |
+| `product_moderation_logs` | `id` PK, `product_id` FK→products, `admin_id` FK→users, `action` (enum: approve/request_changes/remove), `note`, `created_at` | Append-only moderation history for admin review UI |
 | `product_images` | `id` PK, `product_id` FK→products, `url`, `sort_order` | 1:N |
 | `product_variants` | `id` PK, `product_id` FK→products, `sku` UQ, `attributes` JSONB, `price`, `compare_at_price`, `stock_quantity` | `attributes` e.g. `{"color":"red","size":"L"}` — JSONB avoids schema churn per product category |
 
@@ -137,7 +138,7 @@ erDiagram
 
 - **Naming:** `<timestamp>_<verb>_<subject>` e.g. `20260801120000_create_products_table`, `20260805090000_add_compare_at_price_to_variants`.
 - **Scope:** one logical change per migration; don't bundle unrelated tables.
-- **Order:** respect FK dependency order — `users/addresses` → `categories/shops` → `products/product_images/product_variants` → `carts/cart_items` → `order_groups/orders/order_items/payments/shipments` → `reviews/wishlists` → `vouchers/notifications`.
+- **Order:** respect FK dependency order — `users/addresses` → `categories/shops` → `products/product_images/product_variants/product_moderation_logs` → `carts/cart_items` → `order_groups/orders/order_items/payments/shipments` → `reviews/wishlists` → `vouchers/notifications`.
 - **Versioning:** rely on the ORM's migration history table (`_prisma_migrations` / TypeORM `migrations`) as the single source of truth; never hand-edit applied migrations.
 - **Rollback policy:** every migration must define a working `down`. Destructive changes (drop column/table) ship as two-step migrations: (1) stop writing/reading the column in code, deploy, (2) drop it in a follow-up migration — never both in one deploy.
 - **Search:** product full-text/filter search is served by Meilisearch/Elasticsearch synced from Postgres, not by querying Postgres directly in production.

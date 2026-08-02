@@ -5,7 +5,16 @@ import type { ShopPort } from '../../shop/shop.port';
 
 describe('CatalogService', () => {
   let service: CatalogService;
-  let categoryRepository: { findTree: jest.Mock };
+  let categoryRepository: {
+    findTree: jest.Mock;
+    findAll: jest.Mock;
+    findById: jest.Mock;
+    create: jest.Mock;
+    update: jest.Mock;
+    delete: jest.Mock;
+    countProducts: jest.Mock;
+    countChildren: jest.Mock;
+  };
   let productRepository: {
     findMany: jest.Mock;
     findBySlug: jest.Mock;
@@ -16,6 +25,9 @@ describe('CatalogService', () => {
     createVariant: jest.Mock;
     findVariantWithOwner: jest.Mock;
     updateVariant: jest.Mock;
+    findFlagged: jest.Mock;
+    moderate: jest.Mock;
+    getInventorySummary: jest.Mock;
   };
   let shopPort: { findByOwnerId: jest.Mock };
 
@@ -24,7 +36,16 @@ describe('CatalogService', () => {
   const baseProduct = { id: 10, shop: { ownerId } };
 
   beforeEach(() => {
-    categoryRepository = { findTree: jest.fn() };
+    categoryRepository = {
+      findTree: jest.fn(),
+      findAll: jest.fn().mockResolvedValue([]),
+      findById: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      countProducts: jest.fn(),
+      countChildren: jest.fn(),
+    };
     productRepository = {
       findMany: jest.fn(),
       findBySlug: jest.fn(),
@@ -35,6 +56,9 @@ describe('CatalogService', () => {
       createVariant: jest.fn(),
       findVariantWithOwner: jest.fn(),
       updateVariant: jest.fn(),
+      findFlagged: jest.fn(),
+      moderate: jest.fn(),
+      getInventorySummary: jest.fn(),
     };
     shopPort = { findByOwnerId: jest.fn() };
 
@@ -286,6 +310,119 @@ describe('CatalogService', () => {
         price: 50000,
       });
       expect(result).toEqual({ id: 1, price: 50000 });
+    });
+  });
+
+  describe('getInventorySummary', () => {
+    it('throws COMMON_404 when the caller has no shop', async () => {
+      shopPort.findByOwnerId.mockResolvedValue(null);
+
+      await expect(service.getInventorySummary(ownerId)).rejects.toMatchObject({
+        response: { code: 'COMMON_404' },
+      });
+    });
+
+    it('delegates to the product repository scoped to the caller shop', async () => {
+      shopPort.findByOwnerId.mockResolvedValue({ id: 5 });
+      productRepository.getInventorySummary.mockResolvedValue({
+        totalSkus: 3,
+        outOfStock: 1,
+        lowStock: 1,
+        items: [],
+      });
+
+      const result = await service.getInventorySummary(ownerId, 'low_stock');
+
+      expect(productRepository.getInventorySummary).toHaveBeenCalledWith(
+        5,
+        'low_stock',
+      );
+      expect(result.totalSkus).toBe(3);
+    });
+  });
+
+  describe('category management', () => {
+    it('creates a category with a unique slug', async () => {
+      categoryRepository.create.mockResolvedValue({ id: 1, name: 'Điện tử' });
+
+      const result = await service.createCategory({ name: 'Điện tử' });
+
+      expect(categoryRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({ name: 'Điện tử', slug: 'dien-tu' }),
+      );
+      expect(result).toEqual({ id: 1, name: 'Điện tử' });
+    });
+
+    it('throws COMMON_404 when updating a missing category', async () => {
+      categoryRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        service.updateCategory(1, { name: 'New' }),
+      ).rejects.toMatchObject({ response: { code: 'COMMON_404' } });
+    });
+
+    it('throws CATEGORY_001 when deleting a category with products', async () => {
+      categoryRepository.findById.mockResolvedValue({ id: 1 });
+      categoryRepository.countProducts.mockResolvedValue(2);
+      categoryRepository.countChildren.mockResolvedValue(0);
+
+      await expect(service.deleteCategory(1)).rejects.toMatchObject({
+        response: { code: 'CATEGORY_001' },
+      });
+    });
+
+    it('deletes a category with no products or children', async () => {
+      categoryRepository.findById.mockResolvedValue({ id: 1 });
+      categoryRepository.countProducts.mockResolvedValue(0);
+      categoryRepository.countChildren.mockResolvedValue(0);
+
+      await service.deleteCategory(1);
+
+      expect(categoryRepository.delete).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('product moderation', () => {
+    it('lists flagged products with pagination', async () => {
+      productRepository.findFlagged.mockResolvedValue({
+        items: [{ id: 1 }],
+        total: 1,
+      });
+
+      const result = await service.listFlaggedProducts({ page: 1, limit: 20 });
+
+      expect(result).toEqual({
+        items: [{ id: 1 }],
+        meta: { page: 1, limit: 20, total: 1 },
+      });
+    });
+
+    it('throws PRODUCT_001 when moderating a missing product', async () => {
+      productRepository.findByIdWithOwner.mockResolvedValue(null);
+
+      await expect(
+        service.moderateProduct(99, 10, { action: 'approve' }),
+      ).rejects.toMatchObject({ response: { code: 'PRODUCT_001' } });
+    });
+
+    it('moderates a product via the repository', async () => {
+      productRepository.findByIdWithOwner.mockResolvedValue(baseProduct);
+      productRepository.moderate.mockResolvedValue({
+        id: 10,
+        status: 'active',
+      });
+
+      const result = await service.moderateProduct(99, 10, {
+        action: 'approve',
+      });
+
+      expect(productRepository.moderate).toHaveBeenCalledWith(
+        10,
+        99,
+        'approve',
+        undefined,
+      );
+      expect(result).toEqual({ id: 10, status: 'active' });
     });
   });
 });

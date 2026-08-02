@@ -80,4 +80,10 @@ export class OrderController {
   ) {
     return this.orderService.initiatePayment(user.id, id, dto);
   }
+
+  @Roles('admin')
+  @Get('admin/reports/orders')
+  getCarrierPerformanceReport() {
+    return this.orderService.getCarrierPerformanceReport();
+  }
 }

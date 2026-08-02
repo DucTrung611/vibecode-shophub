@@ -20,6 +20,8 @@ import { VoucherModule } from './features/voucher/voucher.module';
 import { OrderModule } from './features/order/order.module';
 import { ReviewModule } from './features/review/review.module';
 import { NotificationModule } from './features/notification/notification.module';
+import { SellerDashboardModule } from './features/seller-dashboard/seller-dashboard.module';
+import { AdminModule } from './features/admin/admin.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { NotificationModule } from './features/notification/notification.module'
     OrderModule,
     ReviewModule,
     NotificationModule,
+    SellerDashboardModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [

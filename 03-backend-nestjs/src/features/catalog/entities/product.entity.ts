@@ -6,7 +6,7 @@ export interface ProductEntity {
   categoryId: number;
   name: string;
   slug: string;
-  status: 'draft' | 'active' | 'inactive';
+  status: 'draft' | 'active' | 'inactive' | 'flagged';
   ratingAvg: Prisma.Decimal;
   soldCount: number;
   createdAt: Date;

@@ -11,6 +11,9 @@ describe('UserService', () => {
     createAddress: jest.Mock;
     updateAddress: jest.Mock;
     deleteAddress: jest.Mock;
+    findMany: jest.Mock;
+    updateActiveStatus: jest.Mock;
+    countWeeklySignups: jest.Mock;
   };
 
   const userId = 1;
@@ -37,6 +40,9 @@ describe('UserService', () => {
       createAddress: jest.fn(),
       updateAddress: jest.fn(),
       deleteAddress: jest.fn(),
+      findMany: jest.fn(),
+      updateActiveStatus: jest.fn(),
+      countWeeklySignups: jest.fn(),
     };
 
     service = new UserService(userRepository as unknown as UserRepository);
@@ -144,6 +150,71 @@ describe('UserService', () => {
       await service.deleteAddress(userId, 1);
 
       expect(userRepository.deleteAddress).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('getPublicProfile', () => {
+    it('throws USER_001 when the user does not exist', async () => {
+      userRepository.findById.mockResolvedValue(null);
+
+      await expect(service.getPublicProfile(userId)).rejects.toMatchObject({
+        response: { code: 'USER_001' },
+      });
+    });
+
+    it('returns only public fields', async () => {
+      userRepository.findById.mockResolvedValue(baseUser);
+
+      const result = await service.getPublicProfile(userId);
+
+      expect(result).toEqual({
+        id: baseUser.id,
+        fullName: baseUser.fullName,
+        role: baseUser.role,
+      });
+      expect(result).not.toHaveProperty('email');
+    });
+  });
+
+  describe('updateUserStatus', () => {
+    it('throws USER_001 when the user does not exist', async () => {
+      userRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        service.updateUserStatus(userId, { isActive: false }),
+      ).rejects.toMatchObject({ response: { code: 'USER_001' } });
+    });
+
+    it('locks the user account', async () => {
+      userRepository.findById.mockResolvedValue(baseUser);
+      userRepository.updateActiveStatus.mockResolvedValue({
+        ...baseUser,
+        isActive: false,
+      });
+
+      const result = await service.updateUserStatus(userId, {
+        isActive: false,
+      });
+
+      expect(userRepository.updateActiveStatus).toHaveBeenCalledWith(
+        userId,
+        false,
+      );
+      expect(result.isActive).toBe(false);
+    });
+  });
+
+  describe('listUsers', () => {
+    it('returns paginated profiles', async () => {
+      userRepository.findMany.mockResolvedValue({
+        items: [baseUser],
+        total: 1,
+      });
+
+      const result = await service.listUsers({ page: 1, limit: 20 });
+
+      expect(result.meta).toEqual({ page: 1, limit: 20, total: 1 });
+      expect(result.items[0]).not.toHaveProperty('passwordHash');
     });
   });
 });
