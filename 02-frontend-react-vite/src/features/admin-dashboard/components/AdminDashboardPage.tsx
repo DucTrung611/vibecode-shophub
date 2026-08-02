@@ -5,7 +5,7 @@ import { Card } from "../../../shared/components/Card";
 import { StatCard } from "../../../shared/components/StatCard";
 import { Table, type TableColumn } from "../../../shared/components/Table";
 import { Badge, type BadgeVariant } from "../../../shared/components/Badge";
-import { formatDate } from "../../../shared/utils/format";
+import { formatCurrency, formatDate } from "../../../shared/utils/format";
 import { useAdminDashboard } from "../hooks/useAdminDashboard";
 import type { NewShop } from "../types/admin-dashboard.types";
 
@@ -68,7 +68,9 @@ export function AdminDashboardPage() {
             <StatCard
               key={kpi.label}
               label={kpi.label}
-              value={kpi.value}
+              value={
+                /gmv|doanh thu/i.test(kpi.label) ? formatCurrency(Number(kpi.value)) : kpi.value
+              }
               icon={<Icon size={16} />}
               iconBg={KPI_ICON_BG[index]}
               delta={

@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { Search, ShieldCheck, Store, Users } from "lucide-react";
 import { Table, type TableColumn } from "../../../shared/components/Table";
 import { Pagination } from "../../../shared/components/Pagination";
+import { StatCard } from "../../../shared/components/StatCard";
 import { Tabs, type TabItem } from "../../../shared/components/Tabs";
 import { Badge, type BadgeVariant } from "../../../shared/components/Badge";
 import { Modal } from "../../../shared/components/Modal";
 import { Button } from "../../../shared/components/Button";
+import { useSessionStore } from "../../../shared/stores/session.store";
 import { formatDate } from "../../../shared/utils/format";
 import { useAdminUsers } from "../hooks/useAdminUsers";
 import { useUpdateUserStatus } from "../hooks/useUpdateUserStatus";
+import { useUserRoleCounts } from "../hooks/useUserRoleCounts";
 import type { AdminUser, UserRole } from "../types/admin-users.types";
 
 const ROLE_TABS: TabItem[] = [
@@ -31,6 +34,7 @@ export function AdminUsersPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [lockTarget, setLockTarget] = useState<AdminUser | null>(null);
+  const currentUserId = useSessionStore((state) => state.user?.id);
 
   const { data, isLoading, isError } = useAdminUsers({
     page,
@@ -39,6 +43,7 @@ export function AdminUsersPage() {
     search: search || undefined,
   });
   const updateStatus = useUpdateUserStatus();
+  const { data: roleCounts } = useUserRoleCounts();
 
   const handleTabChange = (value: string) => {
     setRole(value);
@@ -95,22 +100,48 @@ export function AdminUsersPage() {
       header: "Thao tác",
       accessor: "id",
       className: "text-right",
-      render: (row) => (
-        <div className="flex justify-end">
-          <button
-            type="button"
-            onClick={() => setLockTarget(row)}
-            className={row.isActive ? "text-xs font-bold text-error" : "text-xs font-bold text-success"}
-          >
-            {row.isActive ? "Khóa" : "Mở khóa"}
-          </button>
-        </div>
-      ),
+      render: (row) =>
+        row.id === currentUserId ? (
+          <div className="flex justify-end">
+            <span className="text-xs font-manrope text-neutral-400">Tài khoản của bạn</span>
+          </div>
+        ) : (
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={() => setLockTarget(row)}
+              className={row.isActive ? "text-xs font-bold text-error" : "text-xs font-bold text-success"}
+            >
+              {row.isActive ? "Khóa" : "Mở khóa"}
+            </button>
+          </div>
+        ),
     },
   ];
 
   return (
     <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-3 gap-4">
+        <StatCard
+          label="Người mua"
+          value={roleCounts?.buyer ?? "—"}
+          icon={<Users size={16} />}
+          iconBg="#EAF1FD"
+        />
+        <StatCard
+          label="Người bán"
+          value={roleCounts?.seller ?? "—"}
+          icon={<Store size={16} />}
+          iconBg="#FFF4E0"
+        />
+        <StatCard
+          label="Quản trị viên"
+          value={roleCounts?.admin ?? "—"}
+          icon={<ShieldCheck size={16} />}
+          iconBg="#FDEAEC"
+        />
+      </div>
+
       <div className="flex items-center justify-between">
         <Tabs tabs={ROLE_TABS} value={role} onChange={handleTabChange} />
         <div className="flex w-[280px] items-center gap-2 rounded-[9px] border border-neutral-200 bg-white px-3.5 py-2.5">

@@ -5,11 +5,13 @@
 `GET /admin/users` and `PATCH /admin/users/:id/status`.
 
 ## Key decisions
-- The design mock (`User Management.dc.html`) shows a 4-KPI row above the table (total
-  users / buyers / sellers / admins broken out). The backend has no endpoint returning
-  that per-role breakdown (`GET /admin/users` only returns the *currently filtered*
-  page's `meta.total`, not all four counts simultaneously) — rather than fabricate the
-  other three numbers, the KPI row is omitted. Noted as a deviation from the mock.
+- The design mock (`User Management.dc.html`) shows a KPI row above the table (buyers /
+  sellers / admins broken out). There's still no dedicated "role counts" endpoint, but
+  `GET /admin/users` accepts a `role` filter and its `meta.total` is an exact count for
+  that role — `useUserRoleCounts` fires 3 parallel `limit=1` requests (one per role) and
+  reads `meta.total` off each, rather than adding a backend endpoint or fabricating
+  numbers. "Total users" isn't shown since it'd be a 4th request for a number the 3 role
+  cards already sum to.
 - Locking a user requires confirming via `Modal` first (brief calls this out explicitly
   as "a meaningful action") — unlocking also goes through the same modal for consistency,
   though it's lower-stakes.

@@ -105,7 +105,12 @@ export function SellerDashboardPage() {
                   width={40}
                 />
                 <Tooltip formatter={(value) => formatCurrency(Number(value ?? 0))} />
-                <Bar dataKey="value" fill="#3A56E8" radius={[6, 6, 0, 0]} />
+                <Bar
+                  dataKey="value"
+                  fill="#3A56E8"
+                  activeBar={{ fill: "#2A3FD1" }}
+                  radius={[6, 6, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -116,6 +121,11 @@ export function SellerDashboardPage() {
             Trạng thái đơn hàng
           </h2>
           <div className="flex flex-col gap-3">
+            {data.orderStatusBreakdown.length === 0 && (
+              <p className="py-8 text-center text-sm font-manrope text-neutral-500">
+                Không có dữ liệu
+              </p>
+            )}
             {data.orderStatusBreakdown.map((item) => {
               const max = Math.max(
                 1,

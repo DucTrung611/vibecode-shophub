@@ -4,6 +4,7 @@ import { Badge, type BadgeVariant } from "../../../shared/components/Badge";
 import { StatCard } from "../../../shared/components/StatCard";
 import { Table, type TableColumn } from "../../../shared/components/Table";
 import { Tabs } from "../../../shared/components/Tabs";
+import { formatAttributeLabel } from "../../../shared/utils/variant-attribute-label";
 import { useInventorySummary } from "../hooks/useInventorySummary";
 import type { InventoryItem, InventoryStatusFilter, StockStatus } from "../types/inventory.types";
 
@@ -38,7 +39,7 @@ export function SellerInventoryPage() {
       accessor: "attributes",
       render: (row) =>
         Object.entries(row.attributes ?? {})
-          .map(([key, value]) => `${key}: ${value}`)
+          .map(([key, value]) => `${formatAttributeLabel(key)}: ${value}`)
           .join(", ") || "—",
     },
     { header: "Tồn kho", accessor: "stockQuantity" },

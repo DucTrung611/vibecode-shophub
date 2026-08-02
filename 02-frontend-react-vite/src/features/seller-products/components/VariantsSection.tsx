@@ -3,6 +3,7 @@ import { Plus, SquarePen } from "lucide-react";
 import { Button } from "../../../shared/components/Button";
 import { Table, type TableColumn } from "../../../shared/components/Table";
 import { formatCurrency } from "../../../shared/utils/format";
+import { formatAttributeLabel } from "../../../shared/utils/variant-attribute-label";
 import { useCreateVariant, useUpdateVariant } from "../hooks/useVariantMutations";
 import type { ProductVariant } from "../types/product.types";
 import { VariantFormModal } from "./VariantFormModal";
@@ -26,7 +27,7 @@ export function VariantsSection({ productId, slug, variants }: VariantsSectionPr
       render: (row) =>
         Object.entries(row.attributes ?? {})
           .filter(([, value]) => value)
-          .map(([key, value]) => `${key}: ${value}`)
+          .map(([key, value]) => `${formatAttributeLabel(key)}: ${value}`)
           .join(", ") || "—",
     },
     { header: "Giá bán", accessor: "price", render: (row) => formatCurrency(row.price) },
