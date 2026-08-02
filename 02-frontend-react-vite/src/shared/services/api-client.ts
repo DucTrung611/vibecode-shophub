@@ -6,13 +6,23 @@ const baseURL = import.meta.env.VITE_API_URL ?? "http://localhost:6060/api/v1";
 
 export const apiClient = axios.create({ baseURL });
 
-apiClient.interceptors.request.use((config) => {
+// `rawApiClient` shares the same base URL/auth/refresh behavior as `apiClient` but
+// resolves with the FULL envelope ({ success, data, meta }) instead of unwrapping
+// straight to `data`. `apiClient`'s interceptor below discards `meta`, so paginated
+// list endpoints (which need `meta.total` for shared/components/Pagination.tsx)
+// go through this instance instead.
+export const rawApiClient = axios.create({ baseURL });
+
+function attachAuthHeader(config: InternalAxiosRequestConfig) {
   const accessToken = useSessionStore.getState().accessToken;
   if (accessToken) {
     config.headers.set("Authorization", `Bearer ${accessToken}`);
   }
   return config;
-});
+}
+
+apiClient.interceptors.request.use(attachAuthHeader);
+rawApiClient.interceptors.request.use(attachAuthHeader);
 
 let refreshPromise: Promise<string> | null = null;
 
@@ -31,9 +41,8 @@ async function refreshAccessToken(): Promise<string> {
   return accessToken;
 }
 
-apiClient.interceptors.response.use(
-  (response) => response.data.data,
-  async (error: AxiosError<ApiErrorResponse>) => {
+function makeErrorHandler(client: typeof apiClient) {
+  return async (error: AxiosError<ApiErrorResponse>) => {
     const originalRequest = error.config as
       | (InternalAxiosRequestConfig & { _retried?: boolean })
       | undefined;
@@ -52,7 +61,7 @@ apiClient.interceptors.response.use(
         });
         const accessToken = await refreshPromise;
         originalRequest.headers.set("Authorization", `Bearer ${accessToken}`);
-        return apiClient(originalRequest);
+        return client(originalRequest);
       } catch {
         useSessionStore.getState().clearSession();
         throw error;
@@ -63,5 +72,15 @@ apiClient.interceptors.response.use(
       throw new ApiError(error.response.data.error);
     }
     throw error;
-  },
+  };
+}
+
+apiClient.interceptors.response.use(
+  (response) => response.data.data,
+  makeErrorHandler(apiClient),
+);
+
+rawApiClient.interceptors.response.use(
+  (response) => response.data,
+  makeErrorHandler(rawApiClient),
 );

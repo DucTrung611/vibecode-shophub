@@ -31,10 +31,13 @@
   --color-neutral-900: #14162a;
 
   --color-success: #1a9e5c;
+  --color-success-tint: #e6f7ee;
   --color-warning: #d97706;
+  --color-warning-tint: #fff4e0;
   --color-error: #d6293e;
   --color-error-tint: #fdeaec;
   --color-info: #2563c7;
+  --color-info-tint: #eaf1fd;
 
   --color-admin-ink: #0b0f24;
   --color-seller-ink: #101a5c;
