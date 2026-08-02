@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../../core/database/prisma.service';
 import { CatalogPort, CatalogVariantForCart } from './catalog.port';
+import { VARIANT_STOCK_CHANGED } from './catalog.events';
 import {
+  FlaggedProductItem,
   PRODUCT_DETAIL_INCLUDE,
+  PRODUCT_FLAGGED_INCLUDE,
   PRODUCT_LIST_INCLUDE,
   ProductDetail,
   ProductListItem,
@@ -51,7 +55,10 @@ export interface UpdateVariantData {
 
 @Injectable()
 export class ProductRepository implements CatalogPort {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   private buildWhere(filters: ProductListFilters) {
     const priceFilter =
@@ -132,6 +139,19 @@ export class ProductRepository implements CatalogPort {
     return this.prisma.productVariant.create({ data });
   }
 
+  async createImages(productId: number, urls: string[]) {
+    const existingCount = await this.prisma.productImage.count({
+      where: { productId },
+    });
+    return this.prisma.productImage.createManyAndReturn({
+      data: urls.map((url, index) => ({
+        productId,
+        url,
+        sortOrder: existingCount + index,
+      })),
+    });
+  }
+
   findVariantWithOwner(variantId: number) {
     return this.prisma.productVariant.findUnique({
       where: { id: variantId },
@@ -141,11 +161,18 @@ export class ProductRepository implements CatalogPort {
     });
   }
 
-  updateVariant(variantId: number, data: UpdateVariantData) {
-    return this.prisma.productVariant.update({
+  async updateVariant(variantId: number, data: UpdateVariantData) {
+    const variant = await this.prisma.productVariant.update({
       where: { id: variantId },
       data,
     });
+    if (data.stockQuantity !== undefined) {
+      this.eventEmitter.emit(VARIANT_STOCK_CHANGED, {
+        variantId: variant.id,
+        stockQuantity: variant.stockQuantity,
+      });
+    }
+    return variant;
   }
 
   async getVariantForCart(
@@ -170,9 +197,13 @@ export class ProductRepository implements CatalogPort {
     variantId: number,
     quantity: number,
   ): Promise<void> {
-    await this.prisma.productVariant.update({
+    const variant = await this.prisma.productVariant.update({
       where: { id: variantId },
       data: { stockQuantity: { decrement: quantity } },
+    });
+    this.eventEmitter.emit(VARIANT_STOCK_CHANGED, {
+      variantId: variant.id,
+      stockQuantity: variant.stockQuantity,
     });
   }
 
@@ -196,12 +227,15 @@ export class ProductRepository implements CatalogPort {
     });
   }
 
-  async findFlagged(page: number, limit: number) {
+  async findFlagged(
+    page: number,
+    limit: number,
+  ): Promise<{ items: FlaggedProductItem[]; total: number }> {
     const where = { status: 'flagged' as const };
     const [items, total] = await Promise.all([
       this.prisma.product.findMany({
         where,
-        include: PRODUCT_LIST_INCLUDE,
+        include: PRODUCT_FLAGGED_INCLUDE,
         orderBy: { updatedAt: 'desc' },
         skip: (page - 1) * limit,
         take: limit,

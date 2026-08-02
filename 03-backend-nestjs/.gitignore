@@ -61,3 +61,7 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 /generated/prisma
+
+# Locally-stored uploads (dev/object-storage stand-in)
+/uploads/*
+!/uploads/.gitkeep

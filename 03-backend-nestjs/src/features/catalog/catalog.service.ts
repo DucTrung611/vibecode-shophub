@@ -122,6 +122,15 @@ export class CatalogService {
     return this.productRepository.updateVariant(variantId, dto);
   }
 
+  async addProductImages(
+    ownerId: number,
+    productId: number,
+    urls: string[],
+  ) {
+    await this.assertOwnsProduct(ownerId, productId);
+    return this.productRepository.createImages(productId, urls);
+  }
+
   async getInventorySummary(
     ownerId: number,
     status?: 'in_stock' | 'low_stock' | 'out_of_stock',

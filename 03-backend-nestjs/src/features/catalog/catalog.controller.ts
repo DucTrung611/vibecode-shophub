@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -10,7 +11,10 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from '../../shared/decorators/current-user.decorator';
 import { Public } from '../../shared/decorators/public.decorator';
 import { Roles } from '../../shared/decorators/roles.decorator';
@@ -22,6 +26,10 @@ import { CreateVariantDto } from './dto/create-variant.dto';
 import { ListFlaggedProductsQueryDto } from './dto/list-flagged-products.query.dto';
 import { ListProductsQueryDto } from './dto/list-products.query.dto';
 import { ModerateProductDto } from './dto/moderate-product.dto';
+import {
+  PRODUCT_IMAGES_URL_PREFIX,
+  productImageMulterOptions,
+} from './product-image.multer-config';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { UpdateVariantDto } from './dto/update-variant.dto';
@@ -75,6 +83,24 @@ export class CatalogController {
     @Param('id', ParseIntPipe) id: number,
   ) {
     return this.catalogService.deactivateProduct(user.id, id);
+  }
+
+  @Roles('seller')
+  @Post('products/:id/images')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FilesInterceptor('images', 10, productImageMulterOptions))
+  uploadProductImages(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('At least one image file is required');
+    }
+    const urls = files.map(
+      (file) => `${PRODUCT_IMAGES_URL_PREFIX}/${file.filename}`,
+    );
+    return this.catalogService.addProductImages(user.id, id, urls);
   }
 
   @Roles('seller')
