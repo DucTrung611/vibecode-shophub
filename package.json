@@ -1,0 +1,11 @@
+{
+  "name": "vibecode-shophub",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n backend,storefront,dashboard -c blue,green,magenta \"npm run dev --prefix 03-backend-nestjs\" \"npm run dev --prefix 01-frontend-nextjs\" \"npm run dev --prefix 02-frontend-react-vite\"",
+    "install:all": "npm install --prefix 03-backend-nestjs && npm install --prefix 01-frontend-nextjs && npm install --prefix 02-frontend-react-vite"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
