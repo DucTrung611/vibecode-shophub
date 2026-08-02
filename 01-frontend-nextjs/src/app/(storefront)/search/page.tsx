@@ -53,7 +53,12 @@ function SearchPageContent({ query }: { query: string }) {
   // The catalog API doesn't expose full-text search yet — this filters a
   // broad product fetch client-side, which is fine at seed-data scale but
   // is a documented simplification, not a real search backend.
-  const { data: productsResult, isLoading } = useProducts({
+  const {
+    data: productsResult,
+    isLoading,
+    isError,
+    refetch,
+  } = useProducts({
     limit: 100,
     sortBy: "soldCount",
     order: "desc",
@@ -141,6 +146,18 @@ function SearchPageContent({ query }: { query: string }) {
         <p className="py-10 text-center text-sm font-manrope text-neutral-500">
           Đang tìm kiếm...
         </p>
+      ) : isError ? (
+        <div className="flex flex-col items-center gap-3 py-16 text-center">
+          <span className="text-4xl">⚠️</span>
+          <p className="font-manrope text-neutral-500">Không thể tìm kiếm sản phẩm lúc này</p>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            className="rounded-lg bg-hub-500 px-5 py-2 text-sm font-bold font-manrope text-white"
+          >
+            Thử lại
+          </button>
+        </div>
       ) : filteredProducts.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
           <span className="text-4xl">🔍</span>

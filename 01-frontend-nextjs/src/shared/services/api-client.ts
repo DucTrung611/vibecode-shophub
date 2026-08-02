@@ -1,6 +1,7 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
 import { useSessionStore } from "../stores/session.store";
 import { ApiError, type ApiErrorResponse, type ApiSuccess } from "../types/api-response.types";
+import { notify } from "./notify";
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:6060/api/v1";
 
@@ -65,9 +66,16 @@ apiClient.interceptors.response.use(
       }
     }
 
+    // Reached only for errors that are NOT being silently retried above (already
+    // exhausted the 401-refresh path, or not a 401 at all) — surface a toast as a
+    // safety net. Individual hooks/pages with bespoke error UX (e.g. Cart's
+    // voucher-validate mutation) still render their own message; this doesn't
+    // replace that, it just ensures nothing fails silently by default.
     if (error.response?.data && "error" in error.response.data) {
+      notify.error(error.response.data.error.message);
       throw new ApiError(error.response.data.error);
     }
+    notify.error("Đã xảy ra lỗi, vui lòng thử lại.");
     throw error;
   },
 );

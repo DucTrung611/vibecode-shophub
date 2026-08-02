@@ -23,7 +23,7 @@ interface AppliedVoucher {
 
 function CartPageContent() {
   const router = useRouter();
-  const { data: cart, isLoading } = useCart();
+  const { data: cart, isLoading, isError, refetch } = useCart();
   const updateItem = useUpdateCartItem();
   const removeItem = useRemoveCartItem();
   const validateVoucher = useValidateVoucher();
@@ -79,6 +79,22 @@ function CartPageContent() {
     return (
       <div className="px-4 py-16 text-center text-sm font-manrope text-neutral-500">
         Đang tải giỏ hàng...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center gap-3 px-4 py-20 text-center">
+        <span className="text-4xl">⚠️</span>
+        <p className="font-manrope text-neutral-500">Không thể tải giỏ hàng của bạn</p>
+        <button
+          type="button"
+          onClick={() => refetch()}
+          className="rounded-lg bg-hub-500 px-5 py-2 text-sm font-bold font-manrope text-white"
+        >
+          Thử lại
+        </button>
       </div>
     );
   }
