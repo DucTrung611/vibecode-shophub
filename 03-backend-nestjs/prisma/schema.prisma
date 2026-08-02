@@ -141,18 +141,30 @@ model Address {
 // ---------- shop ----------
 
 model Shop {
-  id                 Int        @id @default(autoincrement())
-  ownerId            Int        @unique @map("owner_id")
-  name               String
-  slug               String     @unique
-  status             ShopStatus @default(pending)
-  ratingAvg          Decimal    @default(0) @map("rating_avg") @db.Decimal(3, 2)
-  totalSold          Int        @default(0) @map("total_sold")
-  businessLicenseUrl String?    @map("business_license_url")
-  documents          Json?
-  rejectionReason    String?    @map("rejection_reason")
-  createdAt          DateTime   @default(now()) @map("created_at")
-  updatedAt          DateTime   @default(now()) @updatedAt @map("updated_at")
+  id                    Int        @id @default(autoincrement())
+  ownerId               Int        @unique @map("owner_id")
+  name                  String
+  slug                  String     @unique
+  status                ShopStatus @default(pending)
+  ratingAvg             Decimal    @default(0) @map("rating_avg") @db.Decimal(3, 2)
+  totalSold             Int        @default(0) @map("total_sold")
+  businessLicenseUrl    String?    @map("business_license_url")
+  documents             Json?
+  rejectionReason       String?    @map("rejection_reason")
+  description           String?
+  logoUrl               String?    @map("logo_url")
+  bannerUrl             String?    @map("banner_url")
+  phone                 String?
+  email                 String?
+  province              String?
+  district              String?
+  ward                  String?
+  detailAddress         String?    @map("detail_address")
+  shippingSettings      Json?      @map("shipping_settings")
+  paymentSettings       Json?      @map("payment_settings")
+  notificationSettings  Json?      @map("notification_settings")
+  createdAt             DateTime   @default(now()) @map("created_at")
+  updatedAt             DateTime   @default(now()) @updatedAt @map("updated_at")
 
   owner     User       @relation(fields: [ownerId], references: [id])
   products  Product[]

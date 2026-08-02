@@ -41,7 +41,7 @@ Multi-vendor marketplace data model. Order-per-shop pattern: a buyer's cart span
 ### Feature: shop
 | Table | Key Fields | Notes |
 |---|---|---|
-| `shops` | `id` PK, `owner_id` FK→users, `name`, `slug` UQ, `status` (enum: pending/approved/suspended/rejected), `rating_avg`, `total_sold`, `business_license_url`, `documents` JSONB, `rejection_reason` | Owner must have `role = seller` (app-level check). New shops start `pending`; `rejection_reason` set only when `status = rejected` |
+| `shops` | `id` PK, `owner_id` FK→users, `name`, `slug` UQ, `status` (enum: pending/approved/suspended/rejected), `rating_avg`, `total_sold`, `business_license_url`, `documents` JSONB, `rejection_reason`, `description`, `logo_url`, `banner_url`, `phone`, `email`, `province`, `district`, `ward`, `detail_address`, `shipping_settings` JSONB, `payment_settings` JSONB, `notification_settings` JSONB | Owner must have `role = seller` (app-level check). New shops start `pending`; `rejection_reason` set only when `status = rejected`. The `*_settings` JSONB columns back the Shop Settings screen's Shipping/Payment/Notifications tabs — free-form per-shop config, no fixed shape (JSONB avoids schema churn, same rationale as `product_variants.attributes`) |
 
 ### Feature: catalog
 | Table | Key Fields | Notes |

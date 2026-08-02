@@ -55,6 +55,18 @@ export class ShopService {
     return shop;
   }
 
+  async getOwn(ownerId: number) {
+    const shop = await this.shopPort.findByOwnerId(ownerId);
+    if (!shop) {
+      throw new AppException(
+        'COMMON_404',
+        'You do not have a shop yet',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return shop;
+  }
+
   async updateOwn(ownerId: number, dto: UpdateShopDto) {
     const existing = await this.shopPort.findByOwnerId(ownerId);
     if (!existing) {
@@ -65,6 +77,16 @@ export class ShopService {
       );
     }
     return this.shopPort.updateByOwnerId(ownerId, dto);
+  }
+
+  async updateLogo(ownerId: number, logoUrl: string) {
+    await this.getOwn(ownerId);
+    return this.shopPort.updateImagesByOwnerId(ownerId, { logoUrl });
+  }
+
+  async updateBanner(ownerId: number, bannerUrl: string) {
+    await this.getOwn(ownerId);
+    return this.shopPort.updateImagesByOwnerId(ownerId, { bannerUrl });
   }
 
   async listShops(query: ListShopsQueryDto) {

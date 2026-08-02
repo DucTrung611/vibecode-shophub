@@ -9,6 +9,7 @@ describe('ShopService', () => {
     findBySlug: jest.Mock;
     create: jest.Mock;
     updateByOwnerId: jest.Mock;
+    updateImagesByOwnerId: jest.Mock;
     findManyByStatus: jest.Mock;
     updateStatus: jest.Mock;
     countByStatus: jest.Mock;
@@ -25,6 +26,7 @@ describe('ShopService', () => {
       findBySlug: jest.fn(),
       create: jest.fn(),
       updateByOwnerId: jest.fn(),
+      updateImagesByOwnerId: jest.fn(),
       findManyByStatus: jest.fn(),
       updateStatus: jest.fn(),
       countByStatus: jest.fn(),

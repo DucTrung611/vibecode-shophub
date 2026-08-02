@@ -151,8 +151,11 @@ Content-Type: multipart/form-data
 | Method | Path | Description | Auth |
 |---|---|---|---|
 | POST | `/shops` | Create shop (seller onboarding, starts `pending`) | Bearer (buyer→seller) |
+| GET | `/shops/me` | Full own-shop record (incl. contact/address/shipping/payment/notification settings, `rejectionReason`, `documents`) | Bearer (seller) |
 | GET | `/shops/:slug` | Public shop profile | Public |
-| PATCH | `/shops/me` | Update own shop | Bearer (seller) |
+| PATCH | `/shops/me` | Update own shop (name, description, contact/address fields, `shippingSettings`/`paymentSettings`/`notificationSettings` JSON objects) | Bearer (seller) |
+| POST | `/shops/me/logo` | Upload shop logo (multipart, field `logo`) | Bearer (seller) |
+| POST | `/shops/me/banner` | Upload shop banner (multipart, field `banner`) | Bearer (seller) |
 | GET | `/shops/me/dashboard` | Seller dashboard summary (KPIs, revenue trend, recent orders, top products) | Bearer (seller) |
 | GET | `/admin/shops` | List shops filtered by status (pending/approved/suspended/rejected) | Bearer (admin) |
 | GET | `/admin/shops/:id` | Shop detail incl. documents, for approval review | Bearer (admin) |

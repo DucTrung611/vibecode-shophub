@@ -2,6 +2,7 @@ import {
   CreateShopData,
   ShopStatusValue,
   UpdateShopData,
+  UpdateShopImagesData,
   UpdateShopStatusData,
 } from './shop.repository';
 import { ShopEntity } from './entities/shop.entity';
@@ -14,6 +15,10 @@ export interface ShopPort {
   findBySlug(slug: string): Promise<ShopEntity | null>;
   create(data: CreateShopData): Promise<ShopEntity>;
   updateByOwnerId(ownerId: number, data: UpdateShopData): Promise<ShopEntity>;
+  updateImagesByOwnerId(
+    ownerId: number,
+    data: UpdateShopImagesData,
+  ): Promise<ShopEntity>;
   findManyByStatus(
     status: ShopStatusValue | undefined,
     page: number,

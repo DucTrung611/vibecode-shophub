@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import type { Prisma } from '../../../generated/prisma/client';
 import { PrismaService } from '../../core/database/prisma.service';
 import { ShopEntity } from './entities/shop.entity';
 
@@ -11,6 +12,21 @@ export interface CreateShopData {
 
 export interface UpdateShopData {
   name?: string;
+  description?: string;
+  phone?: string;
+  email?: string;
+  province?: string;
+  district?: string;
+  ward?: string;
+  detailAddress?: string;
+  shippingSettings?: Record<string, unknown>;
+  paymentSettings?: Record<string, unknown>;
+  notificationSettings?: Record<string, unknown>;
+}
+
+export interface UpdateShopImagesData {
+  logoUrl?: string;
+  bannerUrl?: string;
 }
 
 export type ShopStatusValue = 'pending' | 'approved' | 'suspended' | 'rejected';
@@ -41,6 +57,16 @@ export class ShopRepository {
   }
 
   updateByOwnerId(ownerId: number, data: UpdateShopData): Promise<ShopEntity> {
+    return this.prisma.shop.update({
+      where: { ownerId },
+      data: data as Prisma.ShopUpdateInput,
+    });
+  }
+
+  updateImagesByOwnerId(
+    ownerId: number,
+    data: UpdateShopImagesData,
+  ): Promise<ShopEntity> {
     return this.prisma.shop.update({ where: { ownerId }, data });
   }
 
