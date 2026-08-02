@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CartItemRow,
   CartSummaryBar,
@@ -34,12 +34,21 @@ function CartPageContent() {
 
   const items = useMemo(() => cart?.items ?? [], [cart]);
 
+  const seenItemIdsRef = useRef<Set<number>>(new Set());
+  useEffect(() => {
+    const newIds = items.filter((item) => !seenItemIdsRef.current.has(item.id)).map((item) => item.id);
+    if (newIds.length > 0) {
+      for (const id of newIds) seenItemIdsRef.current.add(id);
+      setSelectedIds((prev) => [...prev, ...newIds]);
+    }
+  }, [items]);
+
   const groupedByShop = useMemo(() => {
-    const map = new Map<number, CartItem[]>();
+    const map = new Map<number, { shopName: string; items: CartItem[] }>();
     for (const item of items) {
       const shopId = item.variant.product.shopId;
-      const group = map.get(shopId) ?? [];
-      group.push(item);
+      const group = map.get(shopId) ?? { shopName: item.variant.product.shop.name, items: [] };
+      group.items.push(item);
       map.set(shopId, group);
     }
     return map;
@@ -121,12 +130,12 @@ function CartPageContent() {
         </div>
       )}
 
-      {Array.from(groupedByShop.entries()).map(([shopId, shopItems]) => (
+      {Array.from(groupedByShop.entries()).map(([shopId, group]) => (
         <div key={shopId} className="rounded-2xl border border-neutral-100 px-4">
           <p className="border-b border-neutral-100 py-3 text-sm font-bold font-manrope text-neutral-700">
-            🏪 Gian hàng #{shopId}
+            🏪 {group.shopName}
           </p>
-          {shopItems.map((item) => (
+          {group.items.map((item) => (
             <CartItemRow
               key={item.id}
               item={item}

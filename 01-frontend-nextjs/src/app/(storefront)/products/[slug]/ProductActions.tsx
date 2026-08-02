@@ -5,8 +5,10 @@ import { useMemo, useState } from "react";
 import { useAddCartItem } from "@/features/cart";
 import type { ProductVariant } from "@/features/catalog";
 import { Button } from "@/shared/components/Button";
+import { notify } from "@/shared/services/notify";
 import { useSessionStore } from "@/shared/stores/session.store";
 import { formatPrice } from "@/shared/utils/format-price";
+import { formatAttributeLabel } from "@/shared/utils/variant-attribute-label";
 
 interface ProductActionsProps {
   variants: ProductVariant[];
@@ -44,6 +46,7 @@ export function ProductActions({ variants }: ProductActionsProps) {
 
   const ensureAuthed = () => {
     if (!accessToken) {
+      notify.info("Vui lòng đăng nhập để tiếp tục mua sắm");
       router.push("/login");
       return false;
     }
@@ -80,8 +83,8 @@ export function ProductActions({ variants }: ProductActionsProps) {
         const options = [...new Set(variants.map((variant) => variant.attributes[key]))];
         return (
           <div key={key}>
-            <p className="mb-1.5 text-xs font-bold font-manrope capitalize text-neutral-700">
-              {key}
+            <p className="mb-1.5 text-xs font-bold font-manrope text-neutral-700">
+              {formatAttributeLabel(key)}
             </p>
             <div className="flex flex-wrap gap-2">
               {options.map((value) => (

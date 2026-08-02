@@ -1,3 +1,9 @@
+export interface CartItemProductImage {
+  id: number;
+  url: string;
+  sortOrder: number;
+}
+
 export interface CartItemVariant {
   id: number;
   productId: number;
@@ -6,7 +12,14 @@ export interface CartItemVariant {
   price: string;
   compareAtPrice: string | null;
   stockQuantity: number;
-  product: { id: number; name: string; slug: string; shopId: number };
+  product: {
+    id: number;
+    name: string;
+    slug: string;
+    shopId: number;
+    shop: { name: string };
+    images: CartItemProductImage[];
+  };
 }
 
 export interface CartItem {

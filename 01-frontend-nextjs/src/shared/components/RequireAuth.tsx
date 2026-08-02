@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { notify } from "../services/notify";
 import { useSessionStore } from "../stores/session.store";
 
 /**
@@ -40,6 +41,7 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (hasHydrated && !useSessionStore.getState().accessToken) {
+      notify.info("Vui lòng đăng nhập để tiếp tục");
       router.replace("/login");
     }
   }, [hasHydrated, router]);
