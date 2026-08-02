@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getAssetUrl } from "../../../shared/utils/asset-url";
 import { formatPrice } from "../../../shared/utils/format-price";
 import type { WishlistItem } from "../types/wishlist.types";
 import { WishlistButton } from "./WishlistButton";
@@ -21,14 +22,24 @@ export function WishlistGrid({ items }: WishlistGridProps) {
         const outOfStock = item.product.variants.every(
           (variant) => variant.stockQuantity <= 0,
         );
+        const thumbnail = item.product.images[0];
         return (
           <Link
             key={item.id}
             href={`/products/${item.product.slug}`}
             className="group relative flex flex-col overflow-hidden rounded-2xl border border-neutral-100 bg-white"
           >
-            <div className="relative flex aspect-square items-center justify-center bg-hub-50 text-4xl">
-              📦
+            <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-hub-50 text-4xl">
+              {thumbnail ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={getAssetUrl(thumbnail.url)}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                "📦"
+              )}
               {outOfStock && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-xs font-bold text-white">
                   Hết hàng

@@ -8,6 +8,7 @@ export * as catalogService from "./services/catalog.service";
 export type {
   Category,
   ProductDetail,
+  ProductImage,
   ProductListFilters,
   ProductListItem,
   ProductListResult,

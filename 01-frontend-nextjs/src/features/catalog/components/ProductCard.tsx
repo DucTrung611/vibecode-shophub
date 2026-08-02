@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { WishlistButton } from "../../../features/wishlist";
+import { getAssetUrl } from "../../../shared/utils/asset-url";
 import { formatPrice } from "../../../shared/utils/format-price";
 import type { ProductListItem } from "../types/catalog.types";
 
@@ -23,14 +24,24 @@ export function ProductCard({ product }: ProductCardProps) {
     compareAt && compareAt > price
       ? Math.round((1 - price / compareAt) * 100)
       : null;
+  const thumbnail = [...product.images].sort((a, b) => a.sortOrder - b.sortOrder)[0];
 
   return (
     <Link
       href={`/products/${product.slug}`}
       className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-100 bg-white transition-shadow hover:shadow-md"
     >
-      <div className="relative flex aspect-square items-center justify-center bg-hub-50 text-4xl">
-        📦
+      <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-hub-50 text-4xl">
+        {thumbnail ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={getAssetUrl(thumbnail.url)}
+            alt=""
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          "📦"
+        )}
         {discountPercent !== null && (
           <span className="absolute left-2 top-2 rounded-md bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
             -{discountPercent}%

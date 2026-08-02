@@ -8,6 +8,9 @@ interface ProductsPageProps {
     sortBy?: string;
     order?: string;
     page?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    view?: string;
   }>;
 }
 
@@ -26,10 +29,21 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const order = params.order === "asc" ? "asc" : "desc";
   const page = Number(params.page) > 0 ? Number(params.page) : 1;
   const limit = 20;
+  const minPrice = params.minPrice ? Number(params.minPrice) : undefined;
+  const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
+  const view = params.view === "list" ? "list" : "grid";
 
   const [categories, result] = await Promise.all([
     catalogService.getCategories(),
-    catalogService.getProducts({ categoryId, sortBy, order, page, limit }),
+    catalogService.getProducts({
+      categoryId,
+      sortBy,
+      order,
+      page,
+      limit,
+      minPrice,
+      maxPrice,
+    }),
   ]);
 
   const totalPages = Math.max(1, Math.ceil(result.total / limit));
@@ -46,6 +60,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         categories={flatCategories}
         selectedCategoryId={categoryId}
         sortBy={sortBy}
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+        view={view}
       />
 
       {result.items.length === 0 ? (
@@ -57,7 +74,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         </div>
       ) : (
         <>
-          <ProductGrid products={result.items} />
+          <ProductGrid products={result.items} view={view} />
 
           {totalPages > 1 && (
             <nav className="mt-4 flex items-center justify-center gap-2">
@@ -65,7 +82,15 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 (pageNumber) => (
                   <Link
                     key={pageNumber}
-                    href={buildPageHref({ categoryId, sortBy, order, page: pageNumber })}
+                    href={buildPageHref({
+                      categoryId,
+                      sortBy,
+                      order,
+                      page: pageNumber,
+                      minPrice,
+                      maxPrice,
+                      view,
+                    })}
                     className={[
                       "flex h-8 w-8 items-center justify-center rounded-lg text-sm font-manrope",
                       pageNumber === page
@@ -99,6 +124,9 @@ function buildPageHref(filters: {
   sortBy: string;
   order: string;
   page: number;
+  minPrice?: number;
+  maxPrice?: number;
+  view: string;
 }): string {
   const params = new URLSearchParams();
   if (filters.categoryId !== undefined) {
@@ -107,5 +135,14 @@ function buildPageHref(filters: {
   params.set("sortBy", filters.sortBy);
   params.set("order", filters.order);
   params.set("page", String(filters.page));
+  if (filters.minPrice !== undefined) {
+    params.set("minPrice", String(filters.minPrice));
+  }
+  if (filters.maxPrice !== undefined) {
+    params.set("maxPrice", String(filters.maxPrice));
+  }
+  if (filters.view !== "grid") {
+    params.set("view", filters.view);
+  }
   return `/products?${params.toString()}`;
 }

@@ -3,14 +3,18 @@
 import { useState } from "react";
 import { ProductGrid } from "@/features/catalog";
 import type { ProductListItem } from "@/features/catalog";
+import { ReviewsSection } from "@/features/review";
+import type { Review } from "@/features/review";
 
 interface ShopTabsProps {
   products: ProductListItem[];
+  reviews: Review[];
+  reviewTotal: number;
   aboutText: string;
 }
 
-export function ShopTabs({ products, aboutText }: ShopTabsProps) {
-  const [tab, setTab] = useState<"products" | "about">("products");
+export function ShopTabs({ products, reviews, reviewTotal, aboutText }: ShopTabsProps) {
+  const [tab, setTab] = useState<"products" | "reviews" | "about">("products");
 
   return (
     <div>
@@ -18,6 +22,7 @@ export function ShopTabs({ products, aboutText }: ShopTabsProps) {
         {(
           [
             { key: "products", label: `Sản phẩm (${products.length})` },
+            { key: "reviews", label: `Đánh giá (${reviewTotal})` },
             { key: "about", label: "Giới thiệu" },
           ] as const
         ).map((item) => (
@@ -37,15 +42,18 @@ export function ShopTabs({ products, aboutText }: ShopTabsProps) {
         ))}
       </div>
 
-      {tab === "products" ? (
-        products.length === 0 ? (
+      {tab === "products" &&
+        (products.length === 0 ? (
           <p className="py-10 text-center text-sm font-manrope text-neutral-500">
             Shop chưa có sản phẩm nào
           </p>
         ) : (
           <ProductGrid products={products} />
-        )
-      ) : (
+        ))}
+
+      {tab === "reviews" && <ReviewsSection reviews={reviews} total={reviewTotal} />}
+
+      {tab === "about" && (
         <p className="text-sm font-manrope text-neutral-600">{aboutText}</p>
       )}
     </div>

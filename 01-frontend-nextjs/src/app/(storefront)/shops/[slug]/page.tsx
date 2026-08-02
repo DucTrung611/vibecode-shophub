@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { catalogService } from "@/features/catalog";
+import { reviewService } from "@/features/review";
 import { shopService } from "@/features/shop";
 import { ShopTabs } from "./ShopTabs";
+
+// The API only exposes reviews per product (`GET /products/:id/reviews`), not per
+// shop — there's no shop-level reviews endpoint. Aggregate across the shop's
+// products, capped to keep the number of parallel requests bounded for shops with
+// many listings.
+const REVIEW_AGGREGATION_PRODUCT_LIMIT = 20;
 
 interface ShopPageProps {
   params: Promise<{ slug: string }>;
@@ -29,6 +36,14 @@ export default async function ShopPage({ params }: ShopPageProps) {
   }
 
   const products = await catalogService.getProducts({ shopId: shop.id, limit: 100 });
+
+  const reviewResults = await Promise.all(
+    products.items
+      .slice(0, REVIEW_AGGREGATION_PRODUCT_LIMIT)
+      .map((product) => reviewService.getProductReviews(product.id, 1, 50)),
+  );
+  const shopReviews = reviewResults.flatMap((result) => result.items);
+  const shopReviewTotal = reviewResults.reduce((sum, result) => sum + result.total, 0);
 
   return (
     <div className="mx-auto flex max-w-[1200px] flex-col gap-6 pb-10">
@@ -92,6 +107,8 @@ export default async function ShopPage({ params }: ShopPageProps) {
 
         <ShopTabs
           products={products.items}
+          reviews={shopReviews}
+          reviewTotal={shopReviewTotal}
           aboutText={`${shop.name} là gian hàng trên ShopHub, đã bán ${shop.totalSold} sản phẩm với đánh giá trung bình ${Number(shop.ratingAvg).toFixed(1)}/5.`}
         />
       </div>

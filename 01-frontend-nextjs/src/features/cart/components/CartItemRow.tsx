@@ -1,3 +1,4 @@
+import { getAssetUrl } from "../../../shared/utils/asset-url";
 import { formatPrice } from "../../../shared/utils/format-price";
 import type { CartItem } from "../types/cart.types";
 
@@ -18,6 +19,7 @@ export function CartItemRow({
 }: CartItemRowProps) {
   const insufficientStock = item.quantity > item.variant.stockQuantity;
   const attributesLabel = Object.values(item.variant.attributes).join(" / ");
+  const thumbnail = item.variant.product.images[0];
 
   return (
     <div className="flex gap-3 border-b border-neutral-100 py-4 last:border-b-0">
@@ -28,8 +30,13 @@ export function CartItemRow({
         onChange={() => onToggleSelect(item.id)}
         className="mt-1 h-4 w-4 shrink-0 rounded border-neutral-300 text-hub-500"
       />
-      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-hub-50 text-2xl">
-        📦
+      <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-hub-50 text-2xl">
+        {thumbnail ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={getAssetUrl(thumbnail.url)} alt="" className="h-full w-full object-cover" />
+        ) : (
+          "📦"
+        )}
       </div>
       <div className="flex flex-1 flex-col gap-1">
         <p className="text-sm font-manrope text-neutral-900">

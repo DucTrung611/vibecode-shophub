@@ -5,6 +5,7 @@ import { ReviewsSection, reviewService } from "@/features/review";
 import { ShopMiniCard, shopService } from "@/features/shop";
 import { WishlistButton } from "@/features/wishlist";
 import { ProductActions } from "./ProductActions";
+import { ProductImageGallery } from "./ProductImageGallery";
 
 interface ProductDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -43,11 +44,9 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   return (
     <div className="mx-auto flex max-w-[1200px] flex-col gap-8 px-4 py-6 md:px-6">
       <div className="flex flex-col gap-8 md:flex-row">
-        <div className="md:w-1/2">
-          <div className="relative flex aspect-square items-center justify-center rounded-2xl bg-hub-50 text-7xl">
-            📦
-            <WishlistButton productId={product.id} className="absolute right-3 top-3" />
-          </div>
+        <div className="relative md:w-1/2">
+          <ProductImageGallery images={product.images} />
+          <WishlistButton productId={product.id} className="absolute right-3 top-3" />
         </div>
 
         <div className="flex flex-col gap-4 md:w-1/2">
