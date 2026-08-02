@@ -88,7 +88,18 @@ export class UserService {
     };
   }
 
-  async updateUserStatus(id: number, dto: UpdateUserStatusDto) {
+  async updateUserStatus(
+    currentUserId: number,
+    id: number,
+    dto: UpdateUserStatusDto,
+  ) {
+    if (id === currentUserId) {
+      throw new AppException(
+        'USER_002',
+        'You cannot change the status of your own account',
+        HttpStatus.CONFLICT,
+      );
+    }
     const user = await this.userRepository.findById(id);
     if (!user) {
       throw new AppException(

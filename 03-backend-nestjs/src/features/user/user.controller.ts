@@ -79,10 +79,11 @@ export class UserController {
   @Roles('admin')
   @Patch('admin/users/:id/status')
   updateUserStatus(
+    @CurrentUser() currentUser: AuthenticatedUser,
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateUserStatusDto,
   ) {
-    return this.userService.updateUserStatus(id, dto);
+    return this.userService.updateUserStatus(currentUser.id, id, dto);
   }
 
   @Roles('admin')

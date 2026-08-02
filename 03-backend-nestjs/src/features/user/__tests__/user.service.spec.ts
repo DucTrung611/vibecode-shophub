@@ -181,8 +181,14 @@ describe('UserService', () => {
       userRepository.findById.mockResolvedValue(null);
 
       await expect(
-        service.updateUserStatus(userId, { isActive: false }),
+        service.updateUserStatus(999, userId, { isActive: false }),
       ).rejects.toMatchObject({ response: { code: 'USER_001' } });
+    });
+
+    it('throws USER_002 when the admin targets their own account', async () => {
+      await expect(
+        service.updateUserStatus(userId, userId, { isActive: false }),
+      ).rejects.toMatchObject({ response: { code: 'USER_002' } });
     });
 
     it('locks the user account', async () => {
@@ -192,7 +198,7 @@ describe('UserService', () => {
         isActive: false,
       });
 
-      const result = await service.updateUserStatus(userId, {
+      const result = await service.updateUserStatus(999, userId, {
         isActive: false,
       });
 
