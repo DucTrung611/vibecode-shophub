@@ -1,6 +1,11 @@
 import { apiClient, rawApiClient } from "../../../shared/services/api-client";
 import type { ApiSuccess, PaginatedMeta } from "../../../shared/types/api-response.types";
-import type { ProductDetail, ProductListItem, ProductStatus } from "../types/product.types";
+import type {
+  ProductDetail,
+  ProductImage,
+  ProductListItem,
+  ProductStatus,
+} from "../types/product.types";
 
 export interface ProductListParams {
   shopId: number;
@@ -56,4 +61,18 @@ export async function updateProduct(
 
 export async function deactivateProduct(id: number): Promise<void> {
   await apiClient.delete(`/products/${id}`);
+}
+
+export async function uploadProductImages(
+  productId: number,
+  files: File[],
+): Promise<ProductImage[]> {
+  const formData = new FormData();
+  for (const file of files) {
+    formData.append("images", file);
+  }
+  const response = await apiClient.post(`/products/${productId}/images`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response as unknown as ProductImage[];
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Table, type TableColumn } from "../../../shared/components/Table";
 import { Pagination } from "../../../shared/components/Pagination";
 import { Badge } from "../../../shared/components/Badge";
+import { getAssetUrl } from "../../../shared/utils/asset-url";
 import { useFlaggedProducts } from "../hooks/useFlaggedProducts";
 import { ProductReviewModal } from "./ProductReviewModal";
 import type { FlaggedProduct } from "../types/admin-products.types";
@@ -22,7 +23,11 @@ export function AdminProductsPage() {
         <div className="flex items-center gap-2.5">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-[9px] bg-error-tint">
             {row.images[0] ? (
-              <img src={row.images[0].url} alt={row.name} className="h-full w-full object-cover" />
+              <img
+                src={getAssetUrl(row.images[0].url)}
+                alt={row.name}
+                className="h-full w-full object-cover"
+              />
             ) : (
               <span>📦</span>
             )}

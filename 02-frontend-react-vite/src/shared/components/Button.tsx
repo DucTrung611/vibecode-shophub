@@ -1,6 +1,6 @@
 import { type ButtonHTMLAttributes, forwardRef } from "react";
 
-type ButtonVariant = "primary" | "outline";
+type ButtonVariant = "primary" | "outline" | "danger";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -12,6 +12,8 @@ const variantClasses: Record<ButtonVariant, string> = {
     "bg-hub-500 text-white hover:bg-hub-600 disabled:bg-neutral-100 disabled:text-neutral-400",
   outline:
     "bg-white text-hub-600 border border-hub-500 hover:bg-hub-50 disabled:border-neutral-200 disabled:text-neutral-400",
+  danger:
+    "bg-error text-white hover:bg-error/90 disabled:bg-neutral-100 disabled:text-neutral-400",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

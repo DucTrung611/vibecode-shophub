@@ -5,6 +5,7 @@ import {
   createProduct,
   deactivateProduct,
   updateProduct,
+  uploadProductImages,
 } from "../services/product.service";
 
 export function useCreateProduct() {
@@ -37,6 +38,21 @@ export function useUpdateProduct(productId: number, slug: string) {
     },
     onError: () => {
       notify.error("Cập nhật sản phẩm thất bại");
+    },
+  });
+}
+
+export function useUploadProductImages(productId: number, slug: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (files: File[]) => uploadProductImages(productId, files),
+    onSuccess: () => {
+      notify.success("Đã tải ảnh sản phẩm lên");
+      void queryClient.invalidateQueries({ queryKey: ["seller-products", "detail", slug] });
+    },
+    onError: () => {
+      notify.error("Tải ảnh thất bại, vui lòng thử lại");
     },
   });
 }

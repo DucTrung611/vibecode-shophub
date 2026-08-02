@@ -1,8 +1,11 @@
 import { Link, useParams } from "react-router";
 import { ArrowLeft } from "lucide-react";
 import { Card } from "../../../shared/components/Card";
-import { ImageUploadPlaceholder } from "../components/ImageUploadPlaceholder";
 import { ProductBasicInfoForm } from "../components/ProductBasicInfoForm";
+import {
+  ProductImageUpload,
+  ProductImageUploadDisabledHint,
+} from "../components/ProductImageUpload";
 import { VariantsSection } from "../components/VariantsSection";
 import { useProductDetail } from "../hooks/useProductDetail";
 import { useCreateProduct, useUpdateProduct } from "../hooks/useProductMutations";
@@ -59,7 +62,11 @@ export function ProductFormPage() {
           </Card>
 
           <Card>
-            <ImageUploadPlaceholder />
+            {product ? (
+              <ProductImageUpload productId={product.id} slug={product.slug} images={product.images} />
+            ) : (
+              <ProductImageUploadDisabledHint />
+            )}
           </Card>
 
           {isEdit && product && (

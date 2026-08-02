@@ -13,6 +13,18 @@ export interface ProductVariant {
   stockQuantity: number;
 }
 
+export type ModerationAction = "approve" | "request_changes" | "remove";
+
+export interface ProductModerationLog {
+  id: number;
+  productId: number;
+  adminId: number;
+  action: ModerationAction;
+  note: string | null;
+  createdAt: string;
+  admin: { id: number; fullName: string };
+}
+
 export interface FlaggedProduct {
   id: number;
   shopId: number;
@@ -27,9 +39,8 @@ export interface FlaggedProduct {
   updatedAt: string;
   images: ProductImage[];
   variants: ProductVariant[];
+  moderationLogs: ProductModerationLog[];
 }
-
-export type ModerationAction = "approve" | "request_changes" | "remove";
 
 export interface ModerateProductPayload {
   action: ModerationAction;

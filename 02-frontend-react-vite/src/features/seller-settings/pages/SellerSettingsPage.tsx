@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Card } from "../../../shared/components/Card";
-import { ComingSoonSection } from "../components/ComingSoonSection";
+import { ShopContactSection } from "../components/ShopContactSection";
 import { ShopInfoSection } from "../components/ShopInfoSection";
+import { ShopNotificationsSection } from "../components/ShopNotificationsSection";
+import { ShopPaymentSection } from "../components/ShopPaymentSection";
+import { ShopShippingSection } from "../components/ShopShippingSection";
 
 type SectionKey = "info" | "contact" | "shipping" | "payment" | "notifications";
 
@@ -40,42 +43,10 @@ export function SellerSettingsPage() {
 
       <Card className="flex-1">
         {active === "info" && <ShopInfoSection />}
-        {active === "contact" && (
-          <ComingSoonSection
-            title="Liên hệ & địa chỉ"
-            fields={[
-              { label: "Số điện thoại", placeholder: "0901234567" },
-              { label: "Email liên hệ", placeholder: "shop@example.com" },
-              { label: "Địa chỉ lấy hàng", placeholder: "Số nhà, đường, phường/xã" },
-            ]}
-          />
-        )}
-        {active === "shipping" && (
-          <ComingSoonSection
-            title="Vận chuyển"
-            fields={[
-              { label: "Đơn vị vận chuyển mặc định", placeholder: "GHN" },
-              { label: "Phí vận chuyển cơ bản", placeholder: "20000" },
-            ]}
-          />
-        )}
-        {active === "payment" && (
-          <ComingSoonSection
-            title="Thanh toán"
-            fields={[
-              { label: "Số tài khoản ngân hàng", placeholder: "0123456789" },
-              { label: "Tên ngân hàng", placeholder: "Vietcombank" },
-            ]}
-          />
-        )}
-        {active === "notifications" && (
-          <ComingSoonSection
-            title="Thông báo"
-            fields={[
-              { label: "Email nhận thông báo đơn hàng", placeholder: "shop@example.com" },
-            ]}
-          />
-        )}
+        {active === "contact" && <ShopContactSection />}
+        {active === "shipping" && <ShopShippingSection />}
+        {active === "payment" && <ShopPaymentSection />}
+        {active === "notifications" && <ShopNotificationsSection />}
       </Card>
     </div>
   );

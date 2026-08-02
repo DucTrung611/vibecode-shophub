@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Printer } from "lucide-react";
 import { Badge } from "../../../shared/components/Badge";
+import { Button } from "../../../shared/components/Button";
 import { Card } from "../../../shared/components/Card";
 import { Table, type TableColumn } from "../../../shared/components/Table";
 import { formatCurrency, formatDateTime } from "../../../shared/utils/format";
@@ -31,13 +32,25 @@ export function SellerOrderDetailPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <Link
-        to="/seller/orders"
-        className="flex w-fit items-center gap-1.5 text-sm font-bold font-manrope text-hub-600 hover:underline"
-      >
-        <ArrowLeft size={15} />
-        Quay lại danh sách đơn hàng
-      </Link>
+      <div className="flex items-center justify-between print:hidden">
+        <Link
+          to="/seller/orders"
+          className="flex w-fit items-center gap-1.5 text-sm font-bold font-manrope text-hub-600 hover:underline"
+        >
+          <ArrowLeft size={15} />
+          Quay lại danh sách đơn hàng
+        </Link>
+        {order && (
+          <div className="w-fit">
+            <Button type="button" variant="outline" onClick={() => window.print()}>
+              <span className="flex items-center gap-1.5">
+                <Printer size={15} />
+                In đơn hàng
+              </span>
+            </Button>
+          </div>
+        )}
+      </div>
 
       {isLoading && <p className="text-sm font-manrope text-neutral-500">Đang tải...</p>}
       {isError && (

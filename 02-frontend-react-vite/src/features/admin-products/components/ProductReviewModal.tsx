@@ -1,9 +1,16 @@
 import { useState } from "react";
 import { Modal } from "../../../shared/components/Modal";
 import { Button } from "../../../shared/components/Button";
-import { formatCurrency } from "../../../shared/utils/format";
+import { formatCurrency, formatDateTime } from "../../../shared/utils/format";
+import { getAssetUrl } from "../../../shared/utils/asset-url";
 import { useModerateProduct } from "../hooks/useModerateProduct";
 import type { FlaggedProduct } from "../types/admin-products.types";
+
+const ACTION_LABEL: Record<string, string> = {
+  approve: "Đã duyệt",
+  request_changes: "Yêu cầu chỉnh sửa",
+  remove: "Đã gỡ",
+};
 
 interface ProductReviewModalProps {
   product: FlaggedProduct | null;
@@ -25,7 +32,11 @@ export function ProductReviewModal({ product, onClose }: ProductReviewModalProps
       <div className="mb-4 flex gap-4">
         <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-hub-50">
           {product.images[0] ? (
-            <img src={product.images[0].url} alt={product.name} className="h-full w-full object-cover" />
+            <img
+              src={getAssetUrl(product.images[0].url)}
+              alt={product.name}
+              className="h-full w-full object-cover"
+            />
           ) : (
             <span className="text-2xl">📦</span>
           )}
@@ -45,6 +56,24 @@ export function ProductReviewModal({ product, onClose }: ProductReviewModalProps
         <div className="mb-4 rounded-[10px] border-l-4 border-error bg-error-tint px-4 py-3.5">
           <div className="mb-1 text-xs font-extrabold text-error">
             ⚠ Lý do gắn cờ: {product.flagReason}
+          </div>
+        </div>
+      )}
+
+      {product.moderationLogs.length > 0 && (
+        <div className="mb-4">
+          <div className="mb-1.5 text-xs font-bold font-manrope text-neutral-700">
+            Lịch sử kiểm duyệt
+          </div>
+          <div className="flex flex-col gap-2 rounded-[10px] border border-neutral-200 px-3.5 py-3">
+            {product.moderationLogs.map((log) => (
+              <div key={log.id} className="text-xs font-manrope text-neutral-600">
+                <span className="font-bold text-neutral-900">{ACTION_LABEL[log.action] ?? log.action}</span>
+                {" · "}
+                {log.admin.fullName} · {formatDateTime(log.createdAt)}
+                {log.note && <div className="mt-0.5 text-neutral-500">"{log.note}"</div>}
+              </div>
+            ))}
           </div>
         </div>
       )}

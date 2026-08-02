@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import { Plus, SquarePen, Trash2 } from "lucide-react";
 import { useMyShop } from "../../seller-settings";
@@ -29,6 +29,7 @@ export function SellerProductsPage() {
   const [categoryId, setCategoryId] = useState<number | undefined>(undefined);
   const [status, setStatus] = useState<ProductStatus | "all">("all");
   const [page, setPage] = useState(1);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
   const { data, isLoading, isError } = useShopProducts(
     shop ? { shopId: shop.id, categoryId, status, page, limit: 20 } : null,
@@ -46,7 +47,55 @@ export function SellerProductsPage() {
 
   const deactivateProduct = useDeactivateProduct();
 
+  function toggleSelected(id: number) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAll() {
+    setSelectedIds((prev) =>
+      prev.size === visibleProducts.length ? new Set() : new Set(visibleProducts.map((p) => p.id)),
+    );
+  }
+
+  async function handleBulkDeactivate() {
+    if (selectedIds.size === 0) return;
+    if (!window.confirm(`Ẩn ${selectedIds.size} sản phẩm đã chọn?`)) return;
+    for (const id of selectedIds) {
+      await deactivateProduct.mutateAsync(id);
+    }
+    setSelectedIds(new Set());
+  }
+
+  useEffect(() => {
+    setSelectedIds(new Set());
+  }, [data]);
+
   const columns: TableColumn<ProductListItem>[] = [
+    {
+      header: (
+        <input
+          type="checkbox"
+          aria-label="Chọn tất cả sản phẩm"
+          checked={visibleProducts.length > 0 && selectedIds.size === visibleProducts.length}
+          onChange={toggleSelectAll}
+        />
+      ),
+      accessor: "__select__",
+      render: (row) => (
+        <input
+          type="checkbox"
+          aria-label={`Chọn sản phẩm ${row.name}`}
+          checked={selectedIds.has(row.id)}
+          onClick={(event) => event.stopPropagation()}
+          onChange={() => toggleSelected(row.id)}
+        />
+      ),
+    },
     { header: "Tên sản phẩm", accessor: "name" },
     {
       header: "Danh mục",
@@ -149,6 +198,28 @@ export function SellerProductsPage() {
 
       {isError && (
         <p className="text-sm font-manrope text-error">Không thể tải danh sách sản phẩm.</p>
+      )}
+
+      {selectedIds.size > 0 && (
+        <div className="flex items-center justify-between rounded-2xl border border-hub-200 bg-hub-50 px-4 py-3">
+          <span className="text-sm font-bold font-manrope text-hub-700">
+            Đã chọn {selectedIds.size} sản phẩm
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setSelectedIds(new Set())}
+              className="text-sm font-manrope text-neutral-600 hover:underline"
+            >
+              Bỏ chọn
+            </button>
+            <div className="w-fit">
+              <Button type="button" variant="danger" onClick={handleBulkDeactivate}>
+                Ẩn sản phẩm đã chọn
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
 
       {isLoading ? (

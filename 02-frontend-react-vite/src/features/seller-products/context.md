@@ -3,7 +3,7 @@
 ## Purpose
 `/seller/products` (search/category/status filters, table, pagination),
 `/seller/products/new` (create), `/seller/products/:slug/edit` (edit: basic
-info, disabled image upload, variant sub-table), per `Product Management.dc.html`.
+info, image upload, variant sub-table), per `Product Management.dc.html`.
 
 ## Key decisions
 - **Resolving "my shop id":** the public `GET /products?shopId=` filter needs a
@@ -25,9 +25,13 @@ info, disabled image upload, variant sub-table), per `Product Management.dc.html
   production, not this API). The search box filters the currently-loaded page
   client-side as a lightweight approximation — documented as an approximation,
   not a real server search.
-- **Image upload disabled.** `POST /products/:id/images` isn't implemented
-  (no object storage backend yet). `ImageUploadPlaceholder` renders the designed
-  dropzone UI but is inert with an honest "Sắp ra mắt" caption.
+- **Image upload wired to `POST /products/:id/images`** (`ProductImageUpload`,
+  `services/product.service.ts#uploadProductImages`) — multipart, field `images`,
+  multiple files at once. Only shown once the product exists (edit mode); new/unsaved
+  products render `ProductImageUploadDisabledHint` instead, since the endpoint needs a
+  product id. Uploaded image URLs come back as `/uploads/products/<file>` (local disk
+  on the backend, see backend `catalog/context.md`) — resolved to an absolute URL via
+  `shared/utils/asset-url.ts#getAssetUrl` for the `<img>` preview grid.
 - **Variant attributes simplified to color/size** — the API's `attributes` field
   is a free-form JSONB object; the form only exposes `color`/`size` inputs
   (matching the buyer PDP's variant swatch pattern) rather than a generic

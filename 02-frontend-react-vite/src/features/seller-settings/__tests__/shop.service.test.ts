@@ -3,21 +3,21 @@ import { apiClient } from "../../../shared/services/api-client";
 import { getMyShop, updateMyShop } from "../services/shop.service";
 
 vi.mock("../../../shared/services/api-client", () => ({
-  apiClient: { patch: vi.fn() },
+  apiClient: { get: vi.fn(), patch: vi.fn(), post: vi.fn() },
 }));
 
 describe("shop.service", () => {
-  it("getMyShop calls PATCH /shops/me with an empty body", async () => {
+  it("getMyShop calls GET /shops/me", async () => {
     const shop = { id: 1, ownerId: 2, name: "My Shop", slug: "my-shop", status: "approved" };
-    vi.mocked(apiClient.patch).mockResolvedValue(shop);
+    vi.mocked(apiClient.get).mockResolvedValue(shop);
 
     const result = await getMyShop();
 
-    expect(apiClient.patch).toHaveBeenCalledWith("/shops/me", {});
+    expect(apiClient.get).toHaveBeenCalledWith("/shops/me");
     expect(result).toEqual(shop);
   });
 
-  it("updateMyShop calls PATCH /shops/me with the given name", async () => {
+  it("updateMyShop calls PATCH /shops/me with the given payload", async () => {
     const shop = { id: 1, ownerId: 2, name: "New Name", slug: "my-shop", status: "approved" };
     vi.mocked(apiClient.patch).mockResolvedValue(shop);
 
