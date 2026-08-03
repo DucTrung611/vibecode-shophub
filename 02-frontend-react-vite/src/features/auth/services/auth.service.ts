@@ -10,6 +10,11 @@ export async function login(values: LoginFormValues): Promise<AuthResponse> {
   return response as unknown as AuthResponse;
 }
 
+export async function loginWithGoogle(idToken: string): Promise<AuthResponse> {
+  const response = await apiClient.post("/auth/google", { idToken });
+  return response as unknown as AuthResponse;
+}
+
 export async function logout(): Promise<void> {
   await apiClient.post("/auth/logout");
 }
