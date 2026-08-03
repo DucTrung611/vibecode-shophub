@@ -10,6 +10,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(1),
   JWT_ACCESS_TTL: z.string().default('15m'),
   JWT_REFRESH_TTL: z.string().default('7d'),
+  GOOGLE_CLIENT_ID: z.string().min(1),
 });
 
 export type EnvSchema = z.infer<typeof envSchema>;

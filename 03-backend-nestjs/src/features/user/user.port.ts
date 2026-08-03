@@ -7,7 +7,9 @@ export const USER_PORT = Symbol('USER_PORT');
 export interface UserPort {
   findByEmail(email: string): Promise<UserEntity | null>;
   findById(id: number): Promise<UserEntity | null>;
+  findByGoogleId(googleId: string): Promise<UserEntity | null>;
   create(data: CreateUserData): Promise<UserEntity>;
+  linkGoogleId(id: number, googleId: string): Promise<UserEntity>;
   updateRole(
     id: number,
     role: 'buyer' | 'seller' | 'admin',

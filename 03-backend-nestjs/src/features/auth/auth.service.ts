@@ -9,6 +9,8 @@ import { USER_PORT } from '../user/user.port';
 import type { UserPort } from '../user/user.port';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { GoogleLoginDto } from './dto/google-login.dto';
+import { GoogleTokenVerifierService } from './google-token-verifier.service';
 import { JwtPayload, TokenPair } from './types/auth.types';
 import { refreshTokenKey } from './utils/refresh-token-key.util';
 
@@ -21,6 +23,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly redisService: RedisService,
+    private readonly googleTokenVerifier: GoogleTokenVerifierService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -56,6 +59,14 @@ export class AuthService {
       );
     }
 
+    if (!user.passwordHash) {
+      throw new AppException(
+        'AUTH_009',
+        'This account uses Google Sign-In; please continue with Google',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
     const passwordMatches = await bcrypt.compare(
       dto.password,
       user.passwordHash,
@@ -66,6 +77,63 @@ export class AuthService {
         'Invalid email or password',
         HttpStatus.UNAUTHORIZED,
       );
+    }
+
+    if (!user.isActive) {
+      throw new AppException(
+        'AUTH_005',
+        'Account is inactive or unverified',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const tokens = await this.issueTokenPair(user.id, user.email, user.role);
+    return { ...tokens, user: this.toPublicUser(user) };
+  }
+
+  async loginWithGoogle(dto: GoogleLoginDto) {
+    let payload;
+    try {
+      payload = await this.googleTokenVerifier.verify(dto.idToken);
+    } catch {
+      throw new AppException(
+        'AUTH_007',
+        'Invalid Google token',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    if (!payload?.email || !payload.sub) {
+      throw new AppException(
+        'AUTH_007',
+        'Invalid Google token',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    if (!payload.email_verified) {
+      throw new AppException(
+        'AUTH_008',
+        'Google account email is not verified',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const { email, sub: googleId, name } = payload;
+
+    let user = await this.userPort.findByGoogleId(googleId);
+    if (!user) {
+      const existingByEmail = await this.userPort.findByEmail(email);
+      if (existingByEmail) {
+        user = await this.userPort.linkGoogleId(existingByEmail.id, googleId);
+      } else {
+        user = await this.userPort.create({
+          email,
+          googleId,
+          fullName: name ?? email.split('@')[0],
+          role: 'buyer',
+          emailVerifiedAt: new Date(),
+        });
+      }
     }
 
     if (!user.isActive) {

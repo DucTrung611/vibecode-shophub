@@ -6,9 +6,11 @@ import { UserEntity } from './entities/user.entity';
 export interface CreateUserData {
   email: string;
   phone?: string;
-  passwordHash: string;
+  passwordHash?: string;
+  googleId?: string;
   fullName: string;
   role: 'buyer' | 'seller' | 'admin';
+  emailVerifiedAt?: Date;
 }
 
 export interface CreateAddressData {
@@ -43,8 +45,16 @@ export class UserRepository {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
+  findByGoogleId(googleId: string): Promise<UserEntity | null> {
+    return this.prisma.user.findUnique({ where: { googleId } });
+  }
+
   create(data: CreateUserData): Promise<UserEntity> {
     return this.prisma.user.create({ data });
+  }
+
+  linkGoogleId(id: number, googleId: string): Promise<UserEntity> {
+    return this.prisma.user.update({ where: { id }, data: { googleId } });
   }
 
   updateRole(

@@ -14,6 +14,9 @@ export interface AppConfig {
     accessTtl: string;
     refreshTtl: string;
   };
+  google: {
+    clientId: string;
+  };
 }
 
 export default (): AppConfig => ({
@@ -31,5 +34,8 @@ export default (): AppConfig => ({
     secret: process.env.JWT_SECRET ?? '',
     accessTtl: process.env.JWT_ACCESS_TTL ?? '15m',
     refreshTtl: process.env.JWT_REFRESH_TTL ?? '7d',
+  },
+  google: {
+    clientId: process.env.GOOGLE_CLIENT_ID ?? '',
   },
 });

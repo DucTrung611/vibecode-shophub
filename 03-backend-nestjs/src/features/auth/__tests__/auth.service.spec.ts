@@ -3,25 +3,31 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { RedisService } from '../../../core/cache/redis.service';
 import { AuthService } from '../auth.service';
+import { GoogleTokenVerifierService } from '../google-token-verifier.service';
 
 describe('AuthService', () => {
   let service: AuthService;
   let userPort: {
     findByEmail: jest.Mock;
     findById: jest.Mock;
+    findByGoogleId: jest.Mock;
     create: jest.Mock;
+    linkGoogleId: jest.Mock;
     updateRole: jest.Mock;
     findAddressByIdForUser: jest.Mock;
+    countTotal: jest.Mock;
   };
   let jwtService: { signAsync: jest.Mock; verifyAsync: jest.Mock };
   let redisService: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
   let configService: { get: jest.Mock };
+  let googleTokenVerifier: { verify: jest.Mock };
 
   const baseUser = {
     id: 1,
     email: 'buyer@example.com',
     phone: null,
     passwordHash: '',
+    googleId: null,
     fullName: 'Nguyen Van A',
     role: 'buyer' as const,
     isActive: true,
@@ -34,9 +40,12 @@ describe('AuthService', () => {
     userPort = {
       findByEmail: jest.fn(),
       findById: jest.fn(),
+      findByGoogleId: jest.fn(),
       create: jest.fn(),
+      linkGoogleId: jest.fn(),
       updateRole: jest.fn(),
       findAddressByIdForUser: jest.fn(),
+      countTotal: jest.fn(),
     };
     jwtService = {
       signAsync: jest.fn().mockResolvedValue('signed-token'),
@@ -53,12 +62,14 @@ describe('AuthService', () => {
         return values[key];
       }),
     };
+    googleTokenVerifier = { verify: jest.fn() };
 
     service = new AuthService(
       userPort,
       jwtService as unknown as JwtService,
       configService as unknown as ConfigService,
       redisService as unknown as RedisService,
+      googleTokenVerifier as unknown as GoogleTokenVerifierService,
     );
   });
 
@@ -106,6 +117,17 @@ describe('AuthService', () => {
       ).rejects.toMatchObject({ response: { code: 'AUTH_004' } });
     });
 
+    it('should throw AUTH_009 when the account has no password (Google-only)', async () => {
+      userPort.findByEmail.mockResolvedValue({
+        ...baseUser,
+        passwordHash: null,
+      });
+
+      await expect(
+        service.login({ email: baseUser.email, password: 'password123' }),
+      ).rejects.toMatchObject({ response: { code: 'AUTH_009' } });
+    });
+
     it('should throw AUTH_004 when password does not match', async () => {
       const passwordHash = await bcrypt.hash('correct-password', 4);
       userPort.findByEmail.mockResolvedValue({ ...baseUser, passwordHash });
@@ -136,6 +158,126 @@ describe('AuthService', () => {
         email: baseUser.email,
         password: 'correct-password',
       });
+
+      expect(result.accessToken).toBe('signed-token');
+      expect(redisService.set).toHaveBeenCalled();
+    });
+  });
+
+  describe('loginWithGoogle', () => {
+    const googlePayload = {
+      email: 'buyer@example.com',
+      sub: 'google-sub-123',
+      email_verified: true,
+      name: 'Nguyen Van A',
+    };
+
+    it('should throw AUTH_007 when token verification throws', async () => {
+      googleTokenVerifier.verify.mockRejectedValue(new Error('bad token'));
+
+      await expect(
+        service.loginWithGoogle({ idToken: 'bad' }),
+      ).rejects.toMatchObject({ response: { code: 'AUTH_007' } });
+    });
+
+    it('should throw AUTH_007 when payload has no email/sub', async () => {
+      googleTokenVerifier.verify.mockResolvedValue({});
+
+      await expect(
+        service.loginWithGoogle({ idToken: 'token' }),
+      ).rejects.toMatchObject({ response: { code: 'AUTH_007' } });
+    });
+
+    it('should throw AUTH_008 when the Google email is not verified', async () => {
+      googleTokenVerifier.verify.mockResolvedValue({
+        ...googlePayload,
+        email_verified: false,
+      });
+
+      await expect(
+        service.loginWithGoogle({ idToken: 'token' }),
+      ).rejects.toMatchObject({ response: { code: 'AUTH_008' } });
+    });
+
+    it('should create a new buyer user when no existing user matches', async () => {
+      googleTokenVerifier.verify.mockResolvedValue(googlePayload);
+      userPort.findByGoogleId.mockResolvedValue(null);
+      userPort.findByEmail.mockResolvedValue(null);
+      userPort.create.mockResolvedValue({
+        ...baseUser,
+        googleId: googlePayload.sub,
+        passwordHash: null,
+      });
+
+      const result = await service.loginWithGoogle({ idToken: 'token' });
+
+      expect(userPort.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: googlePayload.email,
+          googleId: googlePayload.sub,
+          role: 'buyer',
+          emailVerifiedAt: expect.any(Date),
+        }),
+      );
+      expect(userPort.linkGoogleId).not.toHaveBeenCalled();
+      expect(result.accessToken).toBe('signed-token');
+    });
+
+    it('should auto-link an existing user found by email', async () => {
+      googleTokenVerifier.verify.mockResolvedValue(googlePayload);
+      userPort.findByGoogleId.mockResolvedValue(null);
+      userPort.findByEmail.mockResolvedValue(baseUser);
+      userPort.linkGoogleId.mockResolvedValue({
+        ...baseUser,
+        googleId: googlePayload.sub,
+      });
+
+      const result = await service.loginWithGoogle({ idToken: 'token' });
+
+      expect(userPort.linkGoogleId).toHaveBeenCalledWith(
+        baseUser.id,
+        googlePayload.sub,
+      );
+      expect(userPort.create).not.toHaveBeenCalled();
+      expect(result.accessToken).toBe('signed-token');
+    });
+
+    it('should reuse the user found directly by googleId', async () => {
+      googleTokenVerifier.verify.mockResolvedValue(googlePayload);
+      userPort.findByGoogleId.mockResolvedValue({
+        ...baseUser,
+        googleId: googlePayload.sub,
+      });
+
+      const result = await service.loginWithGoogle({ idToken: 'token' });
+
+      expect(userPort.findByEmail).not.toHaveBeenCalled();
+      expect(userPort.create).not.toHaveBeenCalled();
+      expect(userPort.linkGoogleId).not.toHaveBeenCalled();
+      expect(result.accessToken).toBe('signed-token');
+    });
+
+    it('should throw AUTH_005 when the resolved user is inactive', async () => {
+      googleTokenVerifier.verify.mockResolvedValue(googlePayload);
+      userPort.findByGoogleId.mockResolvedValue({
+        ...baseUser,
+        googleId: googlePayload.sub,
+        isActive: false,
+      });
+
+      await expect(
+        service.loginWithGoogle({ idToken: 'token' }),
+      ).rejects.toMatchObject({ response: { code: 'AUTH_005' } });
+    });
+
+    it('should return a token pair on success', async () => {
+      googleTokenVerifier.verify.mockResolvedValue(googlePayload);
+      userPort.findByGoogleId.mockResolvedValue({
+        ...baseUser,
+        googleId: googlePayload.sub,
+      });
+
+      const result = await service.loginWithGoogle({ idToken: 'token' });
 
       expect(result.accessToken).toBe('signed-token');
       expect(redisService.set).toHaveBeenCalled();
