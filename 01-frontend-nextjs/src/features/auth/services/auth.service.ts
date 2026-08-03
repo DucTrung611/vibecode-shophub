@@ -11,6 +11,14 @@ export async function login(values: LoginFormValues): Promise<AuthResponse> {
   return result.data;
 }
 
+export async function loginWithGoogle(idToken: string): Promise<AuthResponse> {
+  const result = (await apiClient.post(
+    "/auth/google",
+    { idToken },
+  )) as unknown as ApiResult<AuthResponse>;
+  return result.data;
+}
+
 export async function register(
   values: Omit<RegisterFormValues, "agreeTerms">,
 ): Promise<AuthResponse> {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope, Sora } from "next/font/google";
 import { QueryProvider } from "@/shared/providers/query-provider";
+import { GoogleOAuthProviderWrapper } from "@/shared/providers/google-oauth-provider";
 import { ToastContainer } from "@/shared/components/Toast";
 import "./globals.css";
 
@@ -32,7 +33,9 @@ export default function RootLayout({
       className={`${sora.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-manrope">
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <GoogleOAuthProviderWrapper>{children}</GoogleOAuthProviderWrapper>
+        </QueryProvider>
         <ToastContainer />
       </body>
     </html>

@@ -1,3 +1,4 @@
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -11,7 +12,9 @@ vi.mock("next/navigation", () => ({
 function renderWithQueryClient(ui: React.ReactElement) {
   const queryClient = new QueryClient();
   return render(
-    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>,
+    <QueryClientProvider client={queryClient}>
+      <GoogleOAuthProvider clientId="test-client-id">{ui}</GoogleOAuthProvider>
+    </QueryClientProvider>,
   );
 }
 
