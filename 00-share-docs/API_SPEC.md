@@ -131,6 +131,7 @@ Content-Type: multipart/form-data
 |---|---|---|---|
 | POST | `/auth/register` | Register buyer/seller account | Public |
 | POST | `/auth/login` | Login, returns token pair | Public |
+| POST | `/auth/google` | Login/register via Google ID token, returns token pair | Public |
 | POST | `/auth/refresh` | Rotate access/refresh token | Refresh token |
 | POST | `/auth/logout` | Revoke refresh token | Bearer |
 | GET | `/auth/me` | Current authenticated user | Bearer |
@@ -297,9 +298,22 @@ Splits the buyer's cart into one order per shop (see `DATABASE.md` §2.6 order-p
 }
 ```
 
-**Error cases:** `AUTH_004` (401, invalid credentials), `AUTH_005` (403, account inactive/unverified), `VALIDATION_001` (400).
+**Error cases:** `AUTH_004` (401, invalid credentials), `AUTH_005` (403, account inactive/unverified), `AUTH_009` (401, account has no password — Google-only, must sign in with Google), `VALIDATION_001` (400).
 
-### 7.3 `PATCH /orders/:id/status` (seller fulfillment update)
+### 7.3 `POST /auth/google`
+
+Verifies a Google ID token server-side (`google-auth-library`) and issues the same access/refresh token pair as `/auth/login`. If the Google account's `sub` matches an existing user, logs them in. If not, but the Google email matches an existing (password-registered) user, auto-links the Google account to it (sets `google_id`, no error). Otherwise creates a new `buyer` user with no password, `email_verified_at` set immediately.
+
+**Request:**
+```json
+{ "idToken": "eyJhbGciOi..." }
+```
+
+**Response (200):** same shape as `POST /auth/login` (§7.2) — `accessToken`, `refreshToken`, `user`.
+
+**Error cases:** `AUTH_007` (401, invalid/unverifiable Google token), `AUTH_008` (403, Google email not verified), `AUTH_005` (403, account inactive), `VALIDATION_001` (400, missing `idToken`).
+
+### 7.4 `PATCH /orders/:id/status` (seller fulfillment update)
 
 **Request:**
 ```json

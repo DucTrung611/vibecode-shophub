@@ -35,7 +35,7 @@ Multi-vendor marketplace data model. Order-per-shop pattern: a buyer's cart span
 ### Feature: auth / user
 | Table | Key Fields | Notes |
 |---|---|---|
-| `users` | `id` PK, `email` UQ, `phone` UQ, `password_hash`, `full_name`, `role` (enum: buyer/seller/admin), `is_active`, `email_verified_at` | Single table for all roles at MVP scale |
+| `users` | `id` PK, `email` UQ, `phone` UQ, `password_hash` (nullable — null for Google-only accounts), `google_id` UQ (nullable), `full_name`, `role` (enum: buyer/seller/admin), `is_active`, `email_verified_at` | Single table for all roles at MVP scale. A user has `password_hash`, `google_id`, or both (linked account) |
 | `addresses` | `id` PK, `user_id` FK→users, `recipient_name`, `phone`, `province`, `district`, `ward`, `detail_address`, `is_default` | 1:N per user |
 
 ### Feature: shop
